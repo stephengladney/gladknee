@@ -275,6 +275,7 @@ Returns the provided array sorted (ascending) via bubble sort
 Returns the provided array sorted (ascending) via selection sort
 
 </details>
+<details>
 <summary>&nbsp;&nbsp;insertSort</summary>
 
 ### **insertSort(arr: T[]): T[]**
