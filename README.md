@@ -21,7 +21,7 @@ toFixedNumber(4.24398, 3)
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;toFixedNumber</summary>
+<summary>&nbsp;&nbsp;clamp</summary>
 
 ### **clamp(n: number, min: number: max: number): number**
 
@@ -39,7 +39,7 @@ clamp(15, 16, 20)
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;toFixedNumber</summary>
+<summary>&nbsp;&nbsp;toDoubleDigit</summary>
 
 ### **toDoubleDigit(n: number): string**
 
@@ -54,7 +54,7 @@ toDoubleDigit(9)
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;toFixedNumber</summary>
+<summary>&nbsp;&nbsp;ordinal</summary>
 
 ### **ordinal(n: number): string**
 
@@ -69,7 +69,7 @@ ordinal(4)
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;toFixedNumber</summary>
+<summary>&nbsp;&nbsp;getRange</summary>
 
 ### **getRange(start: number, end: number)**
 
