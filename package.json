@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A TypeScript utility library",
   "main": "dist/gladney.js",
+  "types": "dist/gladney.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"

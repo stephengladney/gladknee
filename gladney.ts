@@ -270,32 +270,6 @@ export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
 
 // EXPRESS
 
-export type Handler = (req: Request, res: Response) => void
-type Handlers = {
-  index?: Handler
-  show?: Handler
-  create?: Handler
-  update?: Handler
-  deleteFn?: Handler
-  // @ts-ignore Must be ignored for non-Express projects
-  extendRouter?: (router: Router) => void
-}
-
-export function createRoutes(handlers: Handlers) {
-  // @ts-ignore Must be ignored for non-Express projects
-  let router = express.Router()
-
-  if (handlers.index) router.get("", handlers.index)
-  if (handlers.show) router.get("/:id", handlers.show)
-  if (handlers.create) router.post("", handlers.create)
-  if (handlers.update) router.put("/:id", handlers.update)
-  if (handlers.deleteFn) router.delete("/:id", handlers.deleteFn)
-
-  if (handlers.extendRouter) handlers.extendRouter(router)
-
-  return router
-}
-
 // SEQUELIZE
 
 export function convertQueryParamOperators(params: {}) {
