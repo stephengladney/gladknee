@@ -224,7 +224,7 @@ export function bubbleSort(arr: SortableArray) {
 }
 
 export function selectionSort(arr: SortableArray) {
-  const swap = (arr, idx1, idx2) =>
+  const swap = (arr: unknown[], idx1: number, idx2: number) =>
     ([arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]])
 
   for (let i = 0; i < arr.length; i++) {
@@ -279,7 +279,7 @@ export function getSumOfKeyValues<T extends object, U extends keyof T>(
   arr: (T & { [K in U]: number })[],
   key: U
 ) {
-  return arr.reduce((acc, i) => acc + i[key as string], 0)
+  return arr.reduce((acc, i) => acc + i[key], 0)
 }
 
 export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
@@ -366,6 +366,7 @@ export function convertQueryParamOperators(params: {}) {
         output[paramStringWithoutOperator] = { [Op.ne]: params[param] }
         break
       default:
+        // @ts-ignore
         output[paramString] = params[param]
     }
   }

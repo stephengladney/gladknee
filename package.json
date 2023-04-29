@@ -1,0 +1,26 @@
+{
+  "name": "gladknee",
+  "version": "1.0.0",
+  "description": "A TypeScript utility library",
+  "main": "gladney.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stephengladney/gladknee.git"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "Stephen Gladney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stephengladney/gladknee/issues"
+  },
+  "homepage": "https://github.com/stephengladney/gladknee#readme",
+  "devDependencies": {
+    "@types/node": "^18.16.3"
+  }
+}
