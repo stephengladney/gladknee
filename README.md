@@ -282,7 +282,7 @@ Returns the provided array sorted (ascending) via insert sort
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;drop</summary>
+<summary>&nbsp;&nbsp;removeDuplicates</summary>
 
 ### **removeDuplicates(arr: T[]): T[]**
 
@@ -297,7 +297,7 @@ shuffle([1, 2, 3, 4, 5])
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;drop</summary>
+<summary>&nbsp;&nbsp;sum</summary>
 
 ### **sum(arr: number[]): number**
 
@@ -312,7 +312,7 @@ sum([1, 2, 3, 4, 5])
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;drop</summary>
+<summary>&nbsp;&nbsp;getRollingSum</summary>
 
 ### **getRollingSum(arr: number[]): number[]**
 
