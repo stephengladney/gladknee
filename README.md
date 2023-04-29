@@ -4,7 +4,7 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 
 ## NUMBERS
 
-### **toFixedNumber(<span style="color:#00c">n</span>: <span color="green">number</span>, decimalPlaces: number)**
+### **toFixedNumber(n: number, decimalPlaces: number)**
 
 Returns a number limited to a specific numner of decimal places as a number (not a string)
 <br><br>
@@ -15,7 +15,7 @@ toFixedNumber(4.24398, 3)
 // 4.244
 ```
 
-<br><br>
+<br>
 **clamp**<br>
 Enforce a minimum and/or maximum limit on a number and returns the number or the enforced limit
 <br><br>
