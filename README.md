@@ -166,6 +166,7 @@ Returns a Date object with the date of today and time of 00:00:00
 Returns a Date object with the date of today and time of 23:59:59
 
 </details>
+<br>
 </details>
 <details>
 <summary>Strings</summary><br>
