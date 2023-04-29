@@ -6,10 +6,9 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 <summary>Numbers</summary><br>
 
 <details>
-
 <summary>&nbsp;&nbsp;toFixedNumber</summary>
 
-### **toFixedNumber(n: number, decimalPlaces: number)**
+### **toFixedNumber(n: number, decimalPlaces: number): number**
 
 Returns a number limited to a specific numner of decimal places as a number (not a string)
 <br><br>
@@ -22,22 +21,69 @@ toFixedNumber(4.24398, 3)
 
 </details>
 <details>
-<summary>clamp</summary>
-Enforce a minimum and/or maximum limit on a number and returns the number or the enforced limit
+<summary>&nbsp;&nbsp;toFixedNumber</summary>
+
+### **clamp(n: number, min: number: max: number): number**
+
+Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit
+<br><br>
+Example:
+
+```
+clamp(15, 3, 12)
+// 12
+
+clamp(15, 16, 20)
+// 16
+```
+
 </details>
 <details>
-<summary>toDoubleDigit</summary>
-Convert single digit numbers to double digit, i.e. 9 returns "09"
+<summary>&nbsp;&nbsp;toFixedNumber</summary>
+
+### **toDoubleDigit(n: number): string**
+
+Returns a provided single digit number with a leading zero
+<br><br>
+Example:
+
+```
+toDoubleDigit(9)
+// "09"
+```
+
 </details>
 <details>
-<summary>ordinal</summary>
-Return the ordinal form of a number, i.e. 4 returns "4th"
+<summary>&nbsp;&nbsp;toFixedNumber</summary>
+
+### **ordinal(n: number): string**
+
+Returns the numeric ordinal name of a provided number
+<br><br>
+Example:
+
+```
+ordinal(4)
+// "4th"
+```
+
 </details>
 <details>
-<summary>getRange</summary>
-Returns an array of numbers from a provided starting point to a provided ending point
+<summary>&nbsp;&nbsp;toFixedNumber</summary>
+
+### **getRange(start: number, end: number)**
+
+Returns an array of numbers, starting from the provided start number and ending with provided end number
+<br><br>
+Example:
+
+```
+getRange(5,10)
+// [5, 6, 7, 8, 9, 10]
+```
+
 </details>
-</details><br>
+
 <details>
 <summary>Dates & Time</summary><br>
 <details>
