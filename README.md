@@ -461,7 +461,7 @@ Prompts a user in their browser to save provided text to a file on their machine
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;saveTextToFileInBrowser</summary>
+<summary>&nbsp;&nbsp;setCookie</summary>
 
 ### **setCookie(cookieName: string, cookieValue: string, expirationInDays: number)**
 
@@ -470,7 +470,7 @@ Sets the vaue of a specific cookie
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;saveTextToFileInBrowser</summary>
+<summary>&nbsp;&nbsp;getCookie</summary>
 
 ### **getCookie(cookieName: string)**
 
