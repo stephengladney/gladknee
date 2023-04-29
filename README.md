@@ -2,7 +2,8 @@
 
 Gladknee is a TypeScript utility library that I created for personal projects but is open to use by anyone. Enjoy!
 
-## NUMBERS
+<details>
+<summary>## Numbers</summary>
 
 ### **toFixedNumber(n: number, decimalPlaces: number)**
 
@@ -25,7 +26,7 @@ Convert single digit numbers to double digit, i.e. 9 returns "09"
 <br><br>
 ordinal | Return the ordinal form of a number, i.e. 4 returns "4th"
 getRange | Returns an array of numbers from a provided starting point to a provided ending point
-
+</details>
 # DATES/TIMES
 
 getAmountOfTimeFromSeconds | Returns years, months, weeks, days, hours, minutes, seconds
