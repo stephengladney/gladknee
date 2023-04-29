@@ -124,7 +124,6 @@ getAmountOfTimeFromSeconds(2000000)
 ```
 
 </details>
-<br>
 <details>
 <summary>&nbsp;&nbsp;timeUntil</summary>
 
@@ -184,6 +183,7 @@ lowerCaseNoSpaces("Hello World")
 // "helloworld"
 ```
 
+<br>
 </details>
 <details>
 <summary>&nbsp;&nbsp;truncate</summary>
