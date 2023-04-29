@@ -5,7 +5,8 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 <details>
 <summary>Numbers</summary><br>
 
-<details>
+&nbsp;&nbsp;<details>
+
 <summary>toFixedNumber</summary>
 
 ### **toFixedNumber(n: number, decimalPlaces: number)**
@@ -38,7 +39,7 @@ Returns an array of numbers from a provided starting point to a provided ending 
 </details>
 </details><br>
 <details>
-<summary>Dates & Times</summary><br>
+<summary>Dates & Time</summary><br>
 <details>
 <summary>getAmountOfTimeFromSeconds</summary>
 Returns years, months, weeks, days, hours, minutes, seconds
