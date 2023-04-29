@@ -85,9 +85,9 @@ getRange(5,10)
 </details>
 <br>
 </details>
-<hr />
 <details>
 <summary>Dates & Time</summary><br>
+<hr />
 <details>
 <summary>&nbsp;&nbsp;getAmountOfTimeFromSeconds</summary>
 
