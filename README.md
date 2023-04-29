@@ -226,6 +226,7 @@ getRandomString(5, false, true)
 ```
 
 </details>
+<br>
 </details>
 <details>
 <summary>Arrays</summary><br>
@@ -328,6 +329,7 @@ getRollingSum([1,3,5])
 ```
 
 </details>
+<br>
 </details>
 <details>
 <summary>Objects</summary><br>
@@ -397,25 +399,7 @@ groupObjectsByKeyValue(arr, "suit")
 ```
 
 </details>
-</details>
-<details>
-<summary>Objects</summary><br>
-<details>
-<summary>&nbsp;&nbsp;sumOfKeyValues</summary>
-
-### **sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & { [K in U]: number })[],key: U): number**
-
-Returns the sum of the values of a specific shared key in an array of objects
-<br><br>
-Example:
-
-```
-const arr = [{ a: 1 }, {a: 2}, {a: 3}]
-sumOfKeyValues(arr, "a")
-// 6
-```
-
-</details>
+<br>
 </details>
 <details>
 <summary>Misc</summary><br>
