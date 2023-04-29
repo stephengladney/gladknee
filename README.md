@@ -4,7 +4,6 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 
 <details>
 <summary>Numbers</summary><br>
-<hr />
 <details>
 <summary>&nbsp;&nbsp;toFixedNumber</summary>
 
@@ -87,7 +86,6 @@ getRange(5,10)
 </details>
 <details>
 <summary>Dates & Time</summary><br>
-<hr />
 <details>
 <summary>&nbsp;&nbsp;getAmountOfTimeFromSeconds</summary>
 
