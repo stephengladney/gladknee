@@ -3,7 +3,7 @@
 Gladknee is a TypeScript utility library that I created for personal projects but is open to use by anyone. Enjoy!
 
 <details>
-<summary>## Numbers</summary>
+## <summary>Numbers</summary>
 
 ### **toFixedNumber(n: number, decimalPlaces: number)**
 
