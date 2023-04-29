@@ -267,6 +267,7 @@ shuffle([1, 2, 3, 4, 5])
 Returns the provided array sorted (ascending) via bubble sort
 
 </details>
+<details>
 <summary>&nbsp;&nbsp;selectionSort</summary>
 
 ### **selectionSort(arr: T[]): T[]**
