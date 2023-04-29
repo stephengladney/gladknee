@@ -219,7 +219,7 @@ export function getRollingSum(arr: number[], decimalPlaces: number) {
 
 // OBJECTS
 
-export function getSumOfKeyValues<T extends object, U extends keyof T>(
+export function sumOfKeyValues<T extends object, U extends keyof T>(
   arr: (T & { [K in U]: number })[],
   key: U
 ) {

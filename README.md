@@ -293,8 +293,8 @@ Returns the provided array with duplicates removed
 Example:
 
 ```
-shuffle([1, 2, 3, 4, 5])
-// [3, 5, 1, 4, 2]
+removeDuplicates([1, 2, 1, 1, 2, 5])
+// [1, 2, 5]
 ```
 
 </details>
@@ -329,16 +329,83 @@ getRollingSum([1,3,5])
 
 </details>
 </details>
+<details>
+<summary>Objects</summary><br>
+<details>
+<summary>&nbsp;&nbsp;sumOfKeyValues</summary>
+
+### **sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & { [K in U]: number })[],key: U): number**
+
+Returns the sum of the values of a specific shared key in an array of objects
+<br><br>
+Example:
+
+```
+const arr = [{ a: 1 }, {a: 2}, {a: 3}]
+sumOfKeyValues(arr, "a")
+// 6
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;sortByKeyValue</summary>
+
+### **sortObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
+
+Sort an array of objects by a specific shared key's value
+<br><br>
+Example:
+
+```
+const arr = [{ a: 3 }, {a: 1}, {a: 5}]
+sortObjectsByKeyValue(arr, "a")
+// [{a: 1}, { a: 3 }, {a: 5}]
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;getKeyValueCounts</summary>
+
+### **getKeyValueCounts<T extends object, U extends keyof T>(arr: T[], key: U, isCaseSensitive?: boolean)**
+
+Returns an object with counts of specifics value of a specific shared key in an array of objects
+<br><br>
+Example:
+
+```
+const arr = [{ suit: "Clubs" }, {suit: "Hearts"}, {suit: "Clubs"}]
+getKeyValueCounts(arr, "suit")
+// { "Clubs": 2, "Hearts": 1}
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;groupObjectsByKeyValue</summary>
+
+### **groupObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
+
+Returns an object with arrays of objects that share a specific value of a specific shared key in an array of objects
+<br><br>
+Example:
+
+```
+const arr = [{ suit: "Clubs", value: 2 }, {suit: "Hearts", value: 5}, {suit: "Clubs", value: 10}]
+groupObjectsByKeyValue(arr, "suit")
+// {
+    "Clubs": [{ suit: "Clubs" value: 2}, { suit: "Clubs", value: 10 }],
+    "Hearts": [{ suit: "Hearts", value: 5 }]}
+```
+
+</details>
+
+</details>
 
 # OBJECTS
 
-getSumOfKeyValues | Returns the sum of the values of a specific shared key in an array of objects
-sortObjectsByKeyValue | Sort an array of objects by a specific shared key's value
-getKeyValueCounts | Returns an object with counts of a specific value of a specific shared key in an array of objects
-groupObjectsByKeyValue | Returns an object with arrays of objects that share a specific value of a specific shared key in an array of objects
-================================================================================================================================================
-MISC
-================================================================================================================================================
+# groupObjectsByKeyValue |
+
+# MISC
+
 addTimeoutToPromise | Returns a promise that rejects if the original promise takes longer to resolve than a given amount of time (ms)
 debounce | Returns a debounced version of the function passed. Acccepts custom delay and immediate boolean for leading/trailing
 pause | Returns a promise that resolves after a given amount of time (ms)
