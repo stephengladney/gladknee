@@ -5,9 +5,9 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 <details>
 <summary>Numbers</summary><br>
 
-<details>&nbsp;&nbsp;
+<details>
 
-<summary>toFixedNumber</summary>
+<summary>&nbsp;&nbsp;toFixedNumber</summary>
 
 ### **toFixedNumber(n: number, decimalPlaces: number)**
 
