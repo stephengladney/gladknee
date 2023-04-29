@@ -5,7 +5,7 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 <details>
 <summary>Numbers</summary><br>
 <details>
-<summary>&nbsp;&nbsp;toFixedNumber</summary>
+<summary>&nbsp;&nbsp;float</summary>
 
 ### **float(n: number, decimalPlaces?: number): number**
 
