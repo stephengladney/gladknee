@@ -88,17 +88,18 @@ getRange(5,10)
 <details>
 <summary>Dates & Time</summary><br>
 <details>
-<summary>&nbsp;&nbsp;getRange</summary>
+<summary>&nbsp;&nbsp;getAmountOfTimeFromSeconds</summary>
 
 ### **getAmountOfTimeFromSeconds(seconds: number): TimeOutput**
 
-Returns an array of numbers, starting from the provided start number and ending with provided end number
+Returns an object with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided
 <br><br>
 Example:
 
 ```
 getAmountOfTimeFromSeconds(2000000)
-/* {
+// Returns..
+ {
     years: 0,
     months: 0,
     weeks: 3,
@@ -107,13 +108,32 @@ getAmountOfTimeFromSeconds(2000000)
     minutes: 33,
     seconds: 20
   }
-*/
 ```
 
 </details>
 <details>
-<summary>getAmountOfTimeFromSeconds</summary>
-Returns years, months, weeks, days, hours, minutes, seconds
+<summary>&nbsp;&nbsp;timeUntil</summary>
+
+### **timeUntil(date: Date): TimeOutput**
+
+Returns an object with the number of years, months, weeks, days, hours, minutes and seconds until the date provided
+<br><br>
+Example:
+
+```
+getAmountOfTimeFromSeconds(2000000)
+// Returns..
+ {
+    years: 0,
+    months: 0,
+    weeks: 3,
+    days: 2,
+    hours: 3,
+    minutes: 33,
+    seconds: 20
+  }
+```
+
 </details>
 <details><summary>timeUntil</summary>
 Returns the amount of time until a specific date</details>
