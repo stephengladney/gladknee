@@ -227,20 +227,109 @@ getRandomString(5, false, true)
 
 </details>
 </details>
+<details>
+<summary>Arrays</summary><br>
+<details>
+<summary>&nbsp;&nbsp;drop</summary>
 
-# ARRAYS
+### **drop(arr: T[], n: number): T[]**
 
-drop | Returns the provided array with n items removed from the end, where n is a provided integer
-shuffle | Returns the provided array with the items randomly ordered
-bubbleSort | Sorts an array via the bubble sort method
-selectionSort | Sorts an array via the selection sort method
-insertionSort | Sorts an array via the insertion sort method
-removeDuplicates | Removes duplicates from an array
-sum | Returns the sum of an array of numbers
-getRollingSum | Returns an array of the rolling sum of an array, i.e. [1,3,5] returns [1,4,9]
-================================================================================================================================================
-OBJECTS
-================================================================================================================================================
+Returns the provided array with n items removed from the end, where n is a provided integer
+<br><br>
+Example:
+
+```
+drop([1, 2, 3, 4, 5], 2)
+// [1, 2, 3]
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;shuffle</summary>
+
+### **shuffle(arr: T[]): T[]**
+
+Returns the provided array with the items randomly ordered
+<br><br>
+Example:
+
+```
+shuffle([1, 2, 3, 4, 5])
+// [3, 5, 1, 4, 2]
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;bubbleSort</summary>
+
+### **bubbleSort(arr: T[]): T[]**
+
+Returns the provided array sorted (ascending) via bubble sort
+
+</details>
+<summary>&nbsp;&nbsp;selectionSort</summary>
+
+### **selectionSort(arr: T[]): T[]**
+
+Returns the provided array sorted (ascending) via selection sort
+
+</details>
+<summary>&nbsp;&nbsp;insertSort</summary>
+
+### **insertSort(arr: T[]): T[]**
+
+Returns the provided array sorted (ascending) via insert sort
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;drop</summary>
+
+### **removeDuplicates(arr: T[]): T[]**
+
+Returns the provided array with duplicates removed
+<br><br>
+Example:
+
+```
+shuffle([1, 2, 3, 4, 5])
+// [3, 5, 1, 4, 2]
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;drop</summary>
+
+### **sum(arr: number[]): number**
+
+Returns the sum of an array of numbers
+<br><br>
+Example:
+
+```
+sum([1, 2, 3, 4, 5])
+// 15
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;drop</summary>
+
+### **getRollingSum(arr: number[]): number[]**
+
+Returns an array of the rolling sum of an array, i.e. [1,3,5] returns [1,4,9]
+<br><br>
+Example:
+
+```
+getRollingSum([1,3,5])
+// [1, 4, 9]
+```
+
+</details>
+</details>
+
+# OBJECTS
+
 getSumOfKeyValues | Returns the sum of the values of a specific shared key in an array of objects
 sortObjectsByKeyValue | Sort an array of objects by a specific shared key's value
 getKeyValueCounts | Returns an object with counts of a specific value of a specific shared key in an array of objects

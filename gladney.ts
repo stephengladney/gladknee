@@ -211,10 +211,7 @@ export function getRollingSum(arr: number[], decimalPlaces: number) {
   return arr.reduce(
     (acc, i, index) =>
       index > 0
-        ? [
-            ...acc,
-            toFixedNumber(acc[acc.length - 1] + Number(i), decimalPlaces),
-          ]
+        ? [...acc, float(acc[acc.length - 1] + Number(i), decimalPlaces)]
         : [i],
     [] as number[]
   )
