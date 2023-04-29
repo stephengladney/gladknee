@@ -135,17 +135,40 @@ getAmountOfTimeFromSeconds(2000000)
 ```
 
 </details>
-<details><summary>timeUntil</summary>
-Returns the amount of time until a specific date</details>
-<details><summary>getDayName</summary>
-Returns the human-readable weekday name from the numerical weekday provided
+<details>
+<summary>&nbsp;&nbsp;getDayName</summary>
+
+### **getDayName(day: number): string | undefined**
+
+Returns the corresponding human readable day name of the integer provided (integer must be 0-6)
+<br><br>
+Example:
+
+```
+getDayName(3)
+// "Wednesday"
+
+getDayName(99)
+// undefined
+```
+
 </details>
 <details>
-<summary>beginningOfToday</summary>
-Returns a Date object with date of today and time of 00:00:00
-</details>
-endOfToday | Returns a Date object with date of today and time of 11:59:59
+<summary>&nbsp;&nbsp;beginningOfToday</summary>
 
+### **beginningOfToday(): Date**
+
+Returns a Date object with the date of today and time of 00:00:00
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;endOfToday</summary>
+
+### **endOfToday(): Date**
+
+Returns a Date object with the date of today and time of 23:59:59
+
+</details>
 </details>
 STRINGS
 ================================================================================================================================================

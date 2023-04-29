@@ -268,8 +268,6 @@ export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
   return result
 }
 
-// EXPRESS
-
 // SEQUELIZE
 
 export function convertQueryParamOperators(params: {}) {
