@@ -36,15 +36,17 @@ Return the ordinal form of a number, i.e. 4 returns "4th"
 <summary>getRange</summary>
 Returns an array of numbers from a provided starting point to a provided ending point
 </details>
-</details>
-# DATES/TIMES
+</details><br>
+<details>
+<summary>Dates & Times</summary>
 
 getAmountOfTimeFromSeconds | Returns years, months, weeks, days, hours, minutes, seconds
 timeUntil | Returns the amount of time until a specific date
 getDayName | Returns the human-readable weekday name from the numerical weekday provided
 beginningOfToday | Returns a Date object with date of today and time of 00:00:00
 endOfToday | Returns a Date object with date of today and time of 11:59:59
-================================================================================================================================================
+
+</details>
 STRINGS
 ================================================================================================================================================
 lowerCaseNoSpaces | Returns a string in lowercase form with spaces removed
