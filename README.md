@@ -94,15 +94,19 @@ getRange(5,10)
 
 Returns an object with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided
 <br><br>
+
+```
 interface TimeOutput {
-years: number
-months: number
-weeks: number
-days: number
-hours: number
-minutes: number
-seconds: number
+  years: number
+  months: number
+  weeks: number
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
 }
+```
+
 <br><br>
 Example:
 
