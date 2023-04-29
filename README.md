@@ -5,10 +5,16 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 ## NUMBERS
 
 **toFixedNumber**
+<br>
 Returns a number limited to a specific numner of decimal places as a number (not a string)
-**clamp**
+<br><br>
+**clamp**<br>
 Enforce a minimum and/or maximum limit on a number and returns the number or the enforced limit
-toDoubleDigit | Convert single digit numbers to double digit, i.e. 9 returns "09"
+<br><br>
+toDoubleDigit
+<br>
+Convert single digit numbers to double digit, i.e. 9 returns "09"
+<br><br>
 ordinal | Return the ordinal form of a number, i.e. 4 returns "4th"
 getRange | Returns an array of numbers from a provided starting point to a provided ending point
 
