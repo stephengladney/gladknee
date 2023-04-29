@@ -83,7 +83,7 @@ getRange(5,10)
 ```
 
 </details>
-
+</details>
 <details>
 <summary>Dates & Time</summary><br>
 <details>
