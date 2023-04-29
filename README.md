@@ -124,6 +124,7 @@ getAmountOfTimeFromSeconds(2000000)
 ```
 
 </details>
+<br>
 <details>
 <summary>&nbsp;&nbsp;timeUntil</summary>
 
