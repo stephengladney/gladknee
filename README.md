@@ -23,13 +23,18 @@ toFixedNumber(4.24398, 3)
 <details>
 <summary>clamp</summary>
 Enforce a minimum and/or maximum limit on a number and returns the number or the enforced limit
-<br><br>
-toDoubleDigit
-<br>
+</details>
+<details>
+<summary>toDoubleDigit</summary>
 Convert single digit numbers to double digit, i.e. 9 returns "09"
-<br><br>
-ordinal | Return the ordinal form of a number, i.e. 4 returns "4th"
-getRange | Returns an array of numbers from a provided starting point to a provided ending point
+</details>
+<details>
+<summary>ordinal</summary>
+Return the ordinal form of a number, i.e. 4 returns "4th"
+</details>
+<details>
+<summary>getRange</summary>
+Returns an array of numbers from a provided starting point to a provided ending point
 </details>
 </details>
 # DATES/TIMES
