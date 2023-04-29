@@ -397,19 +397,83 @@ groupObjectsByKeyValue(arr, "suit")
 ```
 
 </details>
+</details>
+<details>
+<summary>Objects</summary><br>
+<details>
+<summary>&nbsp;&nbsp;sumOfKeyValues</summary>
+
+### **sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & { [K in U]: number })[],key: U): number**
+
+Returns the sum of the values of a specific shared key in an array of objects
+<br><br>
+Example:
+
+```
+const arr = [{ a: 1 }, {a: 2}, {a: 3}]
+sumOfKeyValues(arr, "a")
+// 6
+```
 
 </details>
+</details>
+<details>
+<summary>Misc</summary><br>
+<details>
+<summary>&nbsp;&nbsp;addTimeoutToPromise</summary>
 
-# OBJECTS
+### **addTimeoutToPromise(asyncFunction: () => Promise<unknown>, timeout: number): Promise<unkown>**
 
-# groupObjectsByKeyValue |
+Returns a promise that rejects if the original promise takes longer to resolve than a given amount of time (ms)
+<br><br>
+Note: The promise rejects with the string "TIMED_OUT"
+<br>
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;pause</summary>
+
+### **pause(milliseconds: number): Promise<void>**
+
+Returns a promise that resolves after a given amount of time (ms)
+<br>
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;pipe</summary>
+
+### pipe<T>(...funcs: [firstFunc: GenericFunction<T>,secondFunc: GenericFunction<T>,...otherFuncs: GenericFunction<T>[]]): Function
+
+Returns a function that calls multiple given functions in a specific order
+<br><br>
+Example:
+
+```
+const double = (n: number) => n * 2
+const triple = (n: number) => n * 3
+const doubleThenTriple = pipe(double,triple)
+doubleThenTriple(6)
+
+// 36
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;debounce</summary>
+
+### **debounce(func: Function, ms: number, immediate: boolean): Function**
+
+Returns a debounced version of the function passed. Acccepts custom delay and immediate boolean for leading/trailing
+<br>
+
+</details>
+...
+</details>
 
 # MISC
 
-addTimeoutToPromise | Returns a promise that rejects if the original promise takes longer to resolve than a given amount of time (ms)
 debounce | Returns a debounced version of the function passed. Acccepts custom delay and immediate boolean for leading/trailing
-pause | Returns a promise that resolves after a given amount of time (ms)
-pipe | Returns a function that calls multiple given functions in a specific order
+
 saveTextToFileInBrowser | Prompts a user in their browser to save provided text to a file on their machine
 getCookie | Returns the value of a specific cookie
 setCookie | Sets the vaue of a specific cookie
