@@ -1,4 +1,4 @@
-export function toFixedNumber(n: number, decimalPlaces?: number) {
+export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
 

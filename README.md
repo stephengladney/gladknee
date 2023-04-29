@@ -8,7 +8,7 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 <details>
 <summary>&nbsp;&nbsp;toFixedNumber</summary>
 
-### **toFixedNumber(n: number, decimalPlaces: number): number**
+### **float(n: number, decimalPlaces?: number): number**
 
 Returns a number limited to a specific numner of decimal places as a number (not a string)
 <br><br>
@@ -43,7 +43,7 @@ clamp(15, 16, 20)
 
 ### **toDoubleDigit(n: number): string**
 
-Returns a provided single digit number with a leading zero
+Returns a provided single digit number with a leading zero as a string
 <br><br>
 Example:
 
@@ -58,7 +58,7 @@ toDoubleDigit(9)
 
 ### **ordinal(n: number): string**
 
-Returns the numeric ordinal name of a provided number
+Returns a string of the provided number with the ordinal suffix added
 <br><br>
 Example:
 
@@ -168,14 +168,67 @@ Returns a Date object with the date of today and time of 23:59:59
 
 </details>
 </details>
-STRINGS
-================================================================================================================================================
-lowerCaseNoSpaces | Returns a string in lowercase form with spaces removed
-truncate | Returns a string limited to a max length with ... or custom ending
-getRandomString | Returns a random string of specified length. Can include letters and/or numbers
-================================================================================================================================================
-ARRAYS
-================================================================================================================================================
+<details>
+<summary>Strings</summary><br>
+<details>
+<summary>&nbsp;&nbsp;lowerCaseNoSpaces</summary>
+
+### **lowerCaseNoSpaces(n: number, decimalPlaces?: number): number**
+
+Returns a string in lowercase form with spaces removed
+<br><br>
+Example:
+
+```
+lowerCaseNoSpaces("Hello World")
+// "helloworld"
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;truncate</summary>
+
+### **truncate(str: string, lengthLimit: number, ending: string ): string**
+
+Returns a string limited to a max length with ... or custom ending
+<br><br>
+Example:
+
+```
+truncate("Hello World!", 4)
+// "Hell..."
+
+truncate("Hello World!", 4, "/")
+// "Hell/"
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;truncate</summary>
+
+### **getRandomString(length: number, includeLetters: boolean, includeNumbers: boolean ): string**
+
+Returns a random string of specified length. Can include letters and/or numbers<br><br>
+_Note: includeLetters and includeNumbers both default to true_
+<br><br>
+Example:
+
+```
+getRandomString(10)
+// "N3xO1pDs2f"
+
+getRandomString(5, true, false)
+// "GjOxa"
+
+getRandomString(5, false, true)
+// "39281"
+```
+
+</details>
+</details>
+
+# ARRAYS
+
 drop | Returns the provided array with n items removed from the end, where n is a provided integer
 shuffle | Returns the provided array with the items randomly ordered
 bubbleSort | Sorts an array via the bubble sort method
