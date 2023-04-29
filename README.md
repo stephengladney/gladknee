@@ -38,12 +38,20 @@ Returns an array of numbers from a provided starting point to a provided ending 
 </details>
 </details><br>
 <details>
-<summary>Dates & Times</summary>
-
-getAmountOfTimeFromSeconds | Returns years, months, weeks, days, hours, minutes, seconds
-timeUntil | Returns the amount of time until a specific date
-getDayName | Returns the human-readable weekday name from the numerical weekday provided
-beginningOfToday | Returns a Date object with date of today and time of 00:00:00
+<summary>Dates & Times</summary><br>
+<details>
+<summary>getAmountOfTimeFromSeconds</summary>
+Returns years, months, weeks, days, hours, minutes, seconds
+</details>
+<details><summary>timeUntil</summary>
+Returns the amount of time until a specific date</details>
+<details><summary>getDayName</summary>
+Returns the human-readable weekday name from the numerical weekday provided
+</details>
+<details>
+<summary>beginningOfToday</summary>
+Returns a Date object with date of today and time of 00:00:00
+</details>
 endOfToday | Returns a Date object with date of today and time of 11:59:59
 
 </details>
