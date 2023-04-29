@@ -173,7 +173,7 @@ Returns a Date object with the date of today and time of 23:59:59
 <details>
 <summary>&nbsp;&nbsp;lowerCaseNoSpaces</summary>
 
-### **lowerCaseNoSpaces(n: number, decimalPlaces?: number): number**
+### **lowerCaseNoSpaces(str: string): string**
 
 Returns a string in lowercase form with spaces removed
 <br><br>
@@ -204,7 +204,7 @@ truncate("Hello World!", 4, "/")
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;truncate</summary>
+<summary>&nbsp;&nbsp;getRandomString</summary>
 
 ### **getRandomString(length: number, includeLetters: boolean, includeNumbers: boolean ): string**
 
