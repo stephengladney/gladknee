@@ -467,14 +467,31 @@ Returns a debounced version of the function passed. Acccepts custom delay and im
 <br>
 
 </details>
-...
+<details>
+<summary>&nbsp;&nbsp;saveTextToFileInBrowser</summary>
+
+### **saveTextToFileInBrowser(content: string, filename: string)**
+
+Prompts a user in their browser to save provided text to a file on their machine
+<br>
+
 </details>
+<details>
+<summary>&nbsp;&nbsp;saveTextToFileInBrowser</summary>
 
-# MISC
+### **setCookie(cookieName: string, cookieValue: string, expirationInDays: number)**
 
-debounce | Returns a debounced version of the function passed. Acccepts custom delay and immediate boolean for leading/trailing
+Sets the vaue of a specific cookie
+<br>
 
-saveTextToFileInBrowser | Prompts a user in their browser to save provided text to a file on their machine
-getCookie | Returns the value of a specific cookie
-setCookie | Sets the vaue of a specific cookie
-\*/
+</details>
+<details>
+<summary>&nbsp;&nbsp;saveTextToFileInBrowser</summary>
+
+### **getCookie(cookieName: string)**
+
+Returns the value of a specific cookie
+<br>
+
+</details>
+</details>
