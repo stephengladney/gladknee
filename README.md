@@ -71,7 +71,7 @@ ordinal(4)
 <details>
 <summary>&nbsp;&nbsp;getRange</summary>
 
-### **getRange(start: number, end: number)**
+### **getRange(start: number, end: number) : number[]**
 
 Returns an array of numbers, starting from the provided start number and ending with provided end number
 <br><br>
@@ -87,6 +87,30 @@ getRange(5,10)
 </details>
 <details>
 <summary>Dates & Time</summary><br>
+<details>
+<summary>&nbsp;&nbsp;getRange</summary>
+
+### **getAmountOfTimeFromSeconds(seconds: number): TimeOutput**
+
+Returns an array of numbers, starting from the provided start number and ending with provided end number
+<br><br>
+Example:
+
+```
+getAmountOfTimeFromSeconds(2000000)
+/* {
+    years: 0,
+    months: 0,
+    weeks: 3,
+    days: 2,
+    hours: 3,
+    minutes: 33,
+    seconds: 20
+  }
+*/
+```
+
+</details>
 <details>
 <summary>getAmountOfTimeFromSeconds</summary>
 Returns years, months, weeks, days, hours, minutes, seconds
