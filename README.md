@@ -4,7 +4,8 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 
 ## NUMBERS
 
-**toFixedNumber(n:number, decimalPlaces: number)**
+### **toFixedNumber(n:number, decimalPlaces: number)**
+
 <br>
 Returns a number limited to a specific numner of decimal places as a number (not a string)
 <br><br>
