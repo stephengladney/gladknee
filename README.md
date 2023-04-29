@@ -4,9 +4,10 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 
 ## NUMBERS
 
-_toFixedNumber_
+**toFixedNumber**
 Returns a number limited to a specific numner of decimal places as a number (not a string)
-clamp | Enforce a minimum and/or maximum limit on a number and returns the number or the enforced limit
+**clamp**
+Enforce a minimum and/or maximum limit on a number and returns the number or the enforced limit
 toDoubleDigit | Convert single digit numbers to double digit, i.e. 9 returns "09"
 ordinal | Return the ordinal form of a number, i.e. 4 returns "4th"
 getRange | Returns an array of numbers from a provided starting point to a provided ending point
