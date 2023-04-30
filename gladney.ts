@@ -37,7 +37,7 @@ export function ordinal(n: number) {
   }
 }
 
-interface TimeObject {
+export interface TimeObject {
   years: number
   months: number
   weeks: number
@@ -508,4 +508,32 @@ export function setCookie(
   d.setTime(d.getTime() + expirationInDays * 24 * 60 * 60 * 1000)
   const expires = "expires=" + d.toUTCString()
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
+}
+
+export type QueueObject = {
+  queue: unknown[]
+  enqueue: Function
+  executeOne: Function
+  executeAll: Function
+}
+
+export function createQueue(functionToExecute: Function): QueueObject {
+  const queue: unknown[] = []
+  const executeOne = () => {
+    if (Array.isArray(queue[0])) functionToExecute(...queue[0])
+    else functionToExecute(queue[0])
+    queue.shift()
+  }
+  const executeAll = () => {
+    if (Array.isArray(queue[0])) functionToExecute(...queue[0])
+    else functionToExecute(queue[0])
+    queue.shift()
+    if (queue.length > 0) executeAll()
+  }
+  return {
+    queue,
+    enqueue: (...args: unknown[]) => queue.push(args),
+    executeOne,
+    executeAll,
+  }
 }

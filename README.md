@@ -625,4 +625,47 @@ Returns the value of a specific cookie
 <br>
 
 </details>
+<details>
+<summary>&nbsp;&nbsp;getCookie</summary>
+
+### **createQueue(functionToExecute: Function): QueueObject**
+
+Returns a **QueueObject** which includes a queue, enqueue function, and two execute methods.
+<br>
+<br>
+**executeOne** will call the function on the first item in the queue and then remove that item from the queue.
+**executeAll** will call the function every item in the queue and remove each item after execution.
+<br><br>
+Example:
+
+```
+type QueueObject = {
+  queue: unknown[]
+  enqueue: Function
+  executeOne: Function
+  executeAll: Function
+}
+```
+
+```
+const log = (n: any) => { console.log(n) }
+const { queue, enqueue, executeOne, executeAll} = createQueue(log)
+
+enqueue(1)
+enqueue(2)
+enqueue(3)
+enqueue(4)
+
+executeOne()
+
+// 1
+
+executeAll()
+
+// 2
+// 3
+// 4
+```
+
+</details>
 </details>
