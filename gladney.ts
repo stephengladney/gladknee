@@ -249,7 +249,7 @@ export function getRollingSum(arr: number[], decimalPlaces: number) {
   )
 }
 
-export function getUnique<T>(...arrs: T[][]) {
+export function getUniqueItems<T>(...arrs: T[][]) {
   const seen: T[] = []
   let result: T[] = []
   for (let i = 0; i < arrs.length; i++) {
@@ -265,7 +265,7 @@ export function getUnique<T>(...arrs: T[][]) {
   return result
 }
 
-export function getCommon<T>(...arrs: T[][]) {
+export function getCommonItems<T>(...arrs: T[][]) {
   const seen: T[] = []
   let result: T[] = []
   for (let i = 0; i < arrs.length; i++) {
@@ -279,6 +279,23 @@ export function getCommon<T>(...arrs: T[][]) {
     })
   }
   return result
+}
+
+export function nthFromEnd(arr: any[], n: number) {
+  return arr[arr.length - 1 - n]
+}
+
+export function areArraysEqual<T>(
+  array1: T[],
+  array2: T[],
+  orderMatters = true
+) {
+  const _array1 = orderMatters ? array1 : array1.sort()
+  const _array2 = orderMatters ? array2 : array2.sort()
+  for (let i = 0; i < array1.length; i++) {
+    if (_array1[i] !== _array2[i]) return false
+  }
+  return true
 }
 
 // OBJECTS

@@ -319,7 +319,7 @@ clampArray([1, 2, 3], null, 5, "x")
 <details>
 <summary>&nbsp;&nbsp;getUnique</summary>
 
-### **getUnique<T>(arrs: T[][]): T[]**
+### **getUniqueItems<T>(arrs: T[][]): T[]**
 
 Returns an array of items that only appear once across all items of the provided arrays.
 <br><br>
@@ -334,7 +334,7 @@ getUnique([1, 2, 3],[3, 4, 5])
 <details>
 <summary>&nbsp;&nbsp;getCommon</summary>
 
-### **getCommon<T>(arrs: T[][]): T[]**
+### **getCommonItems<T>(arrs: T[][]): T[]**
 
 Returns an array of items that appear at least twice across all items of the provided arrays.
 <br><br>
@@ -343,6 +343,42 @@ Example:
 ```
 getCommon([1, 2, 3, 4],[3, 4, 5])
 // [3, 4]
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;areArraysEqual</summary>
+
+### **areArraysEqual<T>(arrray1: T[], array2: T[], orderMatters: boolean): boolean**
+
+Returns a boolean of whether or not the two arrays have the same items. orderMatters is true by default.
+<br><br>
+Example:
+
+```
+areArraysEqual([1, 2, 3], [1, 2, 3])
+// true
+
+areArraysEqual([3, 2, 1], [1, 2, 3])
+// false
+
+areArraysEqual([3, 2, 1], [1, 2, 3], false)
+// true
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;getNthFromEnd</summary>
+
+### **nthFromEnd<T>(arr: T[], n: number): T**
+
+Returns the item in the array N spots from the last item
+<br><br>
+Example:
+
+```
+nthFromEnd([1, 2, 3, 4], 1)
+// 3
 ```
 
 </details>
