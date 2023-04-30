@@ -538,20 +538,34 @@ export function createQueue(functionToExecute: Function): QueueObject {
   }
 }
 
+export type AsyncQueueObject = {
+  queue: unknown[]
+  enqueue: Function
+  executeOne: Function
+  executeAll: (ignoreErrors: boolean) => unknown
+}
+
 export function createAsyncQueue(
   functionToExecute: (...args: unknown[]) => Promise<unknown>
-) {
+): AsyncQueueObject {
   const queue: unknown[] = []
   const executeOne = async () => {
     if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
     else await functionToExecute(queue[0])
     queue.shift()
   }
-  const executeAll = async () => {
-    if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
-    else await functionToExecute(queue[0])
-    queue.shift()
-    if (queue.length > 0) executeAll()
+  const executeAll = async (ignoreErrors = false) => {
+    try {
+      if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
+      else await functionToExecute(queue[0])
+      queue.shift()
+      if (queue.length > 0) executeAll(ignoreErrors)
+    } catch {
+      if (ignoreErrors) {
+        queue.shift()
+        if (queue.length > 0) executeAll(true)
+      }
+    }
   }
   return {
     queue,

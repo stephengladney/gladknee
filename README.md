@@ -669,15 +669,15 @@ executeAll()
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;createQueue</summary>
+<summary>&nbsp;&nbsp;createAsyncQueue</summary>
 
-### **createAsyncQueue(functionToExecute: Function): QueueObject**
+### **createAsyncQueue(functionToExecute: Function): AsyncQueueObject**
 
-Returns a **QueueObject** which includes a queue, enqueue function, and two execute methods.
+Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two execute methods.
 <br>
 <br>
 **executeOne** will call the function on the first item in the queue and then remove that item from the queue.
-**executeAll** will call the function every item in the queue and remove each item after execution.
+**executeAll** will call the function every item in the queue and remove each item after execution. The previous function's returned promise must resolve before the next iteration is invoked. If you wish to continue iterating even if a promise rejects, pass a true boolean into the function.
 <br><br>
 Example:
 
@@ -686,12 +686,12 @@ type QueueObject = {
   queue: unknown[]
   enqueue: Function
   executeOne: Function
-  executeAll: Function
+  executeAll: (ignoreErrors = false) => unknown
 }
 ```
 
 ```
-const log = async (n:any) => {
+const log = async (n: any) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       console.log(n)
