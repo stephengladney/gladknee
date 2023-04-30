@@ -20,9 +20,9 @@ float(4.24398, 3)
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;clamp</summary>
+<summary>&nbsp;&nbsp;clampNumber</summary>
 
-### **clamp(n: number, min: number: max: number): number**
+### **clampNumber(n: number, min: number: max: number): number**
 
 Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit
 <br><br>
@@ -295,6 +295,24 @@ Example:
 ```
 shuffle([1, 2, 3, 4, 5])
 // [3, 5, 1, 4, 2]
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;clampArray</summary>
+
+### **clampArray(arr: any[], min: number | null, max: number | null, fill?: any): any[]**
+
+Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length is enforced, items with the value of the fill provided will be added.
+<br><br>
+Example:
+
+```
+clampArray([1, 2, 3, 4, 5], 3, null)
+// [1, 2, 3]
+
+clampArray([1, 2, 3], null, 5, "x")
+// [1, 2, 3, "x", "x"]
 ```
 
 </details>

@@ -2,7 +2,7 @@ export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
 
-export function clamp(n: number, min: number | null, max: number | null) {
+export function clampNumber(n: number, min: number | null, max: number | null) {
   let result = n
   if (min) result = n > min ? n : min
   if (max) result = result < max ? result : max
@@ -162,6 +162,24 @@ export function shuffle(array: any[]) {
   }
 
   return array
+}
+
+export function clampArray(
+  arr: any[],
+  min: number | null,
+  max: number | null,
+  fill: any
+) {
+  let result
+  if (min && arr.length < min) {
+    result = arr
+    const diff = min - arr.length
+    for (let i = 1; i <= diff; i++) {
+      arr.push(fill)
+    }
+  }
+  if (max && arr.length > max) result = arr.slice(0, max)
+  return result
 }
 
 type SortableArray = (string | number)[]
