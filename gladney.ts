@@ -537,3 +537,26 @@ export function createQueue(functionToExecute: Function): QueueObject {
     executeAll,
   }
 }
+
+export function createAsyncQueue(
+  functionToExecute: (...args: unknown[]) => Promise<unknown>
+) {
+  const queue: unknown[] = []
+  const executeOne = async () => {
+    if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
+    else await functionToExecute(queue[0])
+    queue.shift()
+  }
+  const executeAll = async () => {
+    if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
+    else await functionToExecute(queue[0])
+    queue.shift()
+    if (queue.length > 0) executeAll()
+  }
+  return {
+    queue,
+    enqueue: (...args: unknown[]) => queue.push(args),
+    executeOne,
+    executeAll,
+  }
+}
