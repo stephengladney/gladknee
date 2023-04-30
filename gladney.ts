@@ -36,7 +36,7 @@ export function ordinal(n: number) {
   }
 }
 
-interface TimeOutput {
+interface TimeObject {
   years: number
   months: number
   weeks: number
@@ -46,13 +46,14 @@ interface TimeOutput {
   seconds: number
 }
 
-export function getAmountOfTimeFromSeconds(seconds: number): TimeOutput {
-  const secondsInAMinute = 60
-  const secondsInAnHour = 3600
-  const secondsInADay = 86400
-  const secondsInAWeek = 604800
-  const secondsInAMonth = 2592000 // Assumes 30 day month
-  const secondsInAYear = 31557600
+const secondsInAMinute = 60
+const secondsInAnHour = 3600
+const secondsInADay = 86400
+const secondsInAWeek = 604800
+const secondsInAMonth = 2592000 // Assumes 30 day month
+const secondsInAYear = 31557600
+
+export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   return {
     years: Math.floor(seconds / secondsInAYear),
     months: Math.floor((seconds % secondsInAYear) / secondsInAMonth),
@@ -64,7 +65,19 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeOutput {
   }
 }
 
-export function timeUntil(date: Date): TimeOutput {
+export function getSecondsFromAmountOfTime(time: TimeObject) {
+  return (
+    time.years * secondsInAYear +
+    time.months * secondsInAMonth +
+    time.weeks * secondsInAWeek +
+    time.days * secondsInADay +
+    time.hours * secondsInAnHour +
+    time.minutes * secondsInAMinute +
+    time.seconds
+  )
+}
+
+export function timeUntil(date: Date): TimeObject {
   const diffInSeconds = Math.floor(
     (new Date(date).getTime() - Date.now()) / 1000
   )

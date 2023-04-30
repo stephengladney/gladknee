@@ -9,12 +9,12 @@ Gladknee is a TypeScript utility library that I created for personal projects bu
 
 ### **float(n: number, decimalPlaces?: number): number**
 
-Returns a number limited to a specific numner of decimal places as a number (not a string)
+Returns a number limited to a specific number of decimal places. This is different from the native toFixed() method because it returns a number not a string.
 <br><br>
 Example:
 
 ```
-toFixedNumber(4.24398, 3)
+float(4.24398, 3)
 // 4.244
 ```
 
@@ -89,13 +89,13 @@ getRange(5,10)
 <details>
 <summary>&nbsp;&nbsp;getAmountOfTimeFromSeconds</summary>
 
-### **getAmountOfTimeFromSeconds(seconds: number): TimeOutput**
+### **getAmountOfTimeFromSeconds(seconds: number): TimeObject**
 
 Returns an object with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided
 <br><br>
 
 ```
-interface TimeOutput {
+interface TimeObjectTimeOutput {
   years: number
   months: number
   weeks: number
@@ -121,6 +121,44 @@ getAmountOfTimeFromSeconds(2000000)
     minutes: 33,
     seconds: 20
   }
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;getSecondsFromAmountOfTime</summary>
+
+### **getSecondsFromAmountOfTime(time: TimeObject): number**
+
+Returns the numbers of seconds from the TimeObject provided
+<br><br>
+
+```
+interface TimeObject {
+  years: number
+  months: number
+  weeks: number
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+}
+```
+
+<br><br>
+Example:
+
+```
+getAmountOfTimeFromSeconds({
+    years: 0,
+    months: 0,
+    weeks: 3,
+    days: 2,
+    hours: 3,
+    minutes: 33,
+    seconds: 20
+  })
+
+// 2000000
 ```
 
 </details>
