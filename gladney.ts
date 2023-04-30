@@ -1,3 +1,4 @@
+import type { Router } from "express"
 export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
@@ -248,6 +249,38 @@ export function getRollingSum(arr: number[], decimalPlaces: number) {
   )
 }
 
+export function getUnique<T>(...arrs: T[][]) {
+  const seen: T[] = []
+  let result: T[] = []
+  for (let i = 0; i < arrs.length; i++) {
+    arrs[i].forEach((j) => {
+      if (seen.includes(j)) {
+        result = result.filter((x) => x !== j)
+      } else {
+        seen.push(j)
+        result.push(j)
+      }
+    })
+  }
+  return result
+}
+
+export function getCommon<T>(...arrs: T[][]) {
+  const seen: T[] = []
+  let result: T[] = []
+  for (let i = 0; i < arrs.length; i++) {
+    arrs[i].forEach((j) => {
+      if (seen.includes(j)) {
+        result.push(j)
+      } else {
+        result = result.filter((x) => x !== j)
+      }
+      seen.push(j)
+    })
+  }
+  return result
+}
+
 // OBJECTS
 
 export function sumOfKeyValues<T extends object, U extends keyof T>(
@@ -294,6 +327,33 @@ export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
     else result[keyValue] = [obj]
   })
   return result
+}
+
+// EXPRESS
+
+export type Handler = (req: Request, res: Response) => void
+type Handlers = {
+  index?: Handler
+  show?: Handler
+  create?: Handler
+  update?: Handler
+  deleteFn?: Handler
+  extendRouter?: (router: Router) => void
+}
+
+export function createExpressRoutes(handlers: Handlers): Router {
+  // @ts-ignore Must be ignored for non-Express projects
+  let router = express.Router()
+
+  if (handlers.index) router.get("", handlers.index)
+  if (handlers.show) router.get("/:id", handlers.show)
+  if (handlers.create) router.post("", handlers.create)
+  if (handlers.update) router.put("/:id", handlers.update)
+  if (handlers.deleteFn) router.delete("/:id", handlers.deleteFn)
+
+  if (handlers.extendRouter) handlers.extendRouter(router)
+
+  return router
 }
 
 // SEQUELIZE

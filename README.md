@@ -1,6 +1,6 @@
 # gladknee 😄🦵
 
-Gladknee is a TypeScript utility library that I created for personal projects but is open to use by anyone. Enjoy!
+Gladknee is an open-source TypeScript utility library.
 
 <details>
 <summary>Numbers</summary><br>
@@ -317,6 +317,36 @@ clampArray([1, 2, 3], null, 5, "x")
 
 </details>
 <details>
+<summary>&nbsp;&nbsp;getUnique</summary>
+
+### **getUnique<T>(arrs: T[][]): T[]**
+
+Returns an array of items that only appear once across all items of the provided arrays.
+<br><br>
+Example:
+
+```
+getUnique([1,2,3],[3,4,5])
+// [1, 2, 4, 5]
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;getCommon</summary>
+
+### **getCommon<T>(arrs: T[][]): T[]**
+
+Returns an array of items that appear at least twice across all items of the provided arrays.
+<br><br>
+Example:
+
+```
+getCommon([1, 2, 3, 4],[3, 4, 5])
+// [3, 4]
+```
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;bubbleSort</summary>
 
 ### **bubbleSort(arr: T[]): T[]**
@@ -456,6 +486,31 @@ groupObjectsByKeyValue(arr, "suit")
 
 </details>
 <br>
+</details>
+<details>
+<summary>Express</summary><br>
+<details>
+<summary>&nbsp;&nbsp;createExpressRoutes</summary>
+
+### **creatExpressRoutes(handlers: Handlers): Route**
+
+Returns an Express Router object with GET, POST, PUTS and DELETE routes defined.
+<br><br>
+
+```
+type Handler = (req: Request, res: Response) => void
+
+type Handlers = {
+  index?: Handler
+  show?: Handler
+  create?: Handler
+  update?: Handler
+  deleteFn?: Handler
+  extendRouter?: (router: Router) => void
+}
+```
+
+</details>
 </details>
 <details>
 <summary>Misc</summary><br>

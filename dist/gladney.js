@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pause = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.getSumOfKeyValues = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.shuffle = exports.drop = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeUntil = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.toDoubleDigit = exports.clamp = exports.toFixedNumber = void 0;
-function toFixedNumber(n, decimalPlaces) {
+exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pause = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.clampArray = exports.shuffle = exports.drop = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.toDoubleDigit = exports.clampNumber = exports.float = void 0;
+function float(n, decimalPlaces) {
     return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n;
 }
-exports.toFixedNumber = toFixedNumber;
-function clamp(n, min, max) {
+exports.float = float;
+function clampNumber(n, min, max) {
     let result = n;
     if (min)
         result = n > min ? n : min;
@@ -13,7 +13,7 @@ function clamp(n, min, max) {
         result = result < max ? result : max;
     return result;
 }
-exports.clamp = clamp;
+exports.clampNumber = clampNumber;
 function toDoubleDigit(n) {
     if (String(n).length > 2)
         return n;
@@ -44,13 +44,13 @@ function ordinal(n) {
     }
 }
 exports.ordinal = ordinal;
+const secondsInAMinute = 60;
+const secondsInAnHour = 3600;
+const secondsInADay = 86400;
+const secondsInAWeek = 604800;
+const secondsInAMonth = 2592000; // Assumes 30 day month
+const secondsInAYear = 31557600;
 function getAmountOfTimeFromSeconds(seconds) {
-    const secondsInAMinute = 60;
-    const secondsInAnHour = 3600;
-    const secondsInADay = 86400;
-    const secondsInAWeek = 604800;
-    const secondsInAMonth = 2592000; // Assumes 30 day month
-    const secondsInAYear = 31557600;
     return {
         years: Math.floor(seconds / secondsInAYear),
         months: Math.floor((seconds % secondsInAYear) / secondsInAMonth),
@@ -62,6 +62,16 @@ function getAmountOfTimeFromSeconds(seconds) {
     };
 }
 exports.getAmountOfTimeFromSeconds = getAmountOfTimeFromSeconds;
+function getSecondsFromAmountOfTime(time) {
+    return (time.years * secondsInAYear +
+        time.months * secondsInAMonth +
+        time.weeks * secondsInAWeek +
+        time.days * secondsInADay +
+        time.hours * secondsInAnHour +
+        time.minutes * secondsInAMinute +
+        time.seconds);
+}
+exports.getSecondsFromAmountOfTime = getSecondsFromAmountOfTime;
 function timeUntil(date) {
     const diffInSeconds = Math.floor((new Date(date).getTime() - Date.now()) / 1000);
     return getAmountOfTimeFromSeconds(diffInSeconds);
@@ -134,6 +144,20 @@ function shuffle(array) {
     return array;
 }
 exports.shuffle = shuffle;
+function clampArray(arr, min, max, fill) {
+    let result;
+    if (min && arr.length < min) {
+        result = arr;
+        const diff = min - arr.length;
+        for (let i = 1; i <= diff; i++) {
+            arr.push(fill);
+        }
+    }
+    if (max && arr.length > max)
+        result = arr.slice(0, max);
+    return result;
+}
+exports.clampArray = clampArray;
 function bubbleSort(arr) {
     let noSwaps;
     for (var i = arr.length; i > 0; i--) {
@@ -189,18 +213,15 @@ function sum(arr) {
 exports.sum = sum;
 function getRollingSum(arr, decimalPlaces) {
     return arr.reduce((acc, i, index) => index > 0
-        ? [
-            ...acc,
-            toFixedNumber(acc[acc.length - 1] + Number(i), decimalPlaces),
-        ]
+        ? [...acc, float(acc[acc.length - 1] + Number(i), decimalPlaces)]
         : [i], []);
 }
 exports.getRollingSum = getRollingSum;
 // OBJECTS
-function getSumOfKeyValues(arr, key) {
+function sumOfKeyValues(arr, key) {
     return arr.reduce((acc, i) => acc + i[key], 0);
 }
-exports.getSumOfKeyValues = getSumOfKeyValues;
+exports.sumOfKeyValues = sumOfKeyValues;
 function sortObjectsByKeyValue(arr, key) {
     return arr.sort((a, b) => (a[key] < b[key] ? -1 : 1));
 }
@@ -233,7 +254,24 @@ function groupObjectsByKeyValue(arr, key) {
     return result;
 }
 exports.groupObjectsByKeyValue = groupObjectsByKeyValue;
-// EXPRESS
+function createRoutes(handlers) {
+    // @ts-ignore Must be ignored for non-Express projects
+    let router = express.Router();
+    if (handlers.index)
+        router.get("", handlers.index);
+    if (handlers.show)
+        router.get("/:id", handlers.show);
+    if (handlers.create)
+        router.post("", handlers.create);
+    if (handlers.update)
+        router.put("/:id", handlers.update);
+    if (handlers.deleteFn)
+        router.delete("/:id", handlers.deleteFn);
+    if (handlers.extendRouter)
+        handlers.extendRouter(router);
+    return router;
+}
+exports.createRoutes = createRoutes;
 // SEQUELIZE
 function convertQueryParamOperators(params) {
     const output = {};
