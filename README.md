@@ -326,7 +326,7 @@ Returns an array of items that only appear once across all items of the provided
 Example:
 
 ```
-getUnique([1,2,3],[3,4,5])
+getUnique([1, 2, 3],[3, 4, 5])
 // [1, 2, 4, 5]
 ```
 
