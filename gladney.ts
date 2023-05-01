@@ -4,7 +4,11 @@ export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
 
-export function clampNumber(n: number, min: number | null, max: number | null) {
+export function clampNumber(
+  n: number,
+  min: number | null,
+  max?: number | null
+) {
   let result = n
   if (min) result = n > min ? n : min
   if (max) result = result < max ? result : max
@@ -12,7 +16,7 @@ export function clampNumber(n: number, min: number | null, max: number | null) {
 }
 
 export function doubleDigit(n: number) {
-  if (String(n).length > 2) return n
+  if (String(n).length > 2) return String(n)
   else return String(`0${n}`).slice(-2)
 }
 
