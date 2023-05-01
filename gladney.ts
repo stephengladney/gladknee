@@ -165,19 +165,19 @@ export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
 }
 
 export function shuffle(array: any[]) {
+  const _array = [...array]
   let currentIndex = array.length,
     randomIndex
 
   while (currentIndex != 0) {
     randomIndex = Math.floor(Math.random() * currentIndex)
     currentIndex--
-    ;[array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
+    ;[_array[currentIndex], _array[randomIndex]] = [
+      _array[randomIndex],
+      _array[currentIndex],
     ]
   }
-
-  return array
+  return _array
 }
 
 export function clampArray(
@@ -188,10 +188,10 @@ export function clampArray(
 ) {
   let result
   if (min && arr.length < min) {
-    result = arr
+    result = [...arr]
     const diff = min - arr.length
     for (let i = 1; i <= diff; i++) {
-      arr.push(fill)
+      result.push(fill)
     }
   }
   if (max && arr.length > max) result = arr.slice(0, max)
@@ -314,8 +314,8 @@ export function areArraysEqual<T>(
   array2: T[],
   orderMatters = true
 ) {
-  const _array1 = orderMatters ? array1 : array1.sort()
-  const _array2 = orderMatters ? array2 : array2.sort()
+  const _array1 = orderMatters ? array1 : [...array1].sort()
+  const _array2 = orderMatters ? array2 : [...array2].sort()
   for (let i = 0; i < array1.length; i++) {
     if (_array1[i] !== _array2[i]) return false
   }
