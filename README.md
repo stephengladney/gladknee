@@ -5,21 +5,6 @@ Gladknee is an open-source TypeScript utility library.
 <details>
 <summary>Numbers</summary><br>
 <details>
-<summary>&nbsp;&nbsp;isEven</summary>
-
-### **isEven(n: number): boolean**
-
-Returns a boolean of whether or not the provided number is even
-<br><br>
-Example:
-
-```
-float(4.24398, 3)
-// 4.244
-```
-
-</details>
-<details>
 <summary>&nbsp;&nbsp;float</summary>
 
 ### **float(n: number, decimalPlaces?: number): number**
@@ -53,16 +38,16 @@ clamp(15, 16, 20)
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;toDoubleDigit</summary>
+<summary>&nbsp;&nbsp;doubleDigit</summary>
 
-### **toDoubleDigit(n: number): string**
+### **doubleDigit(n: number): string**
 
 Returns a provided single digit number with a leading zero as a string
 <br><br>
 Example:
 
 ```
-toDoubleDigit(9)
+doubleDigit(9)
 // "09"
 ```
 
@@ -330,26 +315,11 @@ isAny([2,5,7,9],(n) => isEven(n))
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;drop</summary>
-
-### **drop(arr: T[], n: number): T[]**
-
-Returns the provided array with n items removed from the end, where n is a provided integer
-<br><br>
-Example:
-
-```
-drop([1, 2, 3, 4, 5], 2)
-// [1, 2, 3]
-```
-
-</details>
-<details>
 <summary>&nbsp;&nbsp;shuffle</summary>
 
 ### **shuffle(arr: T[]): T[]**
 
-Returns the provided array with the items randomly ordered
+Returns the provided array with the items randomly ordered.
 <br><br>
 Example:
 
@@ -417,7 +387,7 @@ Returns an array of items that appear at least twice across all items of the pro
 Example:
 
 ```
-getCommon([1, 2, 3, 4],[3, 4, 5])
+getCommon([1, 2, 3, 4], [3, 4, 5])
 // [3, 4]
 ```
 
@@ -448,7 +418,7 @@ areArraysEqual([3, 2, 1], [1, 2, 3], false)
 
 ### **nthFromEnd<T>(arr: T[], n: number): T**
 
-Returns the item in the array N spots from the last item
+Returns the item in the array N spots from the last item.
 <br><br>
 Example:
 
@@ -463,7 +433,7 @@ nthFromEnd([1, 2, 3, 4], 1)
 
 ### **bubbleSort(arr: T[]): T[]**
 
-Returns the provided array sorted (ascending) via bubble sort
+Returns the provided array sorted (ascending) via bubble sort.
 
 </details>
 <details>
@@ -471,7 +441,7 @@ Returns the provided array sorted (ascending) via bubble sort
 
 ### **selectionSort(arr: T[]): T[]**
 
-Returns the provided array sorted (ascending) via selection sort
+Returns the provided array sorted (ascending) via selection sort.
 
 </details>
 <details>
@@ -479,7 +449,7 @@ Returns the provided array sorted (ascending) via selection sort
 
 ### **insertSort(arr: T[]): T[]**
 
-Returns the provided array sorted (ascending) via insert sort
+Returns the provided array sorted (ascending) via insert sort.
 
 </details>
 <details>
@@ -487,7 +457,7 @@ Returns the provided array sorted (ascending) via insert sort
 
 ### **removeDuplicates(arr: T[]): T[]**
 
-Returns the provided array with duplicates removed
+Returns the provided array with duplicates removed.
 <br><br>
 Example:
 
@@ -502,7 +472,7 @@ removeDuplicates([1, 2, 1, 1, 2, 5])
 
 ### **sum(arr: number[]): number**
 
-Returns the sum of an array of numbers
+Returns the sum of an array of numbers.
 <br><br>
 Example:
 
@@ -517,7 +487,7 @@ sum([1, 2, 3, 4, 5])
 
 ### **getRollingSum(arr: number[]): number[]**
 
-Returns an array of the rolling sum of an array, i.e. [1,3,5] returns [1,4,9]
+Returns an array of the rolling sum of an array.
 <br><br>
 Example:
 
@@ -536,7 +506,7 @@ getRollingSum([1,3,5])
 
 ### **sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & { [K in U]: number })[],key: U): number**
 
-Returns the sum of the values of a specific shared key in an array of objects
+Returns the sum of the values of a specific shared key in an array of objects.
 <br><br>
 Example:
 
@@ -552,7 +522,7 @@ sumOfKeyValues(arr, "a")
 
 ### **sortObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
 
-Sort an array of objects by a specific shared key's value
+Sort an array of objects by a specific shared key's value.
 <br><br>
 Example:
 
@@ -568,7 +538,7 @@ sortObjectsByKeyValue(arr, "a")
 
 ### **getKeyValueCounts<T extends object, U extends keyof T>(arr: T[], key: U, isCaseSensitive?: boolean)**
 
-Returns an object with counts of specifics value of a specific shared key in an array of objects
+Returns an object with counts of specifics value of a specific shared key in an array of objects.
 <br><br>
 Example:
 
@@ -584,7 +554,7 @@ getKeyValueCounts(arr, "suit")
 
 ### **groupObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
 
-Returns an object with arrays of objects that share a specific value of a specific shared key in an array of objects
+Returns an object with arrays of objects that share a specific value of a specific shared key in an array of objects.
 <br><br>
 Example:
 
@@ -631,18 +601,27 @@ type Handlers = {
 
 ### **addTimeoutToPromise(asyncFunction: () => Promise<unknown>, timeout: number): Promise<unkown>**
 
-Returns a promise that rejects if the original promise takes longer to resolve than a given amount of time (ms)
+Returns a promise that rejects if the original promise takes longer to resolve than a given amount of time. (ms)
 <br><br>
 Note: The promise rejects with the string "TIMED_OUT"
 <br>
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;pause</summary>
+<summary>&nbsp;&nbsp;pauseAsync</summary>
 
-### **pause(milliseconds: number): Promise<void>**
+### **pauseAsync(milliseconds: number): Promise<void>**
 
 Returns a promise that resolves after a given amount of time (ms)
+<br>
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;pauseSync</summary>
+
+### **pauseSync(milliseconds: number): Promise<void>**
+
+Delays future code from executing until the provided milliseconds have passed.
 <br>
 
 </details>
@@ -651,7 +630,7 @@ Returns a promise that resolves after a given amount of time (ms)
 
 ### pipe<T>(...funcs: [firstFunc: GenericFunction<T>,secondFunc: GenericFunction<T>,...otherFuncs: GenericFunction<T>[]]): Function
 
-Returns a function that calls multiple given functions in a specific order
+Returns a function that calls multiple given functions in a specific order.
 <br><br>
 Example:
 
@@ -670,7 +649,7 @@ doubleThenTriple(6)
 
 ### **debounce(func: Function, ms: number, immediate: boolean): Function**
 
-Returns a debounced version of the function passed. Acccepts custom delay and immediate boolean for leading/trailing
+Returns a debounced version of the function passed. Acccepts custom delay and immediate boolean for leading/trailing.
 <br>
 
 </details>
@@ -679,7 +658,7 @@ Returns a debounced version of the function passed. Acccepts custom delay and im
 
 ### **saveTextToFileInBrowser(content: string, filename: string)**
 
-Prompts a user in their browser to save provided text to a file on their machine
+Prompts a user in their browser to save provided text to a file on their machine.
 <br>
 
 </details>
@@ -688,7 +667,7 @@ Prompts a user in their browser to save provided text to a file on their machine
 
 ### **setCookie(cookieName: string, cookieValue: string, expirationInDays: number)**
 
-Sets the vaue of a specific cookie
+Sets the vaue of a specific cookie.
 <br>
 
 </details>
@@ -697,7 +676,7 @@ Sets the vaue of a specific cookie
 
 ### **getCookie(cookieName: string)**
 
-Returns the value of a specific cookie
+Returns the value of a specific cookie.
 <br>
 
 </details>

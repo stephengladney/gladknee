@@ -1,9 +1,5 @@
 import type { Router } from "express"
 
-export function isEven(n: number) {
-  return n % 2 === 0
-}
-
 export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
@@ -15,7 +11,7 @@ export function clampNumber(n: number, min: number | null, max: number | null) {
   return result
 }
 
-export function toDoubleDigit(n: number) {
+export function doubleDigit(n: number) {
   if (String(n).length > 2) return n
   else return String(`0${n}`).slice(-2)
 }
@@ -162,10 +158,6 @@ export function isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean) {
 
 export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
   return arr.filter(func).length > 0
-}
-
-export function drop(arr: any[], n: number) {
-  return arr.slice(0, arr.length - n)
 }
 
 export function shuffle(array: any[]) {
@@ -440,10 +432,16 @@ export function addTimeoutToPromise(
     }) as Promise<unknown>
 }
 
-export function pause(milliseconds: number) {
+export function pauseAsync(milliseconds: number) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, milliseconds)
   })
+}
+
+export function pauseSync(ms: number) {
+  const start = Date.now()
+  const end = start + ms
+  while (Date.now() < end) {}
 }
 
 type GenericFunction<T> = (...args: T[]) => unknown
