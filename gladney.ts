@@ -541,16 +541,19 @@ export type QueueObject = {
   enqueue: Function
   executeOne: Function
   executeAll: Function
+  breakOut: Function
 }
 
 export function createQueue(functionToExecute: Function): QueueObject {
   const queue: unknown[] = []
+  let isBreakRequested = false
   const executeOne = () => {
     if (Array.isArray(queue[0])) functionToExecute(...queue[0])
     else functionToExecute(queue[0])
     queue.shift()
   }
   const executeAll = () => {
+    if (isBreakRequested) return
     if (Array.isArray(queue[0])) functionToExecute(...queue[0])
     else functionToExecute(queue[0])
     queue.shift()
@@ -561,26 +564,32 @@ export function createQueue(functionToExecute: Function): QueueObject {
     enqueue: (...args: unknown[]) => queue.push(args),
     executeOne,
     executeAll,
+    breakOut: () => {
+      isBreakRequested = true
+    },
   }
 }
 
-export type AsyncQueueObject = {
+type AsyncQueueObject = {
   queue: unknown[]
   enqueue: Function
   executeOne: Function
   executeAll: (ignoreErrors?: boolean) => unknown
+  breakOut: Function
 }
 
 export function createAsyncQueue(
-  functionToExecute: (...args: unknown[]) => Promise<unknown>
+  functionToExecute: (...args: any[]) => Promise<unknown>
 ): AsyncQueueObject {
   const queue: unknown[] = []
+  let isBreakRequested = false
   const executeOne = async () => {
     if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
     else await functionToExecute(queue[0])
     queue.shift()
   }
   const executeAll = async (ignoreErrors = false) => {
+    if (isBreakRequested) return
     try {
       if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
       else await functionToExecute(queue[0])
@@ -594,6 +603,9 @@ export function createAsyncQueue(
     }
   }
   return {
+    breakOut: () => {
+      isBreakRequested = true
+    },
     queue,
     enqueue: (...args: unknown[]) => queue.push(args),
     executeOne,

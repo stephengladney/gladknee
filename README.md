@@ -580,6 +580,7 @@ Returns an Express Router object with GET, POST, PUTS and DELETE routes defined.
 <br><br>
 
 ```
+
 type Handler = (req: Request, res: Response) => void
 
 type Handlers = {
@@ -619,7 +620,7 @@ Returns a promise that resolves after a given amount of time (ms)
 <details>
 <summary>&nbsp;&nbsp;pauseSync</summary>
 
-### **pauseSync(milliseconds: number): Promise<void>**
+### **pauseSync(milliseconds: number)**
 
 Delays future code from executing until the provided milliseconds have passed.
 <br>
@@ -699,6 +700,7 @@ type QueueObject = {
   enqueue: Function
   executeOne: Function
   executeAll: Function
+  breakOut: Function
 }
 ```
 
@@ -734,6 +736,8 @@ Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two
 **executeOne** will call the async function on the first item in the queue and then remove that item from the queue.
 **executeAll** will call the async function on every item in the queue and remove each item after execution. The previous function's returned promise must resolve before the next iteration is invoked. If you wish to continue iterating even if a promise rejects, pass a true boolean into the function.
 <br><br>
+_Note: You can stop the **executeAll()** function at any time by calling the **breakOut()** method_
+<br><br>
 Example:
 
 ```
@@ -742,6 +746,7 @@ type QueueObject = {
   enqueue: Function
   executeOne: Function
   executeAll: (ignoreErrors = false) => unknown
+  breakOut: Function
 }
 ```
 
