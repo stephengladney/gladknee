@@ -5,6 +5,21 @@ Gladknee is an open-source TypeScript utility library.
 <details>
 <summary>Numbers</summary><br>
 <details>
+<summary>&nbsp;&nbsp;isEven</summary>
+
+### **isEven(n: number): boolean**
+
+Returns a boolean of whether or not the provided number is even
+<br><br>
+Example:
+
+```
+float(4.24398, 3)
+// 4.244
+```
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;float</summary>
 
 ### **float(n: number, decimalPlaces?: number): number**
@@ -70,15 +85,21 @@ ordinal(4)
 <details>
 <summary>&nbsp;&nbsp;getRange</summary>
 
-### **getRange(start: number, end: number) : number[]**
+### **getRange(start: number, end: number, step?: number) : number[]**
 
-Returns an array of numbers, starting from the provided start number and ending with provided end number
+Returns an array of numbers, starting from the provided start number and ending with provided end number. You can optionally pass in a step number to increment by a number other than 1. You can also increment negatively.
 <br><br>
 Example:
 
 ```
-getRange(5,10)
+getRange(5, 10)
 // [5, 6, 7, 8, 9, 10]
+
+getRange(0, 10, 2)
+// [0, 2, 4, 6, 8, 10]
+
+getRange(10, 0, -2)
+// [10, 8, 6, 4, 2, 0]
 ```
 
 </details>
@@ -269,6 +290,46 @@ getRandomString(5, false, true)
 <details>
 <summary>Arrays</summary><br>
 <details>
+<summary>&nbsp;&nbsp;isEvery</summary>
+
+### **isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean): boolean**
+
+Returns a boolean that reflects whether or not every item in an array meets a condition
+<br><br>
+Example:
+
+```
+const isEven = (n: number) => n % 2 === 0
+
+isEvery([2,4,6,8],(n) => isEven(n))
+// true
+
+isEvery([2,4,7,8],(n) => isEven(n))
+// false
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;isAny</summary>
+
+### **isAny<T>(arr: T[], func: (i: T, index?: number) => boolean): boolean**
+
+Returns a boolean that reflects whether or not any item in an array meets a condition
+<br><br>
+Example:
+
+```
+const isEven = (n: number) => n % 2 === 0
+
+isAny([3,5,7,9],(n) => isEven(n))
+// false
+
+isAny([2,5,7,9],(n) => isEven(n))
+// true
+```
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;drop</summary>
 
 ### **drop(arr: T[], n: number): T[]**
@@ -299,6 +360,21 @@ shuffle([1, 2, 3, 4, 5])
 
 </details>
 <details>
+<summary>&nbsp;&nbsp;chunkArray</summary>
+
+### **chunkArray(arr: any[], n: number): any[][]**
+
+Divides the provided array into smaller arrays of a provided size. Returns an array of these smaller arrays.
+<br><br>
+Example:
+
+```
+chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2)
+// [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
+```
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;clampArray</summary>
 
 ### **clampArray(arr: any[], min: number | null, max: number | null, fill?: any): any[]**
@@ -308,7 +384,7 @@ Returns the provided array with a minimum and/or maximum length limit enforced. 
 Example:
 
 ```
-clampArray([1, 2, 3, 4, 5], 3, null)
+clampArray([1, 2, 3, 4, 5], 3)
 // [1, 2, 3]
 
 clampArray([1, 2, 3], null, 5, "x")
@@ -676,8 +752,8 @@ executeAll()
 Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two execute methods.
 <br>
 <br>
-**executeOne** will call the function on the first item in the queue and then remove that item from the queue.
-**executeAll** will call the function every item in the queue and remove each item after execution. The previous function's returned promise must resolve before the next iteration is invoked. If you wish to continue iterating even if a promise rejects, pass a true boolean into the function.
+**executeOne** will call the async function on the first item in the queue and then remove that item from the queue.
+**executeAll** will call the async function on every item in the queue and remove each item after execution. The previous function's returned promise must resolve before the next iteration is invoked. If you wish to continue iterating even if a promise rejects, pass a true boolean into the function.
 <br><br>
 Example:
 

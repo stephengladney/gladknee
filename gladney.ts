@@ -1,4 +1,9 @@
 import type { Router } from "express"
+
+export function isEven(n: number) {
+  return n % 2 === 0
+}
+
 export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
@@ -15,10 +20,16 @@ export function toDoubleDigit(n: number) {
   else return String(`0${n}`).slice(-2)
 }
 
-export function getRange(start: number, end: number) {
-  const result = [start]
-  for (let i = start + 1; i <= end; i++) {
-    result.push(i)
+export function getRange(start: number, end: number, step = 1) {
+  const result: number[] = []
+  if (start < end && step > 0) {
+    for (let i = start; i <= end; i += step) {
+      result.push(i)
+    }
+  } else if (step < 0) {
+    for (let i = start; i >= end; i += step) {
+      result.push(i)
+    }
   }
   return result
 }
@@ -145,6 +156,14 @@ export function getRandomString(
 
 // ARRAYS
 
+export function isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean) {
+  return arr.filter(func).length === arr.length
+}
+
+export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
+  return arr.filter(func).length > 0
+}
+
 export function drop(arr: any[], n: number) {
   return arr.slice(0, arr.length - n)
 }
@@ -169,7 +188,7 @@ export function clampArray(
   arr: any[],
   min: number | null,
   max: number | null,
-  fill: any
+  fill?: any
 ) {
   let result
   if (min && arr.length < min) {
@@ -180,6 +199,15 @@ export function clampArray(
     }
   }
   if (max && arr.length > max) result = arr.slice(0, max)
+  return result
+}
+
+export function chunkArray(arr: any[], chunkSize: number) {
+  const items = Array.from(arr)
+  const result: any[][] = []
+  while (items.length > 0) {
+    result.push(items.splice(0, chunkSize))
+  }
   return result
 }
 
@@ -542,7 +570,7 @@ export type AsyncQueueObject = {
   queue: unknown[]
   enqueue: Function
   executeOne: Function
-  executeAll: (ignoreErrors: boolean) => unknown
+  executeAll: (ignoreErrors?: boolean) => unknown
 }
 
 export function createAsyncQueue(
