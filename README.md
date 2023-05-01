@@ -693,7 +693,7 @@ Returns a **QueueObject** which includes a queue, enqueue function, and two exec
 <br><br>
 `executeAll()` will call the function every item in the queue and remove each item after execution.
 <br><br>
-_Note: You can stop the `executeAll()` function at any time by calling the `breakOut()` method_
+`breakOut()` halts the `executeAll()` function.
 <br><br>
 Example:
 
@@ -740,7 +740,7 @@ Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two
 <br><br>
 `executeAll()` will call the async function on every item in the queue and remove each item after execution. The previous function's returned promise must resolve before the next iteration is invoked. If you wish to continue iterating even if a promise rejects, pass a true boolean into the function.
 <br><br>
-_Note: You can stop the `executeAll()` function at any time by calling the `breakOut()` method_
+`breakOut()` halts the `executeAll()` function.
 <br><br>
 Example:
 

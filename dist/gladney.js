@@ -1,6 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pause = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.clampArray = exports.shuffle = exports.drop = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.toDoubleDigit = exports.clampNumber = exports.float = void 0;
+exports.createAsyncQueue = exports.createQueue = exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pauseSync = exports.pauseAsync = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createExpressRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.areArraysEqual = exports.nthFromEnd = exports.getCommonItems = exports.getUniqueItems = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.chunkArray = exports.clampArray = exports.shuffle = exports.isAny = exports.isEvery = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.doubleDigit = exports.clampNumber = exports.float = void 0;
 function float(n, decimalPlaces) {
     return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n;
 }
@@ -14,17 +23,24 @@ function clampNumber(n, min, max) {
     return result;
 }
 exports.clampNumber = clampNumber;
-function toDoubleDigit(n) {
+function doubleDigit(n) {
     if (String(n).length > 2)
         return n;
     else
         return String(`0${n}`).slice(-2);
 }
-exports.toDoubleDigit = toDoubleDigit;
-function getRange(start, end) {
-    const result = [start];
-    for (let i = start + 1; i <= end; i++) {
-        result.push(i);
+exports.doubleDigit = doubleDigit;
+function getRange(start, end, step = 1) {
+    const result = [];
+    if (start < end && step > 0) {
+        for (let i = start; i <= end; i += step) {
+            result.push(i);
+        }
+    }
+    else if (step < 0) {
+        for (let i = start; i >= end; i += step) {
+            result.push(i);
+        }
     }
     return result;
 }
@@ -127,10 +143,14 @@ function getRandomString(length, includeLetters = true, includeNumbers = true) {
 }
 exports.getRandomString = getRandomString;
 // ARRAYS
-function drop(arr, n) {
-    return arr.slice(0, arr.length - n);
+function isEvery(arr, func) {
+    return arr.filter(func).length === arr.length;
 }
-exports.drop = drop;
+exports.isEvery = isEvery;
+function isAny(arr, func) {
+    return arr.filter(func).length > 0;
+}
+exports.isAny = isAny;
 function shuffle(array) {
     let currentIndex = array.length, randomIndex;
     while (currentIndex != 0) {
@@ -158,6 +178,15 @@ function clampArray(arr, min, max, fill) {
     return result;
 }
 exports.clampArray = clampArray;
+function chunkArray(arr, chunkSize) {
+    const items = Array.from(arr);
+    const result = [];
+    while (items.length > 0) {
+        result.push(items.splice(0, chunkSize));
+    }
+    return result;
+}
+exports.chunkArray = chunkArray;
 function bubbleSort(arr) {
     let noSwaps;
     for (var i = arr.length; i > 0; i--) {
@@ -217,6 +246,54 @@ function getRollingSum(arr, decimalPlaces) {
         : [i], []);
 }
 exports.getRollingSum = getRollingSum;
+function getUniqueItems(...arrs) {
+    const seen = [];
+    let result = [];
+    for (let i = 0; i < arrs.length; i++) {
+        arrs[i].forEach((j) => {
+            if (seen.includes(j)) {
+                result = result.filter((x) => x !== j);
+            }
+            else {
+                seen.push(j);
+                result.push(j);
+            }
+        });
+    }
+    return result;
+}
+exports.getUniqueItems = getUniqueItems;
+function getCommonItems(...arrs) {
+    const seen = [];
+    let result = [];
+    for (let i = 0; i < arrs.length; i++) {
+        arrs[i].forEach((j) => {
+            if (seen.includes(j)) {
+                result.push(j);
+            }
+            else {
+                result = result.filter((x) => x !== j);
+            }
+            seen.push(j);
+        });
+    }
+    return result;
+}
+exports.getCommonItems = getCommonItems;
+function nthFromEnd(arr, n) {
+    return arr[arr.length - 1 - n];
+}
+exports.nthFromEnd = nthFromEnd;
+function areArraysEqual(array1, array2, orderMatters = true) {
+    const _array1 = orderMatters ? array1 : array1.sort();
+    const _array2 = orderMatters ? array2 : array2.sort();
+    for (let i = 0; i < array1.length; i++) {
+        if (_array1[i] !== _array2[i])
+            return false;
+    }
+    return true;
+}
+exports.areArraysEqual = areArraysEqual;
 // OBJECTS
 function sumOfKeyValues(arr, key) {
     return arr.reduce((acc, i) => acc + i[key], 0);
@@ -254,7 +331,7 @@ function groupObjectsByKeyValue(arr, key) {
     return result;
 }
 exports.groupObjectsByKeyValue = groupObjectsByKeyValue;
-function createRoutes(handlers) {
+function createExpressRoutes(handlers) {
     // @ts-ignore Must be ignored for non-Express projects
     let router = express.Router();
     if (handlers.index)
@@ -271,7 +348,7 @@ function createRoutes(handlers) {
         handlers.extendRouter(router);
     return router;
 }
-exports.createRoutes = createRoutes;
+exports.createExpressRoutes = createExpressRoutes;
 // SEQUELIZE
 function convertQueryParamOperators(params) {
     const output = {};
@@ -302,12 +379,18 @@ function addTimeoutToPromise(asyncFunction, timeout) {
     });
 }
 exports.addTimeoutToPromise = addTimeoutToPromise;
-function pause(milliseconds) {
+function pauseAsync(milliseconds) {
     return new Promise((resolve, reject) => {
         setTimeout(resolve, milliseconds);
     });
 }
-exports.pause = pause;
+exports.pauseAsync = pauseAsync;
+function pauseSync(ms) {
+    const start = Date.now();
+    const end = start + ms;
+    while (Date.now() < end) { }
+}
+exports.pauseSync = pauseSync;
 function pipe(...funcs) {
     return (...args) => {
         return funcs.reduce((acc, current) => current(acc), args[0]);
@@ -387,3 +470,76 @@ function setCookie(cookieName, cookieValue, expirationInDays) {
     document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";";
 }
 exports.setCookie = setCookie;
+function createQueue(functionToExecute) {
+    const queue = [];
+    let isBreakRequested = false;
+    const executeOne = () => {
+        if (Array.isArray(queue[0]))
+            functionToExecute(...queue[0]);
+        else
+            functionToExecute(queue[0]);
+        queue.shift();
+    };
+    const executeAll = () => {
+        if (isBreakRequested)
+            return;
+        if (Array.isArray(queue[0]))
+            functionToExecute(...queue[0]);
+        else
+            functionToExecute(queue[0]);
+        queue.shift();
+        if (queue.length > 0)
+            executeAll();
+    };
+    return {
+        queue,
+        enqueue: (...args) => queue.push(args),
+        executeOne,
+        executeAll,
+        breakOut: () => {
+            isBreakRequested = true;
+        },
+    };
+}
+exports.createQueue = createQueue;
+function createAsyncQueue(functionToExecute) {
+    const queue = [];
+    let isBreakRequested = false;
+    const executeOne = () => __awaiter(this, void 0, void 0, function* () {
+        if (Array.isArray(queue[0]))
+            yield functionToExecute(...queue[0]);
+        else
+            yield functionToExecute(queue[0]);
+        queue.shift();
+    });
+    const executeAll = (ignoreErrors = false) => __awaiter(this, void 0, void 0, function* () {
+        if (isBreakRequested)
+            return;
+        try {
+            if (Array.isArray(queue[0]))
+                yield functionToExecute(...queue[0]);
+            else
+                yield functionToExecute(queue[0]);
+            queue.shift();
+            if (queue.length > 0)
+                executeAll(ignoreErrors);
+        }
+        catch (_a) {
+            if (ignoreErrors) {
+                queue.shift();
+                if (queue.length > 0)
+                    executeAll(true);
+            }
+        }
+    });
+    return {
+        breakOut: () => {
+            isBreakRequested = true;
+        },
+        queue,
+        enqueue: (...args) => queue.push(args),
+        executeOne,
+        executeAll,
+    };
+}
+exports.createAsyncQueue = createAsyncQueue;
