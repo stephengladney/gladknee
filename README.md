@@ -19,7 +19,6 @@ Gladknee is an open-source TypeScript utility library. It's written with functio
 <li>Abstractions of things you don't need a library for (i.e. get element from array at index N)</li>
 <li>Type checking in JavaScript</li>
 </ul>
-<br><br>
 
 ### Methods
 
