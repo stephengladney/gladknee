@@ -1,7 +1,7 @@
 import type { Router } from "express";
 export declare function float(n: number, decimalPlaces?: number): number;
-export declare function clampNumber(n: number, min: number | null, max: number | null): number;
-export declare function doubleDigit(n: number): string | number;
+export declare function clampNumber(n: number, min: number | null, max?: number | null): number;
+export declare function doubleDigit(n: number): string;
 export declare function getRange(start: number, end: number, step?: number): number[];
 export declare function ordinal(n: number): string;
 export interface TimeObject {
@@ -27,17 +27,26 @@ export declare function isAny<T>(arr: T[], func: (i: T, index?: number) => boole
 export declare function shuffle(array: any[]): any[];
 export declare function clampArray(arr: any[], min: number | null, max: number | null, fill?: any): any[] | undefined;
 export declare function chunkArray(arr: any[], chunkSize: number): any[][];
+export declare function flatten(arr: any[]): any[];
 type SortableArray = (string | number)[];
 export declare function bubbleSort(arr: SortableArray): SortableArray;
 export declare function selectionSort(arr: SortableArray): SortableArray;
 export declare function insertionSort(arr: SortableArray): SortableArray;
 export declare function removeDuplicates(arr: any[]): any[];
 export declare function sum(arr: number[]): number;
-export declare function getRollingSum(arr: number[], decimalPlaces: number): number[];
+export declare function getRollingSum(arr: number[], decimalPlaces?: number): number[];
 export declare function getUniqueItems<T>(...arrs: T[][]): T[];
 export declare function getCommonItems<T>(...arrs: T[][]): T[];
 export declare function nthFromEnd(arr: any[], n: number): any;
 export declare function areArraysEqual<T>(array1: T[], array2: T[], orderMatters?: boolean): boolean;
+export declare function omitKeys(obj: {
+    [key: string]: any;
+}, ...keys: string[]): {
+    [key: string]: any;
+};
+export declare function pickKeys<T extends object, U extends keyof T>(obj: T, ...keys: U[]): {
+    [key: string]: any;
+};
 export declare function sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & {
     [K in U]: number;
 })[], key: U): number;
@@ -71,7 +80,7 @@ export declare function pipe<T>(...funcs: [
 export declare function debounce(func: Function, ms: number, immediate: boolean): (...args: unknown[]) => {
     clear: () => void;
     flush: () => void;
-} | undefined;
+};
 export declare function saveTextToFileInBrowser(content: string, filename: string): void;
 export declare function getCookie(cookieName: string): string;
 export declare function setCookie(cookieName: string, cookieValue: string, expirationInDays: number): void;
@@ -91,4 +100,9 @@ type AsyncQueueObject = {
     breakOut: Function;
 };
 export declare function createAsyncQueue(functionToExecute: (...args: any[]) => Promise<unknown>): AsyncQueueObject;
+type GeoCoords = {
+    latitude: number | null;
+    longitude: number | null;
+};
+export declare function getBrowserLocation(timeoutInSeconds?: number): Promise<GeoCoords>;
 export {};

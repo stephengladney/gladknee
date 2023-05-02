@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAsyncQueue = exports.createQueue = exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pauseSync = exports.pauseAsync = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createExpressRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.areArraysEqual = exports.nthFromEnd = exports.getCommonItems = exports.getUniqueItems = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.chunkArray = exports.clampArray = exports.shuffle = exports.isAny = exports.isEvery = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.doubleDigit = exports.clampNumber = exports.float = void 0;
+exports.getBrowserLocation = exports.createAsyncQueue = exports.createQueue = exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pauseSync = exports.pauseAsync = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createExpressRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.pickKeys = exports.omitKeys = exports.areArraysEqual = exports.nthFromEnd = exports.getCommonItems = exports.getUniqueItems = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.flatten = exports.chunkArray = exports.clampArray = exports.shuffle = exports.isAny = exports.isEvery = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.doubleDigit = exports.clampNumber = exports.float = void 0;
 function float(n, decimalPlaces) {
     return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n;
 }
@@ -25,7 +25,7 @@ function clampNumber(n, min, max) {
 exports.clampNumber = clampNumber;
 function doubleDigit(n) {
     if (String(n).length > 2)
-        return n;
+        return String(n);
     else
         return String(`0${n}`).slice(-2);
 }
@@ -152,25 +152,26 @@ function isAny(arr, func) {
 }
 exports.isAny = isAny;
 function shuffle(array) {
+    const _array = [...array];
     let currentIndex = array.length, randomIndex;
     while (currentIndex != 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex],
-            array[currentIndex],
+        [_array[currentIndex], _array[randomIndex]] = [
+            _array[randomIndex],
+            _array[currentIndex],
         ];
     }
-    return array;
+    return _array;
 }
 exports.shuffle = shuffle;
 function clampArray(arr, min, max, fill) {
     let result;
     if (min && arr.length < min) {
-        result = arr;
+        result = [...arr];
         const diff = min - arr.length;
         for (let i = 1; i <= diff; i++) {
-            arr.push(fill);
+            result.push(fill);
         }
     }
     if (max && arr.length > max)
@@ -187,6 +188,18 @@ function chunkArray(arr, chunkSize) {
     return result;
 }
 exports.chunkArray = chunkArray;
+function flatten(arr) {
+    const result = [];
+    for (let i = 0; i < arr.length; i++) {
+        if (Array.isArray(arr[i])) {
+            result.push(...flatten(arr[i]));
+        }
+        else
+            result.push(arr[i]);
+    }
+    return result;
+}
+exports.flatten = flatten;
 function bubbleSort(arr) {
     let noSwaps;
     for (var i = arr.length; i > 0; i--) {
@@ -285,8 +298,8 @@ function nthFromEnd(arr, n) {
 }
 exports.nthFromEnd = nthFromEnd;
 function areArraysEqual(array1, array2, orderMatters = true) {
-    const _array1 = orderMatters ? array1 : array1.sort();
-    const _array2 = orderMatters ? array2 : array2.sort();
+    const _array1 = orderMatters ? array1 : [...array1].sort();
+    const _array2 = orderMatters ? array2 : [...array2].sort();
     for (let i = 0; i < array1.length; i++) {
         if (_array1[i] !== _array2[i])
             return false;
@@ -295,6 +308,27 @@ function areArraysEqual(array1, array2, orderMatters = true) {
 }
 exports.areArraysEqual = areArraysEqual;
 // OBJECTS
+function omitKeys(obj, ...keys) {
+    const result = {};
+    Object.keys(obj).forEach((key) => {
+        if (!keys.includes(key)) {
+            result[key] = obj[key];
+        }
+    });
+    return result;
+}
+exports.omitKeys = omitKeys;
+function pickKeys(obj, ...keys) {
+    const result = {};
+    const keysAsStrings = keys.map((k) => k);
+    Object.keys(obj).forEach((key) => {
+        if (keysAsStrings.includes(key)) {
+            result[key] = obj[key];
+        }
+    });
+    return result;
+}
+exports.pickKeys = pickKeys;
 function sumOfKeyValues(arr, key) {
     return arr.reduce((acc, i) => acc + i[key], 0);
 }
@@ -307,7 +341,7 @@ function getKeyValueCounts(arr, key, isCaseSensitive) {
     return arr.reduce((result, obj) => {
         const value = isCaseSensitive
             ? obj[key]
-            : lowerCaseNoSpaces(obj[key]);
+            : obj[key].toLowerCase();
         if (result[value] > 0) {
             result[value] = result[value] + 1;
             return result;
@@ -372,8 +406,12 @@ exports.convertQueryParamOperators = convertQueryParamOperators;
 // MISC
 function addTimeoutToPromise(asyncFunction, timeout) {
     return () => new Promise((resolve, reject) => {
-        asyncFunction().then((result) => resolve(result));
-        setTimeout(() => {
+        let timer;
+        asyncFunction().then((result) => {
+            clearTimeout(timer);
+            resolve(result);
+        });
+        timer = setTimeout(() => {
             reject("TIMED_OUT");
         }, timeout);
     });
@@ -414,7 +452,7 @@ function debounce(func, ms, immediate) {
     if (immediate) {
         return (...args) => {
             if (isWaiting)
-                return;
+                return getReturnObject();
             else {
                 isWaiting = true;
                 wait = setTimeout(() => (isWaiting = false), ms);
@@ -543,3 +581,27 @@ function createAsyncQueue(functionToExecute) {
     };
 }
 exports.createAsyncQueue = createAsyncQueue;
+function getBrowserLocation(timeoutInSeconds = 10) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let browserLocation = { latitude: null, longitude: null };
+        let err = null;
+        let pauseCount = 0;
+        navigator.geolocation.getCurrentPosition(({ coords }) => {
+            browserLocation.latitude = coords.latitude;
+            browserLocation.longitude = coords.longitude;
+        }, () => {
+            err = "Unable to get location";
+        });
+        while (browserLocation.latitude === null && err === null) {
+            yield pauseAsync(500);
+            pauseCount++;
+            if (pauseCount === timeoutInSeconds * 2)
+                err = "TIMED_OUT";
+        }
+        if (err)
+            throw err;
+        else
+            return browserLocation;
+    });
+}
+exports.getBrowserLocation = getBrowserLocation;
