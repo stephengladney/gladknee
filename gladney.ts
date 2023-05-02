@@ -207,6 +207,16 @@ export function chunkArray(arr: any[], chunkSize: number) {
   return result
 }
 
+export function flatten(arr: any[]): any[] {
+  const result = []
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      result.push(...flatten(arr[i]))
+    } else result.push(arr[i])
+  }
+  return result
+}
+
 type SortableArray = (string | number)[]
 
 export function bubbleSort(arr: SortableArray) {
@@ -263,7 +273,7 @@ export function sum(arr: number[]) {
   return arr.reduce((acc, i) => acc + i, 0)
 }
 
-export function getRollingSum(arr: number[], decimalPlaces: number) {
+export function getRollingSum(arr: number[], decimalPlaces?: number) {
   return arr.reduce(
     (acc, i, index) =>
       index > 0
@@ -324,6 +334,30 @@ export function areArraysEqual<T>(
 
 // OBJECTS
 
+export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
+  const result: { [key: string]: any } = {}
+  Object.keys(obj).forEach((key: string) => {
+    if (!keys.includes(key)) {
+      result[key as string] = obj[key]
+    }
+  })
+  return result
+}
+
+export function pickKeys<T extends object, U extends keyof T>(
+  obj: T,
+  ...keys: U[]
+) {
+  const result: { [key: string]: any } = {}
+  const keysAsStrings = keys.map((k) => k as string)
+  Object.keys(obj).forEach((key: string) => {
+    if (keysAsStrings.includes(key)) {
+      result[key] = obj[key as U]
+    }
+  })
+  return result
+}
+
 export function sumOfKeyValues<T extends object, U extends keyof T>(
   arr: (T & { [K in U]: number })[],
   key: U
@@ -346,7 +380,7 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
   return arr.reduce((result: { [key: string]: number }, obj) => {
     const value = isCaseSensitive
       ? (obj[key] as string)
-      : lowerCaseNoSpaces(obj[key] as string)
+      : (obj[key] as string).toLowerCase()
     if (result[value] > 0) {
       result[value] = result[value] + 1
       return result
@@ -429,8 +463,12 @@ export function addTimeoutToPromise(
 ) {
   return () =>
     new Promise((resolve, reject) => {
-      asyncFunction().then((result) => resolve(result))
-      setTimeout(() => {
+      let timer: NodeJS.Timeout
+      asyncFunction().then((result) => {
+        clearTimeout(timer)
+        resolve(result)
+      })
+      timer = setTimeout(() => {
         reject("TIMED_OUT")
       }, timeout)
     }) as Promise<unknown>
@@ -479,7 +517,7 @@ export function debounce(func: Function, ms: number, immediate: boolean) {
   })
   if (immediate) {
     return (...args: unknown[]) => {
-      if (isWaiting) return
+      if (isWaiting) return getReturnObject()
       else {
         isWaiting = true
         wait = setTimeout(() => (isWaiting = false), ms)
@@ -615,4 +653,31 @@ export function createAsyncQueue(
     executeOne,
     executeAll,
   }
+}
+
+type GeoCoords = {
+  latitude: number | null
+  longitude: number | null
+}
+
+export async function getBrowserLocation(timeoutInSeconds = 10) {
+  let browserLocation: GeoCoords = { latitude: null, longitude: null }
+  let err = null
+  let pauseCount = 0
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => {
+      browserLocation.latitude = coords.latitude
+      browserLocation.longitude = coords.longitude
+    },
+    () => {
+      err = "Unable to get location"
+    }
+  )
+  while (browserLocation.latitude === null && err === null) {
+    await pauseAsync(500)
+    pauseCount++
+    if (pauseCount === timeoutInSeconds * 2) err = "TIMED_OUT"
+  }
+  if (err) throw err
+  else return browserLocation
 }

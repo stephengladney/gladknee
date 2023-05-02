@@ -1,7 +1,22 @@
 # gladknee 😄🦵
 
-Gladknee is an open-source TypeScript utility library.
+Gladknee is an open-source TypeScript utility library. It's written with functional programming conventions in mind.<br><br>
 
+#### What this library includes...
+
+<ul>
+<li>Abstractions of commonly needed functionality (i.e. lowerCaseNoSpaces, clampNumber, pause, etc)</li>
+<li>Safe alternatives to JavaScript weirdness (i.e. sorting)</li>
+<li>Abstractions of common browser-related functionality (i.e. cookies, location, saving files, etc)</li>
+<li>Abstractions of computer-sciency things (i.e. queue, stack, etc)</li>
+</ul>
+#### What this library does not include...
+<ul>
+<li>Custom classes that are just re-hashings of existing classes (i.e. "Sequence" instead of array)</li>
+<li>Custom functions that are just re-hashings of existing functions (i.e. array.includes())</li>
+<li>Abstractions of things you don't need a library for (i.e. get element from array at index N)</li>
+<li>Type checking in JavaScript</li>
+</ul>
 <details>
 <summary>Numbers</summary><br>
 <details>
@@ -502,6 +517,38 @@ getRollingSum([1,3,5])
 <details>
 <summary>Objects</summary><br>
 <details>
+<summary>&nbsp;&nbsp;omitKeys</summary>
+
+### **function omitKeys(obj: { [key: string]: any }, ...keys: string[]): object**
+
+Returns the object with any provided keys removed
+<br><br>
+Example:
+
+```
+const obj = {a: 1, b: 2, c: 3}
+omitKeys(obj, "b", "c")
+// {a: 1}
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;pickKeys</summary>
+
+### **function pickKeys<T extends object, U extends keyof T>(obj: T, ...keys: U[]): object**
+
+Returns the object with only the provided keys included
+<br><br>
+Example:
+
+```
+const obj = {a: 1, b: 2, c: 3}
+pickKeys(obj, "b", "c")
+// {b: 2, c: 3}
+```
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;sumOfKeyValues</summary>
 
 ### **sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & { [K in U]: number })[],key: U): number**
@@ -661,6 +708,24 @@ Returns a debounced version of the function passed. Acccepts custom delay and im
 
 Prompts a user in their browser to save provided text to a file on their machine.
 <br>
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;getBrowserLocation</summary>
+
+### **getBrowserLocation(timeoutInSeconds?: number): GeoCoords**
+
+Returns the user's latitude and longitude or an error.
+<br><br>
+**Note: Timeout defaults to 10 seconds**
+<br><br>
+
+```
+type GeoCoords = {
+  latitude: number | null
+  longitude: number | null
+}
+```
 
 </details>
 <details>
