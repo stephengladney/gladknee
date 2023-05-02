@@ -800,7 +800,7 @@ executeAll()
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;createAsyncQueue</summary>
+<summary>&nbsp;&nbsp;createQueueAsync</summary>
 
 ### **createQueueAsync(functionToExecute: Function): AsyncQueueObject**
 

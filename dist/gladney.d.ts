@@ -99,7 +99,7 @@ type AsyncQueueObject = {
     executeAll: (ignoreErrors?: boolean) => unknown;
     breakOut: Function;
 };
-export declare function createAsyncQueue(functionToExecute: (...args: any[]) => Promise<unknown>): AsyncQueueObject;
+export declare function createQueueAsync(functionToExecute: (...args: any[]) => Promise<unknown>): AsyncQueueObject;
 type GeoCoords = {
     latitude: number | null;
     longitude: number | null;
