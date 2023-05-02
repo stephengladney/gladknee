@@ -10,7 +10,9 @@ Gladknee is an open-source TypeScript utility library. It's written with functio
 <li>Abstractions of common browser-related functionality (i.e. cookies, location, saving files, etc)</li>
 <li>Abstractions of computer-sciency things (i.e. queue, stack, etc)</li>
 </ul>
+
 #### What this library does not include...
+
 <ul>
 <li>Custom classes that are just re-hashings of existing classes (i.e. "Sequence" instead of array)</li>
 <li>Custom functions that are just re-hashings of existing functions (i.e. array.includes())</li>
