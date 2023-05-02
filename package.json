@@ -13,7 +13,17 @@
     "url": "git+https://github.com/stephengladney/gladknee.git"
   },
   "keywords": [
-    "typescript"
+    "typescript",
+    "utility",
+    "numbers",
+    "array",
+    "sort",
+    "object",
+    "time",
+    "debounce",
+    "queue",
+    "pause",
+    "pipe"
   ],
   "author": "Stephen Gladney",
   "license": "ISC",

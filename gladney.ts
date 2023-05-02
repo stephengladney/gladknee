@@ -620,7 +620,7 @@ type AsyncQueueObject = {
   breakOut: Function
 }
 
-export function createAsyncQueue(
+export function createQueueAsync(
   functionToExecute: (...args: any[]) => Promise<unknown>
 ): AsyncQueueObject {
   const queue: unknown[] = []

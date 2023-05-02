@@ -780,7 +780,7 @@ type QueueObject = {
 
 ```
 const log = (n: any) => { console.log(n) }
-const { queue, enqueue, executeOne, executeAll} = createQueue(log)
+const { queue, enqueue, executeOne, executeAll, breakOut } = createQueue(log)
 
 enqueue(1)
 enqueue(2)
@@ -802,7 +802,7 @@ executeAll()
 <details>
 <summary>&nbsp;&nbsp;createAsyncQueue</summary>
 
-### **createAsyncQueue(functionToExecute: Function): AsyncQueueObject**
+### **createQueueAsync(functionToExecute: Function): AsyncQueueObject**
 
 Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two execute methods.
 <br>
@@ -834,7 +834,7 @@ const log = async (n: any) => {
     },2000)
   })
 
-const { queue, enqueue, executeOne, executeAll} = createQueue(log)
+const { queue, enqueue, executeOne, executeAll, breakOut } = createQueueAsync(log)
 
 enqueue(1)
 enqueue(2)
