@@ -81,7 +81,7 @@ export declare function pipe<T>(...funcs: [
     secondFunc: GenericFunction<T>,
     ...otherFuncs: GenericFunction<T>[]
 ]): (...args: T[]) => unknown;
-export declare function debounce(func: Function, ms: number, immediate: boolean): (...args: unknown[]) => {
+export declare function debounce<T extends (...args: any[]) => any>(func: T, ms: number, immediate: boolean): (...args: Parameters<T>) => {
     clear: () => void;
     flush: () => void;
 };

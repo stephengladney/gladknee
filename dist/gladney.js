@@ -458,7 +458,7 @@ exports.pipe = pipe;
 function debounce(func, ms, immediate) {
     let wait;
     let isWaiting = false;
-    const getReturnObject = (...args) => ({
+    const getReturnObject = (args) => ({
         clear: () => {
             clearTimeout(wait);
             isWaiting = false;
@@ -472,13 +472,13 @@ function debounce(func, ms, immediate) {
     if (immediate) {
         return (...args) => {
             if (isWaiting)
-                return getReturnObject();
+                return getReturnObject(args);
             else {
                 isWaiting = true;
                 wait = setTimeout(() => (isWaiting = false), ms);
                 func(...args);
             }
-            return getReturnObject();
+            return getReturnObject(args);
         };
     }
     else {
@@ -490,7 +490,7 @@ function debounce(func, ms, immediate) {
                 isWaiting = false;
                 func(...args);
             }, ms);
-            return getReturnObject();
+            return getReturnObject(args);
         };
     }
 }
