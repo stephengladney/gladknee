@@ -130,6 +130,13 @@ interface TimeObjectTimeOutput {
   hours: number
   minutes: number
   seconds: number
+  inYears: () => number
+  inMonths: () => number
+  inWeeks: () => number
+  inDays: () => number
+  inHours: () => number
+  inMinutes: () => number
+  inSeconds: () => number
 }
 ```
 
@@ -148,6 +155,9 @@ getAmountOfTimeFromSeconds(2000000)
     minutes: 33,
     seconds: 20
   }
+
+  getAmountOfTimeFromSeconds(2000000).inDays()
+// 23.14814814814815
 ```
 
 </details>

@@ -58,6 +58,13 @@ export interface TimeObject {
   hours: number
   minutes: number
   seconds: number
+  inYears: () => number
+  inMonths: () => number
+  inWeeks: () => number
+  inDays: () => number
+  inHours: () => number
+  inMinutes: () => number
+  inSeconds: () => number
 }
 
 const secondsInAMinute = 60
@@ -76,6 +83,13 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
     hours: Math.floor((seconds % secondsInADay) / secondsInAnHour),
     minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
     seconds: seconds % secondsInAMinute,
+    inYears: () => seconds / secondsInAYear,
+    inMonths: () => seconds / secondsInAMonth,
+    inWeeks: () => seconds / secondsInAWeek,
+    inDays: () => seconds / secondsInADay,
+    inHours: () => seconds / secondsInAnHour,
+    inMinutes: () => seconds / secondsInAMinute,
+    inSeconds: () => seconds,
   }
 }
 
