@@ -100,6 +100,22 @@ describe("time & dates", () => {
     })
   })
 
+  describe("timeSince", () => {
+    it("returns the correct number of seconds until the provided time", () => {
+      const start = new Date()
+      start.setDate(start.getDate() - 1)
+      const result = _.timeSince(start)
+      const validResult =
+        (result.days === 1 &&
+          result.hours === 0 &&
+          result.minutes === 0 &&
+          result.seconds === 1) ||
+        result.seconds === 1
+
+      expect(validResult).toBe(true)
+    })
+  })
+
   describe("getDayName", () => {
     it("returns the correct day name", () => {
       expect(_.getDayName(0)).toBe("Sunday")

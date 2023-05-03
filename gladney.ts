@@ -96,6 +96,13 @@ export function timeUntil(date: Date): TimeObject {
   return getAmountOfTimeFromSeconds(diffInSeconds)
 }
 
+export function timeSince(date: Date): TimeObject {
+  const diffInSeconds = Math.floor(
+    (Date.now() - new Date(date).getTime()) / 1000
+  )
+  return getAmountOfTimeFromSeconds(diffInSeconds)
+}
+
 export function getDayName(day: number) {
   const dayNames = [
     "Sunday",
