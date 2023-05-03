@@ -30,7 +30,7 @@ describe("numbers", () => {
   })
 
   describe("getRange", () => {
-    it("returns a single digit with a leading zero", () => {
+    it("returns a range of numbers", () => {
       expect(_.getRange(1, 5)).toEqual([1, 2, 3, 4, 5])
     })
     it("uses the step parameter", () => {
@@ -106,11 +106,10 @@ describe("time & dates", () => {
       start.setDate(start.getDate() - 1)
       const result = _.timeSince(start)
       const validResult =
-        (result.days === 1 &&
-          result.hours === 0 &&
-          result.minutes === 0 &&
-          result.seconds === 1) ||
-        result.seconds === 1
+        result.days === 1 &&
+        result.hours === 0 &&
+        result.minutes === 0 &&
+        (result.seconds === 0 || result.seconds === 1)
 
       expect(validResult).toBe(true)
     })
@@ -363,6 +362,13 @@ describe("objects", () => {
     it("returns the object with only the keys provided", () => {
       const obj = { a: 1, b: 2, c: 3 }
       expect(_.pickKeys(obj, "b", "c")).toEqual({ b: 2, c: 3 })
+    })
+  })
+
+  describe("combineObjects", () => {
+    it("returns an object with all key/values from provided objects", () => {
+      const objArray = [{ a: 1 }, { b: 2 }, { c: 3 }]
+      expect(_.combineObjects(objArray)).toEqual({ a: 1, b: 2, c: 3 })
     })
   })
 
