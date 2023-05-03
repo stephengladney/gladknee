@@ -563,6 +563,23 @@ pickKeys(obj, "b", "c")
 
 </details>
 <details>
+<summary>&nbsp;&nbsp;combineObjects</summary>
+
+### **function combineObjects(objs: object[]): object**
+
+Returns a single object with all key value pairs from provided objects.
+<br><br>
+_NOTE: If two objects have the same key, the latter object in the array's value(s) will result_
+<br><br>
+Example:
+
+```
+combineObjects([{a: 1}, {b: 2}, {c: 3}])
+// {a: 1, b: 2, c: 3}
+```
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;sumOfKeyValues</summary>
 
 ### **sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & { [K in U]: number })[],key: U): number**

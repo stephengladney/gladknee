@@ -361,6 +361,16 @@ export function pickKeys<T extends object, U extends keyof T>(
   return result
 }
 
+export function combineObjects(objs: { [key: string]: any }[]): object {
+  const result: { [key: string]: any } = {}
+  objs.forEach((obj) => {
+    Object.keys(obj).forEach((key) => {
+      result[key] = obj[key]
+    })
+  })
+  return result
+}
+
 export function sumOfKeyValues<T extends object, U extends keyof T>(
   arr: (T & { [K in U]: number })[],
   key: U
