@@ -2,7 +2,7 @@ import type { Router } from "express";
 export declare function float(n: number, decimalPlaces?: number): number;
 export declare function clampNumber(n: number, min: number | null, max?: number | null): number;
 export declare function doubleDigit(n: number): string;
-export declare function getRange(start: number, end: number, step?: number): number[];
+export declare function getRange(start: number, end: number, step?: number): number[] | undefined;
 export declare function ordinal(n: number): string;
 export interface TimeObject {
     years: number;
@@ -16,6 +16,7 @@ export interface TimeObject {
 export declare function getAmountOfTimeFromSeconds(seconds: number): TimeObject;
 export declare function getSecondsFromAmountOfTime(time: TimeObject): number;
 export declare function timeUntil(date: Date): TimeObject;
+export declare function timeSince(date: Date): TimeObject;
 export declare function getDayName(day: number): string;
 export declare function beginningOfToday(): Date;
 export declare function endOfToday(): Date;

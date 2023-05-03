@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBrowserLocation = exports.createQueueAsync = exports.createQueue = exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pauseSync = exports.pauseAsync = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createExpressRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.pickKeys = exports.omitKeys = exports.areArraysEqual = exports.nthFromEnd = exports.getCommonItems = exports.getUniqueItems = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.flatten = exports.chunkArray = exports.clampArray = exports.shuffle = exports.isAny = exports.isEvery = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.doubleDigit = exports.clampNumber = exports.float = void 0;
+exports.getBrowserLocation = exports.createQueueAsync = exports.createQueue = exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pauseSync = exports.pauseAsync = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createExpressRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.pickKeys = exports.omitKeys = exports.areArraysEqual = exports.nthFromEnd = exports.getCommonItems = exports.getUniqueItems = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.flatten = exports.chunkArray = exports.clampArray = exports.shuffle = exports.isAny = exports.isEvery = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeSince = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.doubleDigit = exports.clampNumber = exports.float = void 0;
 function float(n, decimalPlaces) {
     return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n;
 }
@@ -32,15 +32,10 @@ function doubleDigit(n) {
 exports.doubleDigit = doubleDigit;
 function getRange(start, end, step = 1) {
     const result = [];
-    if (start < end && step > 0) {
-        for (let i = start; i <= end; i += step) {
-            result.push(i);
-        }
-    }
-    else if (step < 0) {
-        for (let i = start; i >= end; i += step) {
-            result.push(i);
-        }
+    if ((start < end && step <= 0) || (start < end && step >= 0))
+        return;
+    for (let i = start; i <= end; i += step) {
+        result.push(i);
     }
     return result;
 }
@@ -93,6 +88,11 @@ function timeUntil(date) {
     return getAmountOfTimeFromSeconds(diffInSeconds);
 }
 exports.timeUntil = timeUntil;
+function timeSince(date) {
+    const diffInSeconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+    return getAmountOfTimeFromSeconds(diffInSeconds);
+}
+exports.timeSince = timeSince;
 function getDayName(day) {
     const dayNames = [
         "Sunday",

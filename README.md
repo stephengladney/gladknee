@@ -198,6 +198,14 @@ Returns an object with the number of years, months, weeks, days, hours, minutes 
 
 </details>
 <details>
+<summary>&nbsp;&nbsp;timeSince</summary>
+
+### **timeUntil(date: Date): TimeOutput**
+
+Returns an object with the number of years, months, weeks, days, hours, minutes and seconds since the date provided
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;getDayName</summary>
 
 ### **getDayName(day: number): string | undefined**
