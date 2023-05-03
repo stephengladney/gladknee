@@ -48,6 +48,9 @@ export declare function omitKeys(obj: {
 export declare function pickKeys<T extends object, U extends keyof T>(obj: T, ...keys: U[]): {
     [key: string]: any;
 };
+export declare function combineObjects(objs: {
+    [key: string]: any;
+}[]): object;
 export declare function sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & {
     [K in U]: number;
 })[], key: U): number;
