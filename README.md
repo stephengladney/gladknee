@@ -200,7 +200,7 @@ Returns an object with the number of years, months, weeks, days, hours, minutes 
 <details>
 <summary>&nbsp;&nbsp;timeSince</summary>
 
-### **timeUntil(date: Date): TimeOutput**
+### **timeSince(date: Date): TimeOutput**
 
 Returns an object with the number of years, months, weeks, days, hours, minutes and seconds since the date provided
 
