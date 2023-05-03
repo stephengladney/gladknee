@@ -519,11 +519,15 @@ export function pipe<T>(
   }
 }
 
-export function debounce(func: Function, ms: number, immediate: boolean) {
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  ms: number,
+  immediate: boolean
+) {
   let wait: NodeJS.Timeout
   let isWaiting = false
 
-  const getReturnObject = (...args: unknown[]) => ({
+  const getReturnObject = (args: Parameters<T>) => ({
     clear: () => {
       clearTimeout(wait)
       isWaiting = false
@@ -531,28 +535,33 @@ export function debounce(func: Function, ms: number, immediate: boolean) {
     flush: () => {
       clearTimeout(wait)
       isWaiting = false
+
       func(...args)
     },
   })
   if (immediate) {
-    return (...args: unknown[]) => {
-      if (isWaiting) return getReturnObject()
+    return (...args: Parameters<T>) => {
+      if (isWaiting) return getReturnObject(args)
       else {
         isWaiting = true
         wait = setTimeout(() => (isWaiting = false), ms)
+
         func(...args)
       }
-      return getReturnObject()
+
+      return getReturnObject(args)
     }
   } else {
-    return (...args: unknown[]) => {
+    return (...args: Parameters<T>) => {
       if (isWaiting) clearTimeout(wait)
       isWaiting = true
       wait = setTimeout(() => {
         isWaiting = false
+
         func(...args)
       }, ms)
-      return getReturnObject()
+
+      return getReturnObject(args)
     }
   }
 }
