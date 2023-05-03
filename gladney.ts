@@ -22,14 +22,10 @@ export function doubleDigit(n: number) {
 
 export function getRange(start: number, end: number, step = 1) {
   const result: number[] = []
-  if (start < end && step > 0) {
-    for (let i = start; i <= end; i += step) {
-      result.push(i)
-    }
-  } else if (step < 0) {
-    for (let i = start; i >= end; i += step) {
-      result.push(i)
-    }
+  if ((start < end && step <= 0) || (start < end && step >= 0)) return
+
+  for (let i = start; i <= end; i += step) {
+    result.push(i)
   }
   return result
 }
