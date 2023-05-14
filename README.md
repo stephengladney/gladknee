@@ -43,9 +43,9 @@ float(4.24398, 3)
 <details>
 <summary>&nbsp;&nbsp;clampNumber</summary>
 
-### **clampNumber(n: number, min: number: max: number): number**
+### **clampNumber(n: number, min: number | false: max: number | false): number**
 
-Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit
+Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit. You can pass `false` or 0 for a limit parameter to bypass that limit.
 <br><br>
 Example:
 
@@ -386,9 +386,9 @@ chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2)
 <details>
 <summary>&nbsp;&nbsp;clampArray</summary>
 
-### **clampArray(arr: any[], min: number | null, max: number | null, fill?: any): any[]**
+### **clampArray(arr: any[], min: number | false, max: number | false, fill?: any): any[]**
 
-Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length is enforced, items with the value of the fill provided will be added. You can pass in any falsy value for a limit parameter to bypass that limit.
+Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length is enforced, items with the value of the fill provided will be added. You can pass `false` or 0 for a limit parameter to bypass that limit.
 <br><br>
 Example:
 
@@ -396,7 +396,7 @@ Example:
 clampArray([1, 2, 3, 4, 5], 0, 3)
 // [1, 2, 3]
 
-clampArray([1, 2, 3], 5, null, "x")
+clampArray([1, 2, 3], 5, false, "x")
 // [1, 2, 3, "x", "x"]
 ```
 
