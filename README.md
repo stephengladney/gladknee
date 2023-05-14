@@ -386,9 +386,9 @@ chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2)
 <details>
 <summary>&nbsp;&nbsp;clampArray</summary>
 
-### **clampArray(arr: any[], min: number | false, max: number | false, fill?: any): any[]**
+### **clampArray<T>(arr: T[], min: number | false, max: number | false, fill?: T): any[]**
 
-Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length is enforced, items with the value of the fill provided will be added. You can pass `false` or 0 for a limit parameter to bypass that limit.
+Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length is larger than the length of the array, the fill will be added to the array as many times as necessary to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no fill is provided, `undefined` will be added. For min and max limits, you can pass `false` or 0 for a limit parameter to bypass that limit.
 <br><br>
 Example:
 

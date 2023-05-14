@@ -203,13 +203,13 @@ export function shuffle(array: any[]) {
   return _array
 }
 
-export function clampArray(
-  arr: any[],
+export function clampArray<T>(
+  arr: T[],
   min: number | false,
   max: number | false,
-  fill?: any
+  fill?: T
 ) {
-  let result
+  let result: (T | undefined)[] = []
   if (min && arr.length < min) {
     result = [...arr]
     const diff = min - arr.length
