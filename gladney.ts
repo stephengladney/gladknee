@@ -391,6 +391,24 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
   return arr.sort((a, b) => (a[key] < b[key] ? -1 : 1))
 }
 
+export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
+  objs: T[],
+  ...keys: U[]
+) {
+  const groupAndSort = (objs: T[], keys: U[], i = 0): any => {
+    if (keys.length === 1) return sortObjectsByKeyValue(objs, keys[0])
+
+    const groupedByKey = groupObjectsByKeyValue(objs, keys[0])
+    const sortedKeyValues = Object.keys(groupedByKey).sort()
+
+    return sortedKeyValues.reduce((acc: T[], keyVal) => {
+      return [...acc, ...groupAndSort(groupedByKey[keyVal], keys.slice(1))]
+    }, [])
+  }
+
+  return groupAndSort(objs, keys)
+}
+
 export function getKeyValueCounts<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
