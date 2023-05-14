@@ -770,7 +770,7 @@ type GeoCoords = {
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;getBrowserLocation</summary>
+<summary>&nbsp;&nbsp;getSearchParams</summary>
 
 ### **getSearchParams(): object**
 
@@ -779,7 +779,7 @@ Returns the window location's search params.
 
 ```
 
-_Browser location: website.com?search=john&page=1_
+// Browser location: website.com?search=john&page=1
 
 getSearchParams()
 
