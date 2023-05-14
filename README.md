@@ -752,7 +752,7 @@ Prompts a user in their browser to save provided text to a file on their machine
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;getBrowserLocation</summary>
+<summary>&nbsp;&nbsp;getBrowserGeolocation</summary>
 
 ### **getBrowserGeolocation(timeoutInSeconds?: number): GeoCoords**
 
@@ -770,9 +770,9 @@ type GeoCoords = {
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;getSearchParams</summary>
+<summary>&nbsp;&nbsp;getBrowserSearchParams</summary>
 
-### **getSearchParams(): object**
+### **getBrowserSearchParams(): object**
 
 Returns the window location's search params.
 <br><br>
@@ -781,7 +781,7 @@ Returns the window location's search params.
 
 // Browser location: website.com?search=john&page=1
 
-getSearchParams()
+getBrowserSearchParams()
 
 // {
      search: "john",

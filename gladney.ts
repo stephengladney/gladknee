@@ -746,7 +746,7 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
   else return browserLocation
 }
 
-export function getSearchParams() {
+export function getBrowserSearchParams() {
   const params = window.location.search.slice(1).split("&")
   return params.reduce((acc, param) => {
     const paramSplit = param.split("=")
