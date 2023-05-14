@@ -724,7 +724,7 @@ type GeoCoords = {
   longitude: number | null
 }
 
-export async function getBrowserLocation(timeoutInSeconds = 10) {
+export async function getBrowserGeolocation(timeoutInSeconds = 10) {
   let browserLocation: GeoCoords = { latitude: null, longitude: null }
   let err = null
   let pauseCount = 0
@@ -744,4 +744,13 @@ export async function getBrowserLocation(timeoutInSeconds = 10) {
   }
   if (err) throw err
   else return browserLocation
+}
+
+export function getSearchParams() {
+  const params = window.location.search.slice(1).split("&")
+  return params.reduce((acc, param) => {
+    const paramSplit = param.split("=")
+    const [key, value] = paramSplit
+    return { ...acc, [key]: value }
+  }, {})
 }

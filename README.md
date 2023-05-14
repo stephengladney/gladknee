@@ -754,7 +754,7 @@ Prompts a user in their browser to save provided text to a file on their machine
 <details>
 <summary>&nbsp;&nbsp;getBrowserLocation</summary>
 
-### **getBrowserLocation(timeoutInSeconds?: number): GeoCoords**
+### **getBrowserGeolocation(timeoutInSeconds?: number): GeoCoords**
 
 Returns the user's latitude and longitude or an error.
 <br><br>
@@ -765,6 +765,27 @@ Returns the user's latitude and longitude or an error.
 type GeoCoords = {
   latitude: number | null
   longitude: number | null
+}
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;getBrowserLocation</summary>
+
+### **getSearchParams(): object**
+
+Returns the window location's search params.
+<br><br>
+
+```
+
+_Browser location: website.com?search=john&page=1_
+
+getSearchParams()
+
+// {
+     search: "john",
+     page: "1"
 }
 ```
 
