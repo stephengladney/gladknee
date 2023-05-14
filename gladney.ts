@@ -415,9 +415,13 @@ export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
     const groupedByKey = groupObjectsByKeyValue(objs, keys[0])
     const sortedKeyValues = Object.keys(groupedByKey).sort()
 
-    return sortedKeyValues.reduce((acc: T[], keyVal) => {
-      return [...acc, ...groupAndSort(groupedByKey[keyVal], keys.slice(1))]
-    }, [])
+    return sortedKeyValues.reduce(
+      (acc: T[], keyVal) => [
+        ...acc,
+        ...groupAndSort(groupedByKey[keyVal], keys.slice(1)),
+      ],
+      []
+    )
   }
 
   return groupAndSort(objs, keys)
