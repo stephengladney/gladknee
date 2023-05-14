@@ -58,13 +58,13 @@ export interface TimeObject {
   hours: number
   minutes: number
   seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
+  inYears?: () => number
+  inMonths?: () => number
+  inWeeks?: () => number
+  inDays?: () => number
+  inHours?: () => number
+  inMinutes?: () => number
+  inSeconds?: () => number
 }
 
 const secondsInAMinute = 60

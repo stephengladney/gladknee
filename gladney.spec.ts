@@ -55,15 +55,14 @@ describe("numbers", () => {
 describe("time & dates", () => {
   describe("getAmountOfTimeFromSeconds", () => {
     it("returns the correct TimeOutput", () => {
-      expect(_.getAmountOfTimeFromSeconds(200000)).toEqual({
-        years: 0,
-        months: 0,
-        weeks: 0,
-        days: 2,
-        hours: 7,
-        minutes: 33,
-        seconds: 20,
-      })
+      const timeObject = _.getAmountOfTimeFromSeconds(200000)
+      expect(timeObject.years).toEqual(0)
+      expect(timeObject.months).toEqual(0)
+      expect(timeObject.weeks).toEqual(0)
+      expect(timeObject.days).toEqual(2)
+      expect(timeObject.hours).toEqual(7)
+      expect(timeObject.minutes).toEqual(33)
+      expect(timeObject.seconds).toEqual(20)
     })
   })
 
@@ -383,7 +382,7 @@ describe("objects", () => {
     })
   })
 
-  describe("sortObjectsByKeyValues", () => {
+  describe("sortObjectsByKeyValue", () => {
     it("returns the array sorted by key value", () => {
       const arr = [
         { a: 1, b: 2 },
@@ -394,6 +393,29 @@ describe("objects", () => {
         { a: 2, b: 1 },
         { a: 1, b: 2 },
         { a: 3, b: 4 },
+      ])
+    })
+  })
+
+  describe("sortObjectsByKeyValues", () => {
+    it("returns the array sorted by key values", () => {
+      const arr = [
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 1, c: 1 },
+        { a: 1, b: 3, c: 2 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
+        { a: 3, b: 4, c: 1 },
+      ]
+      expect(_.sortObjectsByKeyValues(arr, "a", "b", "c")).toEqual([
+        { a: 1, b: 1, c: 1 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 3, c: 2 },
+        { a: 2, b: 1, c: 3 },
+        { a: 2, b: 2, c: 1 },
+        { a: 3, b: 4, c: 1 },
       ])
     })
   })
