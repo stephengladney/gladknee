@@ -12,6 +12,13 @@ export interface TimeObject {
     hours: number;
     minutes: number;
     seconds: number;
+    inYears?: () => number;
+    inMonths?: () => number;
+    inWeeks?: () => number;
+    inDays?: () => number;
+    inHours?: () => number;
+    inMinutes?: () => number;
+    inSeconds?: () => number;
 }
 export declare function getAmountOfTimeFromSeconds(seconds: number): TimeObject;
 export declare function getSecondsFromAmountOfTime(time: TimeObject): number;
@@ -55,6 +62,7 @@ export declare function sumOfKeyValues<T extends object, U extends keyof T>(arr:
     [K in U]: number;
 })[], key: U): number;
 export declare function sortObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U): T[];
+export declare function sortObjectsByKeyValues<T extends object, U extends keyof T>(objs: T[], ...keys: U[]): any;
 export declare function getKeyValueCounts<T extends object, U extends keyof T>(arr: T[], key: U, isCaseSensitive?: boolean): {
     [key: string]: number;
 };

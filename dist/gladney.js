@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createQueueAsync = exports.createQueue = exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pauseSync = exports.pauseAsync = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createExpressRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.combineObjects = exports.pickKeys = exports.omitKeys = exports.areArraysEqual = exports.nthFromEnd = exports.getCommonItems = exports.getUniqueItems = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.flatten = exports.chunkArray = exports.clampArray = exports.shuffle = exports.isAny = exports.isEvery = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeSince = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.doubleDigit = exports.clampNumber = exports.float = void 0;
-exports.getBrowserLocation = void 0;
+exports.createQueue = exports.setCookie = exports.getCookie = exports.saveTextToFileInBrowser = exports.debounce = exports.pipe = exports.pauseSync = exports.pauseAsync = exports.addTimeoutToPromise = exports.convertQueryParamOperators = exports.createExpressRoutes = exports.groupObjectsByKeyValue = exports.getKeyValueCounts = exports.sortObjectsByKeyValues = exports.sortObjectsByKeyValue = exports.sumOfKeyValues = exports.combineObjects = exports.pickKeys = exports.omitKeys = exports.areArraysEqual = exports.nthFromEnd = exports.getCommonItems = exports.getUniqueItems = exports.getRollingSum = exports.sum = exports.removeDuplicates = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.flatten = exports.chunkArray = exports.clampArray = exports.shuffle = exports.isAny = exports.isEvery = exports.getRandomString = exports.truncate = exports.lowerCaseNoSpaces = exports.endOfToday = exports.beginningOfToday = exports.getDayName = exports.timeSince = exports.timeUntil = exports.getSecondsFromAmountOfTime = exports.getAmountOfTimeFromSeconds = exports.ordinal = exports.getRange = exports.doubleDigit = exports.clampNumber = exports.float = void 0;
+exports.getBrowserLocation = exports.createQueueAsync = void 0;
 function float(n, decimalPlaces) {
     return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n;
 }
@@ -80,6 +80,13 @@ function getAmountOfTimeFromSeconds(seconds) {
         hours: Math.floor((seconds % secondsInADay) / secondsInAnHour),
         minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
         seconds: seconds % secondsInAMinute,
+        inYears: () => seconds / secondsInAYear,
+        inMonths: () => seconds / secondsInAMonth,
+        inWeeks: () => seconds / secondsInAWeek,
+        inDays: () => seconds / secondsInADay,
+        inHours: () => seconds / secondsInAnHour,
+        inMinutes: () => seconds / secondsInAMinute,
+        inSeconds: () => seconds,
     };
 }
 exports.getAmountOfTimeFromSeconds = getAmountOfTimeFromSeconds;
@@ -357,6 +364,20 @@ function sortObjectsByKeyValue(arr, key) {
     return arr.sort((a, b) => (a[key] < b[key] ? -1 : 1));
 }
 exports.sortObjectsByKeyValue = sortObjectsByKeyValue;
+function sortObjectsByKeyValues(objs, ...keys) {
+    const groupAndSort = (objs, keys, i = 0) => {
+        if (keys.length === 1)
+            return sortObjectsByKeyValue(objs, keys[0]);
+        const groupedByKey = groupObjectsByKeyValue(objs, keys[0]);
+        const sortedKeyValues = Object.keys(groupedByKey).sort();
+        return sortedKeyValues.reduce((acc, keyVal) => [
+            ...acc,
+            ...groupAndSort(groupedByKey[keyVal], keys.slice(1)),
+        ], []);
+    };
+    return groupAndSort(objs, keys);
+}
+exports.sortObjectsByKeyValues = sortObjectsByKeyValues;
 function getKeyValueCounts(arr, key, isCaseSensitive) {
     return arr.reduce((result, obj) => {
         const value = isCaseSensitive
