@@ -1,4 +1,3 @@
-import exp from "constants"
 import * as _ from "./gladney"
 
 describe("numbers", () => {
@@ -215,7 +214,7 @@ describe("arrays", () => {
 
     it("enforces the minimum limit and uses filler", () => {
       const arr = [0, 1]
-      expect(_.clampArray(arr, 3, false, "x")).toEqual([0, 1, "x"])
+      expect(_.clampArray(arr, 3, false, 0)).toEqual([0, 1, 0])
     })
   })
 
