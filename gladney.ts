@@ -240,6 +240,13 @@ export function flatten(arr: any[]): any[] {
   return result
 }
 
+export function flattenDeep(arr: any[]): any[] {
+  return arr.reduce((acc, item) => {
+    if (Array.isArray(item)) return [...acc, ...flattenDeep(item)]
+    else return [...acc, item]
+  }, [])
+}
+
 type SortableArray = (string | number)[]
 
 export function bubbleSort(arr: SortableArray) {
@@ -408,23 +415,19 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
 export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
   ...keys: U[]
-) {
-  const groupAndSort = (objs: T[], keys: U[], i = 0): any => {
-    if (keys.length === 1) return sortObjectsByKeyValue(objs, keys[0])
+): T[] {
+  if (keys.length === 1) return sortObjectsByKeyValue(objs, keys[0])
 
-    const groupedByKey = groupObjectsByKeyValue(objs, keys[0])
-    const sortedKeyValues = Object.keys(groupedByKey).sort()
+  const groupedByKey = groupObjectsByKeyValue(objs, keys[0])
+  const sortedKeyValues = Object.keys(groupedByKey).sort()
 
-    return sortedKeyValues.reduce(
-      (acc: T[], keyVal) => [
-        ...acc,
-        ...groupAndSort(groupedByKey[keyVal], keys.slice(1)),
-      ],
-      []
-    )
-  }
-
-  return groupAndSort(objs, keys)
+  return sortedKeyValues.reduce(
+    (acc: T[], keyVal) => [
+      ...acc,
+      ...sortObjectsByKeyValues(groupedByKey[keyVal], ...keys.slice(1)),
+    ],
+    []
+  )
 }
 
 export function getKeyValueCounts<T extends object, U extends keyof T>(
