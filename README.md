@@ -6,8 +6,8 @@ Gladknee is an open-source TypeScript utility library. It's written with functio
 
 <ul>
 <li>Abstractions of commonly needed functionality (i.e. lowerCaseNoSpaces, clampNumber, pause, etc)</li>
-<li>Safe alternatives to JavaScript weirdness (i.e. sorting)</li>
-<li>Abstractions of common browser-related functionality (i.e. cookies, location, saving files, etc)</li>
+<li>Safe alternatives to JavaScript weirdness (i.e. sorting negative numbers)</li>
+<li>Abstractions of common browser-related functionality (i.e. cookies, geolocation, saving files, etc)</li>
 <li>Abstractions of computer-sciency things (i.e. queue, stack, etc)</li>
 </ul>
 
@@ -388,15 +388,15 @@ chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2)
 
 ### **clampArray(arr: any[], min: number | null, max: number | null, fill?: any): any[]**
 
-Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length is enforced, items with the value of the fill provided will be added.
+Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length is enforced, items with the value of the fill provided will be added. You can pass in any falsy value for a limit parameter to bypass that limit.
 <br><br>
 Example:
 
 ```
-clampArray([1, 2, 3, 4, 5], 3)
+clampArray([1, 2, 3, 4, 5], 0, 3)
 // [1, 2, 3]
 
-clampArray([1, 2, 3], null, 5, "x")
+clampArray([1, 2, 3], 5, null, "x")
 // [1, 2, 3, "x", "x"]
 ```
 
@@ -844,7 +844,7 @@ Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two
 <br>
 `executeOne()` will call the async function on the first item in the queue and then remove that item from the queue.
 <br><br>
-`executeAll()` will call the async function on every item in the queue and remove each item after execution. The previous function's returned promise must resolve before the next iteration is invoked. If you wish to continue iterating even if a promise rejects, pass a true boolean into the function.
+`executeAll(ignoreErrors?: boolean)` will call the async function on every item in the queue and remove each item after execution. The previous function's returned promise must resolve before the next iteration is invoked. If you wish to continue iterating even if a promise rejects, pass a true boolean into the function.
 <br><br>
 `breakOut()` halts the `executeAll()` function.
 <br><br>
