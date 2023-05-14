@@ -6,8 +6,8 @@ export function float(n: number, decimalPlaces?: number) {
 
 export function clampNumber(
   n: number,
-  min: number | null | false,
-  max?: number | null | false
+  min: number | false,
+  max?: number | false
 ) {
   let result = n
   if (min) result = n > min ? n : min
@@ -205,8 +205,8 @@ export function shuffle(array: any[]) {
 
 export function clampArray(
   arr: any[],
-  min: number | null | false,
-  max: number | null | false,
+  min: number | false,
+  max: number | false,
   fill?: any
 ) {
   let result
