@@ -152,11 +152,11 @@ export function lowerCaseNoSpaces(str: string) {
 
 export function truncate(
   str: string,
-  lengthLimit: number,
+  lengthlevels: number,
   ending: string = "..."
 ) {
-  return str.length > lengthLimit
-    ? `${str.substring(0, lengthLimit)}${ending}`
+  return str.length > lengthlevels
+    ? `${str.substring(0, lengthlevels)}${ending}`
     : str
 }
 
@@ -230,20 +230,11 @@ export function chunkArray(arr: any[], chunkSize: number) {
   return result
 }
 
-export function flatten(arr: any[]): any[] {
-  const result = []
-  for (let i = 0; i < arr.length; i++) {
-    if (Array.isArray(arr[i])) {
-      result.push(...flatten(arr[i]))
-    } else result.push(arr[i])
-  }
-  return result
-}
-
-export function flattenDeep(arr: any[]): any[] {
+export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
   return arr.reduce((acc, item) => {
-    if (Array.isArray(item)) return [...acc, ...flattenDeep(item)]
-    else return [...acc, item]
+    if (Array.isArray(item) && (!levels || currentLevel < levels)) {
+      return [...acc, ...flatten(item, levels, currentLevel + 1)]
+    } else return [...acc, item]
   }, [])
 }
 

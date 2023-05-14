@@ -311,13 +311,25 @@ describe("arrays", () => {
   })
 
   describe("flatten", () => {
-    it("returns the array flattened", () => {
+    it("returns a three dimensional array flattened to a one dimensional array", () => {
       expect(
         _.flatten([
           [1, 2, [3, 4]],
           [5, 6],
         ])
       ).toEqual([1, 2, 3, 4, 5, 6])
+    })
+
+    it("respects levels paramter", () => {
+      expect(
+        _.flatten(
+          [
+            [1, 2, [3, 4]],
+            [5, 6],
+          ],
+          1
+        )
+      ).toEqual([1, 2, [3, 4], 5, 6])
     })
   })
 

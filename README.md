@@ -369,6 +369,27 @@ shuffle([1, 2, 3, 4, 5])
 
 </details>
 <details>
+<summary>&nbsp;&nbsp;flatten</summary>
+
+### **flatten(arr: any[], levels?: number): any[]**
+
+Returns a single dimensional array by default. If you pass a number for levels, the function will only reduce that many dimensions of arrays.
+<br><br>
+Example:
+
+```
+flatten([1, 2, [3, 4], 5])
+// [1, 2, 3, 4, 5]
+
+flatten([1, 2, [[3, 4], 5]])
+// [1, 2, 3, 4, 5]
+
+flatten([1, 2, [[3, 4], 5]], 1)
+// [1, 2, [3, 4], 5]
+```
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;chunkArray</summary>
 
 ### **chunkArray(arr: any[], n: number): any[][]**
