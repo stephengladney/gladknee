@@ -453,6 +453,23 @@ export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
   return result
 }
 
+export function convertObjectToQueryParams(obj: object): string {
+  let result = ""
+  const objectKeys = Object.keys(obj)
+  objectKeys.forEach((key, i) => {
+    const keyValue = obj[key as keyof typeof obj]
+    if (typeof keyValue !== "object") {
+      result += `${key}=${keyValue}` + (i < objectKeys.length - 1 ? "&" : "")
+    } else {
+      Object.keys(keyValue).forEach((key2, i2) => {
+        const keyValue2 = keyValue[key2 as keyof typeof keyValue]
+        result += `${key}[${key2}]=${keyValue2}`
+      })
+    }
+  })
+  return result
+}
+
 // EXPRESS
 
 export type Handler = (req: Request, res: Response) => void
@@ -745,6 +762,13 @@ export function getBrowserSearchParams() {
   return params.reduce((acc, param) => {
     const paramSplit = param.split("=")
     const [key, value] = paramSplit
-    return { ...acc, [key]: value }
+    const objectRegEx = /(.+)\[(.+)\]/
+    if (objectRegEx.test(key)) {
+      const [_, parentKey, childKey] = objectRegEx.exec(key)!
+      return {
+        ...acc,
+        [parentKey]: { [childKey]: value },
+      }
+    } else return { ...acc, [key]: value }
   }, {})
 }
