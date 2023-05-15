@@ -688,7 +688,7 @@ Example:
 ```
 convertObjectToQueryParams({ age: 30, city: "Atlanta" })
 
-// "age=38&city=Atlanta
+// "age=38&city=Atlanta"
 ```
 
 </details>
