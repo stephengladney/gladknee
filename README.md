@@ -44,6 +44,21 @@ float(4.24398, 3)
 
 </details>
 <details>
+<summary>&nbsp;&nbsp;sum</summary>
+
+### **sum(...arr: number[]): number**
+
+Returns the sum of the provided numbers.
+<br><br>
+Example:
+
+```typescript
+sum(1, 2, 3, 4, 5)
+// 15
+```
+
+</details>
+<details>
 <summary>&nbsp;&nbsp;clampNumber</summary>
 <br>
 Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit. You can pass `false` or 0 for a limit parameter to bypass that limit.
@@ -521,21 +536,6 @@ Example:
 ```typescript
 removeDuplicates([1, 2, 1, 1, 2, 5])
 // [1, 2, 5]
-```
-
-</details>
-<details>
-<summary>&nbsp;&nbsp;sum</summary>
-
-### **sum(arr: number[]): number**
-
-Returns the sum of an array of numbers.
-<br><br>
-Example:
-
-```typescript
-sum([1, 2, 3, 4, 5])
-// 15
 ```
 
 </details>

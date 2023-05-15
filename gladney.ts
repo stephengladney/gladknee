@@ -12,6 +12,17 @@ export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
 
+/** Returns the sum of the provided numbers.
+ *
+ * Example:
+ * ```typescript
+ * sum(1, 4, 6) // 11
+ * ```
+ **/
+export function sum(...arr: number[]) {
+  return arr.reduce((acc, i) => acc + i, 0)
+}
+
 /** Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit.
  You can pass **false** or **0** for a limit parameter to bypass that limit.
 *
@@ -129,7 +140,7 @@ const secondsInAYear = 31557600
 // { years: 0, months: 0, weeks: 3, days: 2, hours: 3, minutes: 33, seconds: 20 }
 
 * getAmountOfTimeFromSeconds(2000000).inMinutes()
-// { years: 0, months: 0, weeks: 3, days: 2, hours: 3, minutes: 33, seconds: 20 }
+// 33333.333333333336
 
 interface TimeObject {
   years: number
@@ -429,6 +440,13 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
  * that many dimensions of arrays.
  *
  * NOTE: You should never pass in a value for `currentLevel`. This is a helper param used for recursion.
+ *
+ * Example:
+ * ```typescript
+ * flatten([1,[2,3,[4,5]],6]) // [1, 2, 3, 4, 5, 6]
+ *
+ * flatten([1,[2,3,[4,5]],6], 1) // [1, 2, 3, [4, 5], 6]
+ * ```
  **/
 export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
   return arr.reduce((acc, item) => {
@@ -493,15 +511,14 @@ export function insertionSort(arr: SortableArray) {
 }
 
 /** Returns the provided array with any duplicates removed.
+ *
+ * Example:
+ * ```typescript
+ * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) // [1, 2, 3, 4, 5]
+ * ```
  **/
 export function removeDuplicates(arr: any[]) {
   return Array.from(new Set(arr))
-}
-
-/** Returns the sum of the provided array of numbers.
- **/
-export function sum(arr: number[]) {
-  return arr.reduce((acc, i) => acc + i, 0)
 }
 
 /** Returns an array of the rolling sum of the provided array of numbers.
@@ -529,6 +546,12 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
 }
 
 /** Returns the number of instances the target occurs in the provided array.
+ *
+ * Example:
+ * ```typescript
+ * const arr = [1, 2, 3, 3, 4, 4, 4, 5]
+ * getCount(arr, 4) // 3
+ * ```
  **/
 export function getCountOf<T>(arr: T[], target: T) {
   return getCounts(arr)[target as string] || 0
@@ -536,6 +559,13 @@ export function getCountOf<T>(arr: T[], target: T) {
 
 /** Returns an array of items that only appear in one of the provided arrays.
  *
+ * Example:
+ * ```typescript
+ * const arr1 = [1, 2, 3, 4]
+ * const arr2 = [3, 4, 5, 6]
+ *
+ * getUniqueItems(arr1, arr2) // [1, 2, 5, 6]
+ * ```
  * See also: `getCommonItems()` and `getSharedItems()`
  **/
 export function getUniqueItems<T>(...arrs: T[][]) {
@@ -557,6 +587,14 @@ export function getUniqueItems<T>(...arrs: T[][]) {
 
 /** Returns an array of items that appear in at least two of the provided arrays.
  *
+ * Example:
+ * ```typescript
+ * const arr1 = [1, 2, 3, 4]
+ * const arr2 = [3, 4, 5, 6]
+ * const arr3 = [4, 5, 6, 7]
+ *
+ * getCommonItems(arr1, arr2, arr3) // [3, 4, 5, 6]
+ * ```
  * See also: `getUniqueItems()` and `getSharedItems()`
  **/
 export function getCommonItems<T>(...arrs: T[][]) {
@@ -575,6 +613,14 @@ export function getCommonItems<T>(...arrs: T[][]) {
 
 /** Returns an array of items that appear in all of the provided arrays.
  *
+ * Example:
+ * ```typescript
+ * const arr1 = [1, 2, 3, 4]
+ * const arr2 = [3, 4, 5, 6]
+ * const arr3 = [4, 5, 6, 7]
+ *
+ * getSharedItems(arr1, arr2, arr3) // [4]
+ * ```
  * See also: `getUniqueItems()` and `getCommonItems()`
  **/
 export function getSharedItems<T>(...arrs: T[][]) {
@@ -590,6 +636,11 @@ export function getSharedItems<T>(...arrs: T[][]) {
 }
 
 /** Returns the item in the array N spots from the last item.
+ *
+ * Example:
+ * ```typescript
+ * nthFromEnd([1, 2, 3, 4, 5], 2) // 3
+ * ```
  **/
 export function nthFromEnd<T>(arr: T[], n: number) {
   return arr[arr.length - 1 - n]
@@ -597,6 +648,18 @@ export function nthFromEnd<T>(arr: T[], n: number) {
 
 /** Returns a boolean of whether or not the two arrays have the same items.
  *
+ * Example:
+ * ```typescript
+ * const arr1 = [1, 2, 3, 4]
+ * const arr2 = [1, 2, 3, 4]
+ * const arr3 = [4, 3, 2, 1]
+ *
+ * areArraysEqual(arr1, arr2) // true
+ *
+ * areArraysEqual(arr2, arr3) // false
+ *
+ * areArraysEqual(arr2, arr3, false) // true
+ * ```
  * NOTE: `orderMatters` is true by default.
  **/
 export function areArraysEqual<T>(
@@ -615,6 +678,13 @@ export function areArraysEqual<T>(
 // OBJECTS
 
 /** Returns the object with any provided keys removed.
+ *
+ * Example:
+ * ```typescript
+ * const obj = { a: 1, b: 2, c: 3 }
+ *
+ * omitKeys(obj, "b") // { a: 1, c: 3 }
+ * ```
  **/
 export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
   const result: { [key: string]: any } = {}
@@ -627,6 +697,13 @@ export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
 }
 
 /** Returns the object with only the provided keys included.
+ *
+ * Example:
+ * ```typescript
+ * const obj = { a: 1, b: 2, c: 3 }
+ *
+ * pickKeys(obj, "a", "c") // { a: 1, c: 3 }
+ * ```
  **/
 export function pickKeys<T extends object, U extends keyof T>(
   obj: T,
@@ -644,8 +721,23 @@ export function pickKeys<T extends object, U extends keyof T>(
 
 /** Returns a single object with all key value pairs from provided objects.
  *
+ * Example:
+ * ```typescript
+ * const obj1 = { a: 1, b: 2, c: 3 }
+ * const obj2 = { d: 4, e: 5, f: 6 }
  *
- * NOTE: If two objects have the same key, the latter object's value will result
+ * combineObjects(obj1, obj2)
+ * // {
+ * //   a: 1,
+ * //   b: 2,
+ * //   c: 3,
+ * //   d: 4,
+ * //   e: 5,
+ * //   f: 6
+ * // }
+ * ```
+ *
+ * NOTE: If two objects have the same key, the latter object's value will result.
  **/
 export function combineObjects(objs: { [key: string]: any }[]): object {
   const result: { [key: string]: any } = {}
@@ -658,6 +750,14 @@ export function combineObjects(objs: { [key: string]: any }[]): object {
 }
 
 /** Returns the sum of the values of a specific shared key in an array of objects.
+ *
+ * Example:
+ * ```typescript
+ * const obj1 = { a: 1, b: 2, c: 3 }
+ * const obj2 = { a: 2, b: 3, c: 4 }
+ *
+ * sumOfKeyValues([obj1, obj2], "c") // 7
+ * ```
  **/
 export function sumOfKeyValues<T extends object, U extends keyof T>(
   arr: (T & { [K in U]: number })[],
@@ -667,6 +767,20 @@ export function sumOfKeyValues<T extends object, U extends keyof T>(
 }
 
 /** Sorts an array of objects by a specific shared key's value.
+ *
+ * Example:
+ * ```typescript
+ * const obj1 = { a: 3, b: 2 }
+ * const obj2 = { a: 1, b: 2 }
+ * const obj3 = { a: 2, b: 2 }
+ *
+ * sortObjectsByKeyValue([obj1, obj2, obj3], "a")
+ * // [
+ * //   { a: 1, b: 2 },
+ * //   { a: 2, b: 2 },
+ * //   { a: 3, b: 2 },
+ * // ]
+ * ```
  **/
 export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
@@ -676,6 +790,24 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
 }
 
 /** Returns an array of objects with nested sorting based on the keys provided.
+ *
+ * Example:
+ * ```typescript
+ * const obj1 = { a: 1, b: 6, c: 3 }
+ * const obj2 = { a: 3, b: 2, c: 4 }
+ * const obj3 = { a: 3, b: 2, c: 3 }
+ * const obj4 = { a: 2, b: 4, c: 3 }
+ * const obj5 = { a: 2, b: 5, c: 3 }
+ *
+ * sortObjectsByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
+ * // [
+ * //   { a: 1, b: 6, c: 3 }
+ * //   { a: 2, b: 4, c: 3 }
+ * //   { a: 2, b: 5, c: 3 }
+ * //   { a: 3, b: 2, c: 3 }
+ * //   { a: 3, b: 2, c: 4 }
+ * // ]
+ * ```
  **/
 export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
@@ -696,6 +828,13 @@ export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
 }
 
 /** Returns an object with counts of specifics value of a specific shared key in an array of objects.
+ *
+ * Example:
+ * ```typescript
+ * const arr = [{ name: "John"}, { name: "Sarah"}, { name: "John"}, { name: "Beth"}]
+ *
+ * getKeyValueCounts(arr, "name") // { John: 2, Sarah: 1, Beth: 1 }
+ * ```
  **/
 export function getKeyValueCounts<T extends object, U extends keyof T>(
   arr: T[],
@@ -716,8 +855,25 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
   }, {})
 }
 
-/** Returns an object with arrays of objects that share a specific value of a specific shared key
- * in an array of objects.
+/** Returns an object with keys corresponding to the values of the shared key provided. The values are arrays of objects
+ *  that share the same value of that key.
+ *
+ * Example:
+ * ```typescript
+ * const arr = [
+ *   { name: "John", age: 30},
+ *   { name: "Sarah", age: 32 },
+ *   { name: "John", age: 28 },
+ *   { name: "Beth", age: 23}
+ * ]
+ *
+ * groupObjectsByKeyValue(arr, "name")
+ * // {
+ *      John: [{ name: "John", age: 30 }, {name: "John", age: 28 }]
+ *      Sarah: [{ name: "Sarah", age: 32 }]
+ *      Beth: [{name: "Beth", age: 23 }]
+ * // }
+ * ```
  **/
 export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
@@ -733,6 +889,11 @@ export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
 }
 
 /** Returns a string of an object's key and value pairs as a query parameter string. Supports one level of nesting.
+ *
+ * Example:
+ * ```typescript
+ * convertObjectToQueryParams({ age: 30, city: "Atlanta" }) // "age=38&city=Atlanta"
+ * ```
  **/
 export function convertObjectToQueryParams(obj: object): string {
   let result = ""
@@ -806,8 +967,8 @@ export function convertQueryParamOperators(params: {}) {
 
 // MISC
 
-/** Returns a promise that rejects if the original promise takes longer to resolve than a given amount of time
- * in milliseconds
+/** Returns a promise that rejects if the original promise takes longer to resolve than the provided amount of time
+ * in milliseconds.
  **/
 export function addTimeoutToPromise(
   asyncFunction: () => Promise<unknown>,
@@ -845,6 +1006,15 @@ export function pauseSync(ms: number) {
 type GenericFunction<T> = (...args: T[]) => unknown
 
 /** Returns a function that calls multiple given functions in a specific order.
+ * 
+ * Example:
+ * ```typescript
+const double = (n: number) => n * 2
+const triple = (n: number) => n * 3
+const doubleThenTriple = pipe(double, triple)
+
+doubleThenTriple(6) // 36
+* ```
  **/
 export function pipe<T>(
   ...funcs: [
@@ -860,6 +1030,11 @@ export function pipe<T>(
 
 /** Returns a debounced version of the function passed. Acccepts custom delay in
  * milliseconds and immediate boolean for leading/trailing.
+ *
+ * * If `immediate` is `true`, the function will execute immediately on the first call. The function
+ * will not execute if called again until the provided milliseconds have passed.
+ * * If `immediate` is `false`, the function will not execute until the provided milliseconds have passed. If the
+ * function is called again before the time has passed, the timer starts over.
  **/
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
@@ -1041,6 +1216,11 @@ type GeoCoords = {
 }
 
 /** Returns the user's latitude and longitude or an error.
+ *
+ * Example:
+ * ```typescript
+ * getBrowserGeolocation() // { latitude: 35.7402404, longitude: -82.3420191 }
+ * ```
  **/
 export async function getBrowserGeolocation(timeoutInSeconds = 10) {
   let browserLocation: GeoCoords = { latitude: null, longitude: null }
