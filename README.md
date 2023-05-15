@@ -29,7 +29,7 @@ Gladknee is an open-source TypeScript utility library. It's written with functio
 <summary>&nbsp;&nbsp;float</summary>
 <br>
 Returns a number limited to a specific number of decimal places. This is different from the native `toFixed()` method because it returns a number not a string.
-<br>
+<br><br>
 
 ```typescript
 float(n: number, decimalPlaces?: number): number
@@ -45,7 +45,7 @@ float(4.24398, 3)
 </details>
 <details>
 <summary>&nbsp;&nbsp;clampNumber</summary>
-
+<br>
 Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit. You can pass `false` or 0 for a limit parameter to bypass that limit.
 <br><br>
 
@@ -53,7 +53,6 @@ Enforces a minimum and/or maximum limit on a number and returns the number or th
 float(n: number, decimalPlaces?: number): number
 ```
 
-<br><br>
 Example:
 
 ```typescript
@@ -67,11 +66,14 @@ clamp(15, 16, 20)
 </details>
 <details>
 <summary>&nbsp;&nbsp;doubleDigit</summary>
-
-### **doubleDigit(n: number): string**
-
+<br>
 Returns a provided single digit number with a leading zero as a string
 <br><br>
+
+```typescript
+doubleDigit(n: number): string
+```
+
 Example:
 
 ```typescript
@@ -82,11 +84,14 @@ doubleDigit(9)
 </details>
 <details>
 <summary>&nbsp;&nbsp;ordinal</summary>
-
-### **ordinal(n: number): string**
-
+<br>
 Returns a string of the provided number with the ordinal suffix added
 <br><br>
+
+```typescript
+ordinal(n: number): string
+```
+
 Example:
 
 ```typescript
@@ -97,11 +102,14 @@ ordinal(4)
 </details>
 <details>
 <summary>&nbsp;&nbsp;getRange</summary>
-
-### **getRange(start: number, end: number, step?: number) : number[]**
-
+<br>
 Returns an array of numbers, starting from the provided start number and ending with provided end number. You can optionally pass in a step number to increment by a number other than 1. You can also increment negatively.
 <br><br>
+
+```typescript
+getRange(start: number, end: number, step?: number) : number[]
+```
+
 Example:
 
 ```typescript
