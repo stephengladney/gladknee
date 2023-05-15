@@ -50,7 +50,7 @@ Enforces a minimum and/or maximum limit on a number and returns the number or th
 <br><br>
 
 ```typescript
-float(n: number, decimalPlaces?: number): number
+clampNumber(n: number, min: number | false: max: number | false): number
 ```
 
 Example:
@@ -130,11 +130,13 @@ getRange(10, 0, -2)
 <summary>Dates & Time</summary><br>
 <details>
 <summary>&nbsp;&nbsp;getAmountOfTimeFromSeconds</summary>
-
-### **getAmountOfTimeFromSeconds(seconds: number): TimeObject**
-
+<br>
 Returns an object with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided
 <br><br>
+
+```typescript
+getAmountOfTimeFromSeconds(seconds: number): TimeObject
+```
 
 ```typescript
 interface TimeObjectTimeOutput {
@@ -178,11 +180,13 @@ getAmountOfTimeFromSeconds(2000000)
 </details>
 <details>
 <summary>&nbsp;&nbsp;getSecondsFromAmountOfTime</summary>
-
-### **getSecondsFromAmountOfTime(time: TimeObject): number**
-
+<br>
 Returns the numbers of seconds from the TimeObject provided
 <br><br>
+
+```typescript
+getSecondsFromAmountOfTime(time: TimeObject): number
+```
 
 ```typescript
 interface TimeObject {
@@ -216,27 +220,36 @@ getAmountOfTimeFromSeconds({
 </details>
 <details>
 <summary>&nbsp;&nbsp;timeUntil</summary>
-
-### **timeUntil(date: Date): TimeOutput**
-
+<br>
 Returns an object with the number of years, months, weeks, days, hours, minutes and seconds until the date provided
+<br><br>
+
+```typescript
+timeUntil(date: Date): TimeOutput
+```
 
 </details>
 <details>
 <summary>&nbsp;&nbsp;timeSince</summary>
-
-### **timeSince(date: Date): TimeOutput**
-
+<br>
 Returns an object with the number of years, months, weeks, days, hours, minutes and seconds since the date provided
+<br><br>
+
+```typescript
+timeSince(date: Date): TimeOutput
+```
 
 </details>
 <details>
 <summary>&nbsp;&nbsp;getDayName</summary>
-
-### **getDayName(day: number): string | undefined**
-
+<br>
 Returns the corresponding human readable day name of the integer provided (integer must be 0-6)
 <br><br>
+
+```typescript
+getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6): string
+```
+
 Example:
 
 ```typescript
@@ -250,18 +263,24 @@ getDayName(99)
 </details>
 <details>
 <summary>&nbsp;&nbsp;beginningOfToday</summary>
-
-### **beginningOfToday(): Date**
-
+<br>
 Returns a Date object with the date of today and time of 00:00:00
+<br><br>
+
+```typescript
+beginningOfToday(): Date
+```
 
 </details>
 <details>
 <summary>&nbsp;&nbsp;endOfToday</summary>
-
-### **endOfToday(): Date**
-
+<br>
 Returns a Date object with the date of today and time of 23:59:59
+<br><br>
+
+```typescript
+endOfToday(): Date
+```
 
 </details>
 <br>
@@ -270,11 +289,14 @@ Returns a Date object with the date of today and time of 23:59:59
 <summary>Strings</summary><br>
 <details>
 <summary>&nbsp;&nbsp;lowerCaseNoSpaces</summary>
-
-### **lowerCaseNoSpaces(str: string): string**
-
+<br>
 Returns a string in lowercase form with spaces removed
 <br><br>
+
+```typescript
+lowerCaseNoSpaces(str: string): string
+```
+
 Example:
 
 ```typescript
@@ -286,11 +308,14 @@ lowerCaseNoSpaces("Hello World")
 </details>
 <details>
 <summary>&nbsp;&nbsp;truncate</summary>
-
-### **truncate(str: string, lengthLimit: number, ending: string ): string**
-
+<br>
 Returns a string limited to a max length with ... or custom ending
 <br><br>
+
+```typescript
+truncate(str: string, lengthLimit: number, ending: string ): string
+```
+
 Example:
 
 ```typescript

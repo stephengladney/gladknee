@@ -119,7 +119,7 @@ export function timeSince(date: Date): TimeObject {
   return getAmountOfTimeFromSeconds(diffInSeconds)
 }
 
-export function getDayName(day: number) {
+export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
   const dayNames = [
     "Sunday",
     "Monday",
