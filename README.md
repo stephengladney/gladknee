@@ -686,9 +686,8 @@ Returns a string of an object's key and value pairs as a query parameter string.
 Example:
 
 ```
-const obj = { age: 30, city: "Atlanta" }
+convertObjectToQueryParams({ age: 30, city: "Atlanta" })
 
-convertObjectToQueryParams(obj)
 // "age=38&city=Atlanta
 ```
 
