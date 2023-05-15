@@ -1,9 +1,15 @@
 import type { Router } from "express"
 
+/** Returns a number limited to a specific number of decimal places. 
+This is different from the native `toFixed()` method because it returns a number not a string. 
+ **/
 export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
 
+/** Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit.
+ You can pass `false` or 0 for a limit parameter to bypass that limit.
+ **/
 export function clampNumber(
   n: number,
   min: number | false,
@@ -15,11 +21,16 @@ export function clampNumber(
   return result
 }
 
+/** Returns a provided single digit number with a leading zero as a string.
+ **/
 export function doubleDigit(n: number) {
   if (String(n).length > 2) return String(n)
   else return String(`0${n}`).slice(-2)
 }
 
+/** Returns an array of numbers, starting from the provided start number and ending with provided end number.
+ * You can optionally pass in a step number to increment by a number other than 1. You can also increment negatively.
+ **/
 export function getRange(start: number, end: number, step = 1) {
   const result: number[] = []
   if (start < end) {
@@ -36,6 +47,8 @@ export function getRange(start: number, end: number, step = 1) {
   return result
 }
 
+/** Returns a string of the provided number with the ordinal suffix added.
+ **/
 export function ordinal(n: number) {
   if (n >= 11 && n <= 13) return `${String(n)}th`
   switch (String(n).slice(-1)) {
@@ -74,6 +87,8 @@ const secondsInAWeek = 604800
 const secondsInAMonth = 2592000 // Assumes 30 day month
 const secondsInAYear = 31557600
 
+/** Returns an object with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided.
+ **/
 export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   return {
     years: Math.floor(seconds / secondsInAYear),
@@ -93,6 +108,8 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   }
 }
 
+/** Returns the numbers of seconds from the `TimeObject` provided.
+ **/
 export function getSecondsFromAmountOfTime(time: TimeObject) {
   return (
     time.years * secondsInAYear +
@@ -105,6 +122,8 @@ export function getSecondsFromAmountOfTime(time: TimeObject) {
   )
 }
 
+/** Returns an object with the number of years, months, weeks, days, hours, minutes and seconds until the date provided.
+ **/
 export function timeUntil(date: Date): TimeObject {
   const diffInSeconds = Math.floor(
     (new Date(date).getTime() - Date.now()) / 1000
@@ -112,6 +131,8 @@ export function timeUntil(date: Date): TimeObject {
   return getAmountOfTimeFromSeconds(diffInSeconds)
 }
 
+/** Returns an object with the number of years, months, weeks, days, hours, minutes and seconds since the date provided.
+ **/
 export function timeSince(date: Date): TimeObject {
   const diffInSeconds = Math.floor(
     (Date.now() - new Date(date).getTime()) / 1000
@@ -119,6 +140,8 @@ export function timeSince(date: Date): TimeObject {
   return getAmountOfTimeFromSeconds(diffInSeconds)
 }
 
+/** Returns the corresponding human readable day name of the integer (0-6) provided.
+ **/
 export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
   const dayNames = [
     "Sunday",
@@ -132,10 +155,14 @@ export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
   return dayNames[day]
 }
 
+/** Returns a Date of the current date with a time of 0:00:00.
+ **/
 export function beginningOfToday() {
   return new Date(new Date().toDateString())
 }
 
+/** Returns a Date of the current date with a time of 23:59:59.
+ **/
 export function endOfToday() {
   const date = new Date()
   date.setHours(23)
@@ -146,10 +173,14 @@ export function endOfToday() {
 
 // STRINGS
 
+/** Returns the provided string in lowercase form with spaces removed.
+ **/
 export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
+/** Returns a string limited to a max length with "..." or custom ending.
+ **/
 export function truncate(
   str: string,
   lengthlevels: number,
@@ -160,6 +191,10 @@ export function truncate(
     : str
 }
 
+/** Returns a random string of specified length. Can include letters and/or numbers.
+ *
+ * NOTE: `includeLetters` and `includeNumbers` both default to true.
+ **/
 export function getRandomString(
   length: number,
   includeLetters = true,
@@ -179,15 +214,21 @@ export function getRandomString(
 
 // ARRAYS
 
+/** Returns a boolean that reflects whether or not every item in an array meets a condition.
+ **/
 export function isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean) {
   return arr.filter(func).length === arr.length
 }
 
+/** Returns a boolean that reflects whether or not any item in an array meets a condition.
+ **/
 export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
   return arr.filter(func).length > 0
 }
 
-export function shuffle(array: any[]) {
+/** Returns the provided array with the items randomly ordered.
+ **/
+export function shuffle<T>(array: T[]) {
   const _array = [...array]
   let currentIndex = array.length,
     randomIndex
@@ -203,6 +244,12 @@ export function shuffle(array: any[]) {
   return _array
 }
 
+/** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
+ *  is larger than the length of the array, the fill will be added to the array as many times as necessary
+ * to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
+ * fill is provided, `undefined` will be added. For min and max limits, you can pass `false` or 0 for a
+ * limit parameter to bypass.
+ **/
 export function clampArray<T>(
   arr: T[],
   min: number | false,
@@ -221,15 +268,22 @@ export function clampArray<T>(
   return result
 }
 
-export function chunkArray(arr: any[], chunkSize: number) {
+/** Divides the provided array into smaller arrays of a provided size. Returns an array of these smaller arrays.
+ **/
+export function chunkArray<T>(arr: T[], chunkSize: number) {
   const items = Array.from(arr)
-  const result: any[][] = []
+  const result: T[][] = []
   while (items.length > 0) {
     result.push(items.splice(0, chunkSize))
   }
   return result
 }
 
+/** Returns a single dimensional array by default. If you pass a number for levels, the function will only reduce
+ * that many dimensions of arrays.
+ *
+ * NOTE: You should never pass in a value for `currentLevel`. This is a helper param used for recursion.
+ **/
 export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
   return arr.reduce((acc, item) => {
     if (Array.isArray(item) && (!levels || currentLevel < levels)) {
@@ -240,6 +294,8 @@ export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
 
 type SortableArray = (string | number)[]
 
+/** Returns the provided array sorted (ascending) via bubble sort.
+ **/
 export function bubbleSort(arr: SortableArray) {
   let noSwaps
   for (var i = arr.length; i > 0; i--) {
@@ -257,6 +313,8 @@ export function bubbleSort(arr: SortableArray) {
   return arr
 }
 
+/** Returns the provided array sorted (ascending) via selection sort.
+ **/
 export function selectionSort(arr: SortableArray) {
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
     ([arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]])
@@ -274,6 +332,8 @@ export function selectionSort(arr: SortableArray) {
   return arr
 }
 
+/** Returns the provided array sorted (ascending) via insertion sort.
+ **/
 export function insertionSort(arr: SortableArray) {
   var currentVal
   for (var i = 1; i < arr.length; i++) {
@@ -286,14 +346,20 @@ export function insertionSort(arr: SortableArray) {
   return arr
 }
 
+/** Returns the provided array with any duplicates removed.
+ **/
 export function removeDuplicates(arr: any[]) {
   return Array.from(new Set(arr))
 }
 
+/** Returns the sum of the provided array of numbers.
+ **/
 export function sum(arr: number[]) {
   return arr.reduce((acc, i) => acc + i, 0)
 }
 
+/** Returns an array of the rolling sum of the provided array of numbers.
+ **/
 export function getRollingSum(arr: number[], decimalPlaces?: number) {
   return arr.reduce(
     (acc, i, index) =>
@@ -304,11 +370,34 @@ export function getRollingSum(arr: number[], decimalPlaces?: number) {
   )
 }
 
+/** Returns an object with items from the provided array as keys and values of the number of
+ * instances of these values in the array.
+ **/
+export function getCounts<T>(arr: T[]): { [key: string]: number } {
+  const result: { [key: string]: number } = {}
+  arr.forEach((item) => {
+    if (result[item as string]) result[item as string]++
+    else result[item as string] = 1
+  })
+  return result
+}
+
+/** Returns the number of instances the target occurs in the provided array.
+ **/
+export function getCountOf<T>(arr: T[], target: T) {
+  return getCounts(arr)[target as string] || 0
+}
+
+/** Returns an array of items that only appear in one of the provided arrays.
+ *
+ * See also: `getCommonItems()` and `getSharedItems()`
+ **/
 export function getUniqueItems<T>(...arrs: T[][]) {
   const seen: T[] = []
   let result: T[] = []
-  for (let i = 0; i < arrs.length; i++) {
-    arrs[i].forEach((j) => {
+  const sets = arrs.map((arr) => new Set(arr))
+  for (let i = 0; i < sets.length; i++) {
+    sets[i].forEach((j) => {
       if (seen.includes(j)) {
         result = result.filter((x) => x !== j)
       } else {
@@ -320,15 +409,17 @@ export function getUniqueItems<T>(...arrs: T[][]) {
   return result
 }
 
+/** Returns an array of items that appear in at least two of the provided arrays.
+ *
+ * See also: `getUniqueItems()` and `getSharedItems()`
+ **/
 export function getCommonItems<T>(...arrs: T[][]) {
   const seen: T[] = []
   let result: T[] = []
   for (let i = 0; i < arrs.length; i++) {
     arrs[i].forEach((j) => {
-      if (seen.includes(j)) {
+      if (seen.includes(j) && !result.includes(j)) {
         result.push(j)
-      } else {
-        result = result.filter((x) => x !== j)
       }
       seen.push(j)
     })
@@ -336,10 +427,32 @@ export function getCommonItems<T>(...arrs: T[][]) {
   return result
 }
 
-export function nthFromEnd(arr: any[], n: number) {
+/** Returns an array of items that appear in all of the provided arrays.
+ *
+ * See also: `getUniqueItems()` and `getCommonItems()`
+ **/
+export function getSharedItems<T>(...arrs: T[][]) {
+  let result: T[] = []
+  arrs[0].forEach((item) => {
+    let isItemInAllOtherArrays = true
+    arrs.slice(1).forEach((compareArray) => {
+      if (!compareArray.includes(item)) isItemInAllOtherArrays = false
+    })
+    if (isItemInAllOtherArrays) result.push(item)
+  })
+  return result
+}
+
+/** Returns the item in the array N spots from the last item.
+ **/
+export function nthFromEnd<T>(arr: T[], n: number) {
   return arr[arr.length - 1 - n]
 }
 
+/** Returns a boolean of whether or not the two arrays have the same items.
+ *
+ * NOTE: `orderMatters` is true by default.
+ **/
 export function areArraysEqual<T>(
   array1: T[],
   array2: T[],
@@ -355,6 +468,8 @@ export function areArraysEqual<T>(
 
 // OBJECTS
 
+/** Returns the object with any provided keys removed.
+ **/
 export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
   const result: { [key: string]: any } = {}
   Object.keys(obj).forEach((key: string) => {
@@ -365,6 +480,8 @@ export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
   return result
 }
 
+/** Returns the object with only the provided keys included.
+ **/
 export function pickKeys<T extends object, U extends keyof T>(
   obj: T,
   ...keys: U[]
@@ -379,6 +496,11 @@ export function pickKeys<T extends object, U extends keyof T>(
   return result
 }
 
+/** Returns a single object with all key value pairs from provided objects.
+ *
+ *
+ * NOTE: If two objects have the same key, the latter object's value will result
+ **/
 export function combineObjects(objs: { [key: string]: any }[]): object {
   const result: { [key: string]: any } = {}
   objs.forEach((obj) => {
@@ -389,6 +511,8 @@ export function combineObjects(objs: { [key: string]: any }[]): object {
   return result
 }
 
+/** Returns the sum of the values of a specific shared key in an array of objects.
+ **/
 export function sumOfKeyValues<T extends object, U extends keyof T>(
   arr: (T & { [K in U]: number })[],
   key: U
@@ -396,6 +520,8 @@ export function sumOfKeyValues<T extends object, U extends keyof T>(
   return arr.reduce((acc, i) => acc + i[key], 0)
 }
 
+/** Sorts an array of objects by a specific shared key's value.
+ **/
 export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U
@@ -403,6 +529,8 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
   return arr.sort((a, b) => (a[key] < b[key] ? -1 : 1))
 }
 
+/** Returns an array of objects with nested sorting based on the keys provided.
+ **/
 export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
   ...keys: U[]
@@ -421,6 +549,8 @@ export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
   )
 }
 
+/** Returns an object with counts of specifics value of a specific shared key in an array of objects.
+ **/
 export function getKeyValueCounts<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
@@ -440,6 +570,9 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
   }, {})
 }
 
+/** Returns an object with arrays of objects that share a specific value of a specific shared key
+ * in an array of objects.
+ **/
 export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U
@@ -453,6 +586,8 @@ export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
   return result
 }
 
+/** Returns a string of an object's key and value pairs as a query parameter string. Supports one level of nesting.
+ **/
 export function convertObjectToQueryParams(obj: object): string {
   let result = ""
   const objectKeys = Object.keys(obj)
@@ -482,6 +617,8 @@ type Handlers = {
   extendRouter?: (router: Router) => void
 }
 
+/** Returns an Express Router with CRUD routes
+ **/
 export function createExpressRoutes(handlers: Handlers): Router {
   // @ts-ignore Must be ignored for non-Express projects
   let router = express.Router()
@@ -523,6 +660,9 @@ export function convertQueryParamOperators(params: {}) {
 
 // MISC
 
+/** Returns a promise that rejects if the original promise takes longer to resolve than a given amount of time
+ * in milliseconds
+ **/
 export function addTimeoutToPromise(
   asyncFunction: () => Promise<unknown>,
   timeout: number
@@ -540,12 +680,16 @@ export function addTimeoutToPromise(
     }) as Promise<unknown>
 }
 
+/** Returns a promise that resolves after a given amount of time in milliseconds.
+ **/
 export function pauseAsync(milliseconds: number) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, milliseconds)
   })
 }
 
+/** Delays future code from executing until the provided milliseconds have passed.
+ **/
 export function pauseSync(ms: number) {
   const start = Date.now()
   const end = start + ms
@@ -554,6 +698,8 @@ export function pauseSync(ms: number) {
 
 type GenericFunction<T> = (...args: T[]) => unknown
 
+/** Returns a function that calls multiple given functions in a specific order.
+ **/
 export function pipe<T>(
   ...funcs: [
     firstFunc: GenericFunction<T>,
@@ -566,6 +712,9 @@ export function pipe<T>(
   }
 }
 
+/** Returns a debounced version of the function passed. Acccepts custom delay in
+ * milliseconds and immediate boolean for leading/trailing.
+ **/
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   ms: number,
@@ -615,6 +764,8 @@ export function debounce<T extends (...args: any[]) => any>(
 
 // BROWSER STUFF
 
+/** Prompts a user in their browser to save provided text to a file on their machine.
+ **/
 export function saveTextToFileInBrowser(content: string, filename: string) {
   const a = document.createElement("a")
   const file = new Blob([content], { type: "text/plain" })
@@ -626,6 +777,8 @@ export function saveTextToFileInBrowser(content: string, filename: string) {
   URL.revokeObjectURL(a.href)
 }
 
+/** Returns the value of a specific cookie.
+ **/
 export function getCookie(cookieName: string) {
   const name = cookieName + "="
   const decodedCookie = decodeURIComponent(document.cookie)
@@ -642,6 +795,8 @@ export function getCookie(cookieName: string) {
   return ""
 }
 
+/** Sets the value of a specific cookie.
+ **/
 export function setCookie(
   cookieName: string,
   cookieValue: string,
@@ -661,6 +816,8 @@ export type QueueObject = {
   breakOut: Function
 }
 
+/** Returns a `QueueObject` which includes a queue, enqueue function, and two execute methods.
+ **/
 export function createQueue(functionToExecute: Function): QueueObject {
   const queue: unknown[] = []
   let isBreakRequested = false
@@ -695,6 +852,8 @@ type AsyncQueueObject = {
   breakOut: Function
 }
 
+/** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
+ **/
 export function createQueueAsync(
   functionToExecute: (...args: any[]) => Promise<unknown>
 ): AsyncQueueObject {
@@ -735,6 +894,8 @@ type GeoCoords = {
   longitude: number | null
 }
 
+/** Returns the user's latitude and longitude or an error.
+ **/
 export async function getBrowserGeolocation(timeoutInSeconds = 10) {
   let browserLocation: GeoCoords = { latitude: null, longitude: null }
   let err = null
@@ -757,7 +918,9 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
   else return browserLocation
 }
 
-export function getBrowserSearchParams() {
+/** Returns the window location's search params. Supports single-level nesting.
+ **/
+export function getBrowserLocationQueryParams() {
   const params = window.location.search.slice(1).split("&")
   return params.reduce((acc, param) => {
     const paramSplit = param.split("=")

@@ -544,6 +544,13 @@ describe("misc", () => {
     })
   })
 
+  describe("convertObjectToQueryParams", () => {
+    it("converts an object to string of query params", () => {
+      const obj = { name: "john", age: 30 }
+      expect(_.convertObjectToQueryParams(obj)).toEqual("name=john&age=30")
+    })
+  })
+
   describe("debounce", () => {
     it("immediate = true. invokes the function immediately on first call", () => {
       const func = jest.fn()
