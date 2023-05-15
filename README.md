@@ -56,11 +56,9 @@ clampNumber(n: number, min: number | false: max: number | false): number
 Example:
 
 ```typescript
-clamp(15, 3, 12)
-// 12
+clamp(15, 3, 12) // 12
 
-clamp(15, 16, 20)
-// 16
+clamp(15, 16, 20) // 16
 ```
 
 </details>
@@ -77,8 +75,7 @@ doubleDigit(n: number): string
 Example:
 
 ```typescript
-doubleDigit(9)
-// "09"
+doubleDigit(9) // "09"
 ```
 
 </details>
@@ -139,7 +136,7 @@ getAmountOfTimeFromSeconds(seconds: number): TimeObject
 ```
 
 ```typescript
-interface TimeObjectTimeOutput {
+interface TimeObject {
   years: number
   months: number
   weeks: number
@@ -147,13 +144,13 @@ interface TimeObjectTimeOutput {
   hours: number
   minutes: number
   seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
+  inYears?: () => number
+  inMonths?: () => number
+  inWeeks?: () => number
+  inDays?: () => number
+  inHours?: () => number
+  inMinutes?: () => number
+  inSeconds?: () => number
 }
 ```
 
@@ -175,46 +172,6 @@ getAmountOfTimeFromSeconds(2000000)
 
   getAmountOfTimeFromSeconds(2000000).inDays()
 // 23.14814814814815
-```
-
-</details>
-<details>
-<summary>&nbsp;&nbsp;getSecondsFromAmountOfTime</summary>
-<br>
-Returns the numbers of seconds from the TimeObject provided
-<br><br>
-
-```typescript
-getSecondsFromAmountOfTime(time: TimeObject): number
-```
-
-```typescript
-interface TimeObject {
-  years: number
-  months: number
-  weeks: number
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-}
-```
-
-<br><br>
-Example:
-
-```typescript
-getAmountOfTimeFromSeconds({
-  years: 0,
-  months: 0,
-  weeks: 3,
-  days: 2,
-  hours: 3,
-  minutes: 33,
-  seconds: 20,
-})
-
-// 2000000
 ```
 
 </details>

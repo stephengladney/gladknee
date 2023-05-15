@@ -2,13 +2,24 @@ import type { Router } from "express"
 
 /** Returns a number limited to a specific number of decimal places. 
 This is different from the native `toFixed()` method because it returns a number not a string. 
+*
+* _Example:_
+* ```typescript
+* float(4.24398, 3) // 4.244
+* ```
  **/
 export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
 
 /** Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit.
- You can pass `false` or 0 for a limit parameter to bypass that limit.
+ You can pass **false** or **0** for a limit parameter to bypass that limit.
+*
+* _Example:_
+* ```typescript
+* clamp(15, 3, 12) // 12
+* clamp(15, 16, 20) // 16
+* ```
  **/
 export function clampNumber(
   n: number,
@@ -22,6 +33,11 @@ export function clampNumber(
 }
 
 /** Returns a provided single digit number with a leading zero as a string.
+ *
+ * _Example:_
+ * ```typescript
+ * doubleDigit(9) // "09"
+ * ```
  **/
 export function doubleDigit(n: number) {
   if (String(n).length > 2) return String(n)
@@ -30,6 +46,18 @@ export function doubleDigit(n: number) {
 
 /** Returns an array of numbers, starting from the provided start number and ending with provided end number.
  * You can optionally pass in a step number to increment by a number other than 1. You can also increment negatively.
+ *
+ * _Example:_
+ * ```typescript
+ * getRange(5, 10)
+ * // [5, 6, 7, 8, 9, 10]
+ *
+ * getRange(0, 10, 2)
+ * // [0, 2, 4, 6, 8, 10]
+ *
+ * getRange(10, 0, -2)
+ * // [10, 8, 6, 4, 2, 0]
+ * ```
  **/
 export function getRange(start: number, end: number, step = 1) {
   const result: number[] = []
@@ -48,6 +76,11 @@ export function getRange(start: number, end: number, step = 1) {
 }
 
 /** Returns a string of the provided number with the ordinal suffix added.
+ *
+ * _Example:_
+ * ```typescript
+ * ordinal(4) // "4th"
+ * ```
  **/
 export function ordinal(n: number) {
   if (n >= 11 && n <= 13) return `${String(n)}th`
@@ -71,13 +104,13 @@ export interface TimeObject {
   hours: number
   minutes: number
   seconds: number
-  inYears?: () => number
-  inMonths?: () => number
-  inWeeks?: () => number
-  inDays?: () => number
-  inHours?: () => number
-  inMinutes?: () => number
-  inSeconds?: () => number
+  inYears: () => number
+  inMonths: () => number
+  inWeeks: () => number
+  inDays: () => number
+  inHours: () => number
+  inMinutes: () => number
+  inSeconds: () => number
 }
 
 const secondsInAMinute = 60
@@ -87,7 +120,34 @@ const secondsInAWeek = 604800
 const secondsInAMonth = 2592000 // Assumes 30 day month
 const secondsInAYear = 31557600
 
-/** Returns an object with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided.
+/** Returns a `TimeObject` with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided. 
+ * A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+ *
+ * _Example:_
+ * ```typescript
+ * getAmountOfTimeFromSeconds(2000000)
+// { years: 0, months: 0, weeks: 3, days: 2, hours: 3, minutes: 33, seconds: 20 }
+
+* getAmountOfTimeFromSeconds(2000000).inMinutes()
+// { years: 0, months: 0, weeks: 3, days: 2, hours: 3, minutes: 33, seconds: 20 }
+
+interface TimeObject {
+  years: number
+  months: number
+  weeks: number
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+  inYears: () => number
+  inMonths: () => number
+  inWeeks: () => number
+  inDays: () => number
+  inHours: () => number
+  inMinutes: () => number
+  inSeconds: () => number
+}
+ * ```
  **/
 export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   return {
@@ -108,21 +168,26 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   }
 }
 
-/** Returns the numbers of seconds from the `TimeObject` provided.
- **/
-export function getSecondsFromAmountOfTime(time: TimeObject) {
-  return (
-    time.years * secondsInAYear +
-    time.months * secondsInAMonth +
-    time.weeks * secondsInAWeek +
-    time.days * secondsInADay +
-    time.hours * secondsInAnHour +
-    time.minutes * secondsInAMinute +
-    time.seconds
-  )
+/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until the date provided.
+ * A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+ * ```typescript
+interface TimeObject {
+  years: number
+  months: number
+  weeks: number
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+  inYears: () => number
+  inMonths: () => number
+  inWeeks: () => number
+  inDays: () => number
+  inHours: () => number
+  inMinutes: () => number
+  inSeconds: () => number
 }
-
-/** Returns an object with the number of years, months, weeks, days, hours, minutes and seconds until the date provided.
+ * ```
  **/
 export function timeUntil(date: Date): TimeObject {
   const diffInSeconds = Math.floor(
@@ -131,7 +196,26 @@ export function timeUntil(date: Date): TimeObject {
   return getAmountOfTimeFromSeconds(diffInSeconds)
 }
 
-/** Returns an object with the number of years, months, weeks, days, hours, minutes and seconds since the date provided.
+/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since the date provided.
+ * A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+ * ```typescript
+interface TimeObject {
+  years: number
+  months: number
+  weeks: number
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+  inYears: () => number
+  inMonths: () => number
+  inWeeks: () => number
+  inDays: () => number
+  inHours: () => number
+  inMinutes: () => number
+  inSeconds: () => number
+}
+ * ```
  **/
 export function timeSince(date: Date): TimeObject {
   const diffInSeconds = Math.floor(
@@ -141,6 +225,11 @@ export function timeSince(date: Date): TimeObject {
 }
 
 /** Returns the corresponding human readable day name of the integer (0-6) provided.
+ *
+ * Example:
+ * ```typescript
+ *getDayName(3) // "Wednesday"
+ * ```
  **/
 export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
   const dayNames = [
@@ -174,12 +263,24 @@ export function endOfToday() {
 // STRINGS
 
 /** Returns the provided string in lowercase form with spaces removed.
+ * *
+ * Example:
+ * ```typescript
+ * lowerCaseNoSpaces("Hello World") // "helloworld"
+ * ```
  **/
 export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
 /** Returns a string limited to a max length with "..." or custom ending.
+ *
+ * Example:
+ * ```typescript
+ * truncate("Hello World!", 4) // "Hell..."
+
+truncate("Hello World!", 4, "/") // "Hell/"
+ * ```
  **/
 export function truncate(
   str: string,
@@ -194,6 +295,15 @@ export function truncate(
 /** Returns a random string of specified length. Can include letters and/or numbers.
  *
  * NOTE: `includeLetters` and `includeNumbers` both default to true.
+ * 
+ * Example:
+ * ```typescript
+ getRandomString(10) // "N3xO1pDs2f"
+
+getRandomString(5, true, false) // "GjOxa"
+
+getRandomString(5, false, true) // "39281"
+ * ```
  **/
 export function getRandomString(
   length: number,
@@ -215,18 +325,41 @@ export function getRandomString(
 // ARRAYS
 
 /** Returns a boolean that reflects whether or not every item in an array meets a condition.
+ * 
+ * Example:
+ * ```typescript
+ const isEven = (n: number) => n % 2 === 0
+
+isEvery([2, 4, 6, 8], (n) => isEven(n)) // true
+
+isEvery([2, 4, 7, 8], (n) => isEven(n)) // false
+ * ```
  **/
 export function isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean) {
   return arr.filter(func).length === arr.length
 }
 
 /** Returns a boolean that reflects whether or not any item in an array meets a condition.
+ * 
+ * Example:
+ * ```typescript
+ const isEven = (n: number) => n % 2 === 0
+
+isAny([3, 5, 7, 9], (n) => isEven(n)) // false
+
+isAny([2, 5, 7, 9], (n) => isEven(n)) // true
+ * ```
  **/
 export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
   return arr.filter(func).length > 0
 }
 
 /** Returns the provided array with the items randomly ordered.
+ * 
+ * Example:
+ * ```typescript
+ shuffle([1, 2, 3, 4, 5]) // [3, 5, 1, 4, 2]
+ * ```
  **/
 export function shuffle<T>(array: T[]) {
   const _array = [...array]
@@ -249,6 +382,13 @@ export function shuffle<T>(array: T[]) {
  * to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
  * fill is provided, `undefined` will be added. For min and max limits, you can pass `false` or 0 for a
  * limit parameter to bypass.
+ *
+ * Example:
+ * ```typescript
+ * clampArray([1, 2, 3, 4, 5], 0, 3) // [1, 2, 3]
+
+clampArray([1, 2, 3], 5, false, "x") // [1, 2, 3, "x", "x"]
+ * ```
  **/
 export function clampArray<T>(
   arr: T[],
@@ -269,6 +409,12 @@ export function clampArray<T>(
 }
 
 /** Divides the provided array into smaller arrays of a provided size. Returns an array of these smaller arrays.
+ *
+ * Example:
+ * ```typescript
+ *chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2)
+// [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
+ * ```
  **/
 export function chunkArray<T>(arr: T[], chunkSize: number) {
   const items = Array.from(arr)

@@ -65,22 +65,6 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getSecondsFromAmountOfTime", () => {
-    it("returns the correct number of seconds", () => {
-      expect(
-        _.getSecondsFromAmountOfTime({
-          years: 0,
-          months: 0,
-          weeks: 0,
-          days: 2,
-          hours: 7,
-          minutes: 33,
-          seconds: 20,
-        })
-      ).toEqual(200000)
-    })
-  })
-
   describe("timeUntil", () => {
     it("returns the correct number of seconds until the provided time", () => {
       const end = new Date()
