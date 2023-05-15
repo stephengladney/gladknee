@@ -34,7 +34,7 @@ Returns a number limited to a specific number of decimal places. This is differe
 <br><br>
 Example:
 
-```
+```typescript
 float(4.24398, 3)
 // 4.244
 ```
@@ -49,7 +49,7 @@ Enforces a minimum and/or maximum limit on a number and returns the number or th
 <br><br>
 Example:
 
-```
+```typescript
 clamp(15, 3, 12)
 // 12
 
@@ -67,7 +67,7 @@ Returns a provided single digit number with a leading zero as a string
 <br><br>
 Example:
 
-```
+```typescript
 doubleDigit(9)
 // "09"
 ```
@@ -82,7 +82,7 @@ Returns a string of the provided number with the ordinal suffix added
 <br><br>
 Example:
 
-```
+```typescript
 ordinal(4)
 // "4th"
 ```
@@ -97,7 +97,7 @@ Returns an array of numbers, starting from the provided start number and ending 
 <br><br>
 Example:
 
-```
+```typescript
 getRange(5, 10)
 // [5, 6, 7, 8, 9, 10]
 
@@ -121,7 +121,7 @@ getRange(10, 0, -2)
 Returns an object with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided
 <br><br>
 
-```
+```typescript
 interface TimeObjectTimeOutput {
   years: number
   months: number
@@ -143,7 +143,7 @@ interface TimeObjectTimeOutput {
 <br><br>
 Example:
 
-```
+```typescript
 getAmountOfTimeFromSeconds(2000000)
 //
  {
@@ -169,7 +169,7 @@ getAmountOfTimeFromSeconds(2000000)
 Returns the numbers of seconds from the TimeObject provided
 <br><br>
 
-```
+```typescript
 interface TimeObject {
   years: number
   months: number
@@ -184,16 +184,16 @@ interface TimeObject {
 <br><br>
 Example:
 
-```
+```typescript
 getAmountOfTimeFromSeconds({
-    years: 0,
-    months: 0,
-    weeks: 3,
-    days: 2,
-    hours: 3,
-    minutes: 33,
-    seconds: 20
-  })
+  years: 0,
+  months: 0,
+  weeks: 3,
+  days: 2,
+  hours: 3,
+  minutes: 33,
+  seconds: 20,
+})
 
 // 2000000
 ```
@@ -224,7 +224,7 @@ Returns the corresponding human readable day name of the integer provided (integ
 <br><br>
 Example:
 
-```
+```typescript
 getDayName(3)
 // "Wednesday"
 
@@ -262,7 +262,7 @@ Returns a string in lowercase form with spaces removed
 <br><br>
 Example:
 
-```
+```typescript
 lowerCaseNoSpaces("Hello World")
 // "helloworld"
 ```
@@ -278,7 +278,7 @@ Returns a string limited to a max length with ... or custom ending
 <br><br>
 Example:
 
-```
+```typescript
 truncate("Hello World!", 4)
 // "Hell..."
 
@@ -297,7 +297,7 @@ _Note: includeLetters and includeNumbers both default to true_
 <br><br>
 Example:
 
-```
+```typescript
 getRandomString(10)
 // "N3xO1pDs2f"
 
@@ -322,13 +322,13 @@ Returns a boolean that reflects whether or not every item in an array meets a co
 <br><br>
 Example:
 
-```
+```typescript
 const isEven = (n: number) => n % 2 === 0
 
-isEvery([2,4,6,8],(n) => isEven(n))
+isEvery([2, 4, 6, 8], (n) => isEven(n))
 // true
 
-isEvery([2,4,7,8],(n) => isEven(n))
+isEvery([2, 4, 7, 8], (n) => isEven(n))
 // false
 ```
 
@@ -342,13 +342,13 @@ Returns a boolean that reflects whether or not any item in an array meets a cond
 <br><br>
 Example:
 
-```
+```typescript
 const isEven = (n: number) => n % 2 === 0
 
-isAny([3,5,7,9],(n) => isEven(n))
+isAny([3, 5, 7, 9], (n) => isEven(n))
 // false
 
-isAny([2,5,7,9],(n) => isEven(n))
+isAny([2, 5, 7, 9], (n) => isEven(n))
 // true
 ```
 
@@ -362,7 +362,7 @@ Returns the provided array with the items randomly ordered.
 <br><br>
 Example:
 
-```
+```typescript
 shuffle([1, 2, 3, 4, 5])
 // [3, 5, 1, 4, 2]
 ```
@@ -377,7 +377,7 @@ Returns a single dimensional array by default. If you pass a number for levels, 
 <br><br>
 Example:
 
-```
+```typescript
 flatten([1, 2, [3, 4], 5])
 // [1, 2, 3, 4, 5]
 
@@ -398,7 +398,7 @@ Divides the provided array into smaller arrays of a provided size. Returns an ar
 <br><br>
 Example:
 
-```
+```typescript
 chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2)
 // [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
 ```
@@ -413,7 +413,7 @@ Returns the provided array with a minimum and/or maximum length limit enforced. 
 <br><br>
 Example:
 
-```
+```typescript
 clampArray([1, 2, 3, 4, 5], 0, 3)
 // [1, 2, 3]
 
@@ -431,8 +431,8 @@ Returns an array of items that only appear once across all items of the provided
 <br><br>
 Example:
 
-```
-getUnique([1, 2, 3],[3, 4, 5])
+```typescript
+getUnique([1, 2, 3], [3, 4, 5])
 // [1, 2, 4, 5]
 ```
 
@@ -446,7 +446,7 @@ Returns an array of items that appear at least twice across all items of the pro
 <br><br>
 Example:
 
-```
+```typescript
 getCommon([1, 2, 3, 4], [3, 4, 5])
 // [3, 4]
 ```
@@ -461,7 +461,7 @@ Returns a boolean of whether or not the two arrays have the same items. orderMat
 <br><br>
 Example:
 
-```
+```typescript
 areArraysEqual([1, 2, 3], [1, 2, 3])
 // true
 
@@ -482,7 +482,7 @@ Returns the item in the array N spots from the last item.
 <br><br>
 Example:
 
-```
+```typescript
 nthFromEnd([1, 2, 3, 4], 1)
 // 3
 ```
@@ -521,7 +521,7 @@ Returns the provided array with duplicates removed.
 <br><br>
 Example:
 
-```
+```typescript
 removeDuplicates([1, 2, 1, 1, 2, 5])
 // [1, 2, 5]
 ```
@@ -536,7 +536,7 @@ Returns the sum of an array of numbers.
 <br><br>
 Example:
 
-```
+```typescript
 sum([1, 2, 3, 4, 5])
 // 15
 ```
@@ -551,8 +551,8 @@ Returns an array of the rolling sum of an array.
 <br><br>
 Example:
 
-```
-getRollingSum([1,3,5])
+```typescript
+getRollingSum([1, 3, 5])
 // [1, 4, 9]
 ```
 
@@ -570,8 +570,9 @@ Returns the object with any provided keys removed
 <br><br>
 Example:
 
-```
-const obj = {a: 1, b: 2, c: 3}
+```typescript
+const obj = { a: 1, b: 2, c: 3 }
+
 omitKeys(obj, "b", "c")
 // {a: 1}
 ```
@@ -586,8 +587,9 @@ Returns the object with only the provided keys included
 <br><br>
 Example:
 
-```
-const obj = {a: 1, b: 2, c: 3}
+```typescript
+const obj = { a: 1, b: 2, c: 3 }
+
 pickKeys(obj, "b", "c")
 // {b: 2, c: 3}
 ```
@@ -604,8 +606,8 @@ _NOTE: If two objects have the same key, the latter object in the array's value(
 <br><br>
 Example:
 
-```
-combineObjects([{a: 1}, {b: 2}, {c: 3}])
+```typescript
+combineObjects([{ a: 1 }, { b: 2 }, { c: 3 }])
 // {a: 1, b: 2, c: 3}
 ```
 
@@ -619,26 +621,61 @@ Returns the sum of the values of a specific shared key in an array of objects.
 <br><br>
 Example:
 
-```
-const arr = [{ a: 1 }, {a: 2}, {a: 3}]
+```typescript
+const arr = [{ a: 1 }, { a: 2 }, { a: 3 }]
+
 sumOfKeyValues(arr, "a")
 // 6
 ```
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;sortByKeyValue</summary>
+<summary>&nbsp;&nbsp;sortObjectsByKeyValue</summary>
 
 ### **sortObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
 
-Sort an array of objects by a specific shared key's value.
+Sorts an array of objects by a specific shared key's value.
 <br><br>
 Example:
 
-```
-const arr = [{ a: 3 }, {a: 1}, {a: 5}]
+```typescript
+const arr = [{ a: 3 }, { a: 1 }, { a: 5 }]
+
 sortObjectsByKeyValue(arr, "a")
 // [{a: 1}, { a: 3 }, {a: 5}]
+```
+
+</details>
+<details>
+<summary>&nbsp;&nbsp;sortObjectsByKeyValues</summary>
+
+### **sortObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], ...keys: U[])**
+
+Returns an array of objects with nested sorting based on the keys provided.
+<br><br>
+Example:
+
+```typescript
+const arr = [
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 1, c: 1 },
+        { a: 1, b: 3, c: 2 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
+        { a: 3, b: 4, c: 1 },
+      ]
+
+sortObjectsByKeyValues(arr, "a", "b", "c")
+// [
+    { a: 1, b: 1, c: 1 },
+    { a: 1, b: 2, c: 1 },
+    { a: 1, b: 2, c: 2 },
+    { a: 1, b: 3, c: 2 },
+    { a: 2, b: 1, c: 3 },
+    { a: 2, b: 2, c: 1 },
+    { a: 3, b: 4, c: 1 },
+   ]
 ```
 
 </details>
@@ -651,8 +688,9 @@ Returns an object with counts of specifics value of a specific shared key in an 
 <br><br>
 Example:
 
-```
-const arr = [{ suit: "Clubs" }, {suit: "Hearts"}, {suit: "Clubs"}]
+```typescript
+const arr = [{ suit: "Clubs" }, { suit: "Hearts" }, { suit: "Clubs" }]
+
 getKeyValueCounts(arr, "suit")
 // { "Clubs": 2, "Hearts": 1}
 ```
@@ -667,8 +705,9 @@ Returns an object with arrays of objects that share a specific value of a specif
 <br><br>
 Example:
 
-```
+```typescript
 const arr = [{ suit: "Clubs", value: 2 }, {suit: "Hearts", value: 5}, {suit: "Clubs", value: 10}]
+
 groupObjectsByKeyValue(arr, "suit")
 // {
     "Clubs": [{ suit: "Clubs" value: 2}, { suit: "Clubs", value: 10 }],
@@ -685,9 +724,8 @@ Returns a string of an object's key and value pairs as a query parameter string.
 <br><br>
 Example:
 
-```
+```typescript
 convertObjectToQueryParams({ age: 30, city: "Atlanta" })
-
 // "age=38&city=Atlanta"
 ```
 
@@ -704,8 +742,7 @@ convertObjectToQueryParams({ age: 30, city: "Atlanta" })
 Returns an Express Router object with GET, POST, PUTS and DELETE routes defined.
 <br><br>
 
-```
-
+```typescript
 type Handler = (req: Request, res: Response) => void
 
 type Handlers = {
@@ -760,12 +797,12 @@ Returns a function that calls multiple given functions in a specific order.
 <br><br>
 Example:
 
-```
+```typescript
 const double = (n: number) => n * 2
 const triple = (n: number) => n * 3
-const doubleThenTriple = pipe(double,triple)
-doubleThenTriple(6)
+const doubleThenTriple = pipe(double, triple)
 
+doubleThenTriple(6)
 // 36
 ```
 
@@ -798,7 +835,7 @@ Returns the user's latitude and longitude or an error.
 **Note: Timeout defaults to 10 seconds**
 <br><br>
 
-```
+```typescript
 type GeoCoords = {
   latitude: number | null
   longitude: number | null
@@ -814,16 +851,15 @@ type GeoCoords = {
 Returns the window location's search params. Supports single-level nesting.
 <br><br>
 
-```
-
+```typescript
 // Browser location: website.com?search=john&page=1
 
 getBrowserSearchParams()
-
-// {
-     search: "john",
-     page: "1"
-}
+/* {
+    search: "john",
+    page: "1"
+   }
+*/
 ```
 
 </details>
@@ -861,7 +897,7 @@ Returns a **QueueObject** which includes a queue, enqueue function, and two exec
 <br><br>
 Example:
 
-```
+```typescript
 type QueueObject = {
   queue: unknown[]
   enqueue: Function
@@ -871,8 +907,10 @@ type QueueObject = {
 }
 ```
 
-```
-const log = (n: any) => { console.log(n) }
+```typescript
+const log = (n: any) => {
+  console.log(n)
+}
 const { queue, enqueue, executeOne, executeAll, breakOut } = createQueue(log)
 
 enqueue(1)
@@ -881,11 +919,9 @@ enqueue(3)
 enqueue(4)
 
 executeOne()
-
 // 1
 
 executeAll()
-
 // 2
 // 3
 // 4
@@ -908,7 +944,7 @@ Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two
 <br><br>
 Example:
 
-```
+```typescript
 type QueueObject = {
   queue: unknown[]
   enqueue: Function
@@ -918,7 +954,7 @@ type QueueObject = {
 }
 ```
 
-```
+```typescript
 const log = async (n: any) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -935,11 +971,9 @@ enqueue(3)
 enqueue(4)
 
 await executeOne()
-
 // 1
 
 await executeAll()
-
 // 2
 // 3
 // 4
