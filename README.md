@@ -28,9 +28,13 @@ Gladknee is an open-source TypeScript utility library. It's written with functio
 <details>
 <summary>&nbsp;&nbsp;float</summary>
 
-### **float(n: number, decimalPlaces?: number): number**
-
 Returns a number limited to a specific number of decimal places. This is different from the native toFixed() method because it returns a number not a string.
+<br><br>
+
+```typescript
+float(n: number, decimalPlaces?: number): number
+```
+
 <br><br>
 Example:
 
@@ -43,9 +47,13 @@ float(4.24398, 3)
 <details>
 <summary>&nbsp;&nbsp;clampNumber</summary>
 
-### **clampNumber(n: number, min: number | false: max: number | false): number**
-
 Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit. You can pass `false` or 0 for a limit parameter to bypass that limit.
+<br><br>
+
+```typescript
+float(n: number, decimalPlaces?: number): number
+```
+
 <br><br>
 Example:
 
