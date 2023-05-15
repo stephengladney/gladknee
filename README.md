@@ -27,7 +27,7 @@ Gladknee is an open-source TypeScript utility library. It's written with functio
 <summary>Numbers</summary><br>
 <details>
 <summary>&nbsp;&nbsp;float</summary>
-
+<br>
 Returns a number limited to a specific number of decimal places. This is different from the native toFixed() method because it returns a number not a string.
 <br><br>
 
@@ -35,7 +35,7 @@ Returns a number limited to a specific number of decimal places. This is differe
 float(n: number, decimalPlaces?: number): number
 ```
 
-<br><br>
+<br>
 Example:
 
 ```typescript
