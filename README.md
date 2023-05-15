@@ -35,7 +35,6 @@ Returns a number limited to a specific number of decimal places. This is differe
 float(n: number, decimalPlaces?: number): number
 ```
 
-<br>
 Example:
 
 ```typescript
