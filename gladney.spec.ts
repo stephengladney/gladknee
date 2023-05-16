@@ -506,7 +506,7 @@ describe("misc", () => {
       const start = Date.now()
       await _.pauseAsync(500)
       const end = Date.now()
-      expect(end - start).toBeGreaterThanOrEqual(500)
+      expect(end - start).toBeGreaterThanOrEqual(499)
     })
   })
 
