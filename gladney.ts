@@ -19,7 +19,7 @@ export function float(n: number, decimalPlaces?: number) {
  * sum(1, 4, 6) //=> 11
  * ```
  **/
-export function sum(...arr: number[]) {
+export function sumz(...arr: number[]) {
   return arr.reduce((acc, i) => acc + i, 0)
 }
 
