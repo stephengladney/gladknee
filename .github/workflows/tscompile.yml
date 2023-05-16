@@ -6,7 +6,7 @@ jobs:
   tsc:
     name: tsc
     steps:
-      name: compile TS
+      - name: compile TS
         run: tsc
       - name: publish to NPM
-        uses: npm publish
+        run: npm publish
