@@ -12,7 +12,7 @@ export function float(n: number, decimalPlaces?: number) {
   return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
 }
 
-/** Returns the sum of the provided numbers.
+/** Returns the sum of given numbers.
  *
  * Example:
  * ```typescript
@@ -43,7 +43,7 @@ export function clampNumber(
   return result
 }
 
-/** Returns a provided single digit number with a leading zero as a string.
+/** Returns a single digit number with a leading zero as a string.
  *
  * _Example:_
  * ```typescript
@@ -55,7 +55,7 @@ export function doubleDigit(n: number) {
   else return String(`0${n}`).slice(-2)
 }
 
-/** Returns an array of numbers, starting from the provided start number and ending with provided end number.
+/** Returns an array of numbers, starting from a start number and ending with an end number.
  * You can optionally pass in a step number to increment by a number other than 1. You can also increment negatively.
  *
  * _Example:_
@@ -86,7 +86,7 @@ export function getRange(start: number, end: number, step = 1) {
   return result
 }
 
-/** Returns a string of the provided number with the ordinal suffix added.
+/** Returns a string of a number with the ordinal suffix added.
  *
  * _Example:_
  * ```typescript
@@ -131,8 +131,8 @@ const secondsInAWeek = 604800
 const secondsInAMonth = 2592000 // Assumes 30 day month
 const secondsInAYear = 31557600
 
-/** Returns a `TimeObject` with calculated years, months, weeks, days, hours, minutes and seconds from seconds provided. 
- * A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `TimeObject` with calculated years, months, weeks, days, hours, minutes and seconds from an amount of 
+ * seconds. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  *
  * _Example:_
  * ```typescript
@@ -179,8 +179,8 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   }
 }
 
-/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until the date provided.
- * A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until 
+ * a specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
 interface TimeObject {
   years: number
@@ -207,8 +207,8 @@ export function timeUntil(date: Date): TimeObject {
   return getAmountOfTimeFromSeconds(diffInSeconds)
 }
 
-/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since the date provided.
- * A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
+ * specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
 interface TimeObject {
   years: number
@@ -235,7 +235,7 @@ export function timeSince(date: Date): TimeObject {
   return getAmountOfTimeFromSeconds(diffInSeconds)
 }
 
-/** Returns the corresponding human readable day name of the integer (0-6) provided.
+/** Returns the corresponding human readable day name of an integer (0-6).
  *
  * Example:
  * ```typescript
@@ -273,7 +273,7 @@ export function endOfToday() {
 
 // STRINGS
 
-/** Returns the provided string in lowercase form with spaces removed.
+/** Returns a string in lowercase form with spaces removed.
  * *
  * Example:
  * ```typescript
@@ -365,7 +365,7 @@ export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
   return arr.filter(func).length > 0
 }
 
-/** Returns the provided array with the items randomly ordered.
+/** Returns an array with the items randomly ordered.
  * 
  * Example:
  * ```typescript
@@ -388,7 +388,7 @@ export function shuffle<T>(array: T[]) {
   return _array
 }
 
-/** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
+/** Returns an array with a minimum and/or maximum length limit enforced. If the minimum length
  *  is larger than the length of the array, the fill will be added to the array as many times as necessary
  * to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
  * fill is provided, `undefined` will be added. For min and max limits, you can pass `false` or 0 for a
@@ -419,7 +419,7 @@ export function clampArray<T>(
   return result
 }
 
-/** Divides the provided array into smaller arrays of a provided size. Returns an array of these smaller arrays.
+/** Divides an array into smaller arrays of a certain size. Returns an array of these smaller arrays.
  *
  * Example:
  * ```typescript
@@ -458,7 +458,7 @@ export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
 
 type SortableArray = (string | number)[]
 
-/** Returns the provided array sorted (ascending) via bubble sort.
+/** Returns an array sorted (ascending) via bubble sort.
  **/
 export function bubbleSort(arr: SortableArray) {
   let noSwaps
@@ -477,7 +477,7 @@ export function bubbleSort(arr: SortableArray) {
   return arr
 }
 
-/** Returns the provided array sorted (ascending) via selection sort.
+/** Returns an array sorted (ascending) via selection sort.
  **/
 export function selectionSort(arr: SortableArray) {
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
@@ -496,7 +496,7 @@ export function selectionSort(arr: SortableArray) {
   return arr
 }
 
-/** Returns the provided array sorted (ascending) via insertion sort.
+/** Returns an array sorted (ascending) via insertion sort.
  **/
 export function insertionSort(arr: SortableArray) {
   var currentVal
@@ -510,7 +510,7 @@ export function insertionSort(arr: SortableArray) {
   return arr
 }
 
-/** Returns the provided array with any duplicates removed.
+/** Returns an array with any duplicates removed.
  *
  * Example:
  * ```typescript
@@ -521,7 +521,7 @@ export function removeDuplicates(arr: any[]) {
   return Array.from(new Set(arr))
 }
 
-/** Returns an array of the rolling sum of the provided array of numbers.
+/** Returns an array of the rolling sum of an array of numbers.
  **/
 export function getRollingSum(arr: number[], decimalPlaces?: number) {
   return arr.reduce(
@@ -533,7 +533,7 @@ export function getRollingSum(arr: number[], decimalPlaces?: number) {
   )
 }
 
-/** Returns an object with items from the provided array as keys and values of the number of
+/** Returns an object with items from an array as keys and values of the number of
  * instances of these values in the array.
  **/
 export function getCounts<T>(arr: T[]): { [key: string]: number } {
@@ -545,7 +545,7 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
   return result
 }
 
-/** Returns the number of instances the target occurs in the provided array.
+/** Returns the number of instances the target occurs in an array.
  *
  * Example:
  * ```typescript
@@ -557,7 +557,7 @@ export function getCountOf<T>(arr: T[], target: T) {
   return getCounts(arr)[target as string] || 0
 }
 
-/** Returns an array of items that only appear in one of the provided arrays.
+/** Returns an array of items that only appear in one of the given arrays.
  *
  * Example:
  * ```typescript
@@ -585,7 +585,7 @@ export function getUniqueItems<T>(...arrs: T[][]) {
   return result
 }
 
-/** Returns an array of items that appear in at least two of the provided arrays.
+/** Returns an array of items that appear in at least two of the given arrays.
  *
  * Example:
  * ```typescript
@@ -611,7 +611,7 @@ export function getCommonItems<T>(...arrs: T[][]) {
   return result
 }
 
-/** Returns an array of items that appear in all of the provided arrays.
+/** Returns an array of items that appear in all of the given arrays.
  *
  * Example:
  * ```typescript
@@ -677,7 +677,7 @@ export function areArraysEqual<T>(
 
 // OBJECTS
 
-/** Returns the object with any provided keys removed.
+/** Returns an object with specific keys removed.
  *
  * Example:
  * ```typescript
@@ -696,7 +696,7 @@ export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
   return result
 }
 
-/** Returns the object with only the provided keys included.
+/** Returns an object with only the specific keys included.
  *
  * Example:
  * ```typescript
@@ -719,7 +719,7 @@ export function pickKeys<T extends object, U extends keyof T>(
   return result
 }
 
-/** Returns a single object with all key value pairs from provided objects.
+/** Returns a single object with all of the key value pairs from two or more objects.
  *
  * Example:
  * ```typescript
@@ -740,11 +740,11 @@ export function pickKeys<T extends object, U extends keyof T>(
  *
  * NOTE: If two objects have the same key, the latter object's value will result.
  **/
-export function combineObjects(objs: { [key: string]: any }[]): object {
+export function combineObjects(objs: object[]): object {
   const result: { [key: string]: any } = {}
   objs.forEach((obj) => {
     Object.keys(obj).forEach((key) => {
-      result[key] = obj[key]
+      result[key] = obj[key as keyof object]
     })
   })
   return result
@@ -791,7 +791,7 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
   return arr.sort((a, b) => (a[key] < b[key] ? -1 : 1))
 }
 
-/** Returns an array of objects with nested sorting based on the keys provided.
+/** Returns an array of objects with nested sorting based on a set of specific shared keys.
  *
  * Example:
  * ```typescript
@@ -830,7 +830,7 @@ export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
   )
 }
 
-/** Returns an object with counts of specifics value of a specific shared key in an array of objects.
+/** Returns an object with counts of specific values of a shared key in an array of objects.
  *
  * Example:
  * ```typescript
@@ -858,7 +858,7 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
   }, {})
 }
 
-/** Returns an object with keys corresponding to the values of the shared key provided. The values are arrays of objects
+/** Returns an object with keys corresponding to the values of a shared key. The values are arrays of objects
  *  that share the same value of that key.
  *
  * Example:
@@ -974,8 +974,8 @@ export function convertQueryParamOperators(params: {}) {
 
 // MISC
 
-/** Returns a promise that rejects if the original promise takes longer to resolve than the provided amount of time
- * in milliseconds.
+/** Takes a promise and wraps it in another promise that rejects if the original promise takes longer to resolve than a
+ * specific amount of time in milliseconds. If the original promise resolves before the timeout, that value is returned.
  **/
 export function addTimeoutToPromise(
   asyncFunction: () => Promise<unknown>,
@@ -1002,11 +1002,11 @@ export function pauseAsync(milliseconds: number) {
   })
 }
 
-/** Delays future code from executing until the provided milliseconds have passed.
+/** Delays future code from executing until a specific number of milliseconds has passed.
  **/
-export function pauseSync(ms: number) {
+export function pauseSync(milliseconds: number) {
   const start = Date.now()
-  const end = start + ms
+  const end = start + milliseconds
   while (Date.now() < end) {}
 }
 
@@ -1039,9 +1039,9 @@ export function pipe<T>(
  * milliseconds and immediate boolean for leading/trailing.
  *
  * * If `immediate` is `true`, the function will execute immediately on the first call. The function
- * will not execute if called again until the provided milliseconds have passed.
- * * If `immediate` is `false`, the function will not execute until the provided milliseconds have passed. If the
- * function is called again before the time has passed, the timer starts over.
+ * will not execute if called again until the provided number of milliseconds have passed.
+ * * If `immediate` is `false`, the function when called will not execute until the provided number of milliseconds have passed.
+ *  If the function is called again before the time has passed, the timer starts over.
  **/
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
@@ -1092,7 +1092,7 @@ export function debounce<T extends (...args: any[]) => any>(
 
 // BROWSER STUFF
 
-/** Prompts a user in their browser to save provided text to a file on their machine.
+/** Prompts a user in their browser to save some specific text to a file on their machine.
  **/
 export function saveTextToFileInBrowser(content: string, filename: string) {
   const a = document.createElement("a")
