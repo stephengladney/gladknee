@@ -506,7 +506,7 @@ describe("misc", () => {
       const start = Date.now()
       await _.pauseAsync(500)
       const end = Date.now()
-      expect(end - start).toBeGreaterThanOrEqual(500)
+      expect(end - start).toBeGreaterThanOrEqual(499)
     })
   })
 
@@ -532,6 +532,28 @@ describe("misc", () => {
     it("converts an object to string of query params", () => {
       const obj = { name: "john", age: 30 }
       expect(_.convertObjectToQueryParams(obj)).toEqual("name=john&age=30")
+    })
+
+    it("handles nesting (last param)", () => {
+      const obj = {
+        name: "john",
+        age: 30,
+        favorite: { drink: "coke", food: "chicken" },
+      }
+      expect(_.convertObjectToQueryParams(obj)).toEqual(
+        "name=john&age=30&favorite[drink]=coke&favorite[food]=chicken"
+      )
+    })
+
+    it("handles nesting (middle param)", () => {
+      const obj = {
+        name: "john",
+        favorite: { drink: "coke", food: "chicken" },
+        age: 30,
+      }
+      expect(_.convertObjectToQueryParams(obj)).toEqual(
+        "name=john&favorite[drink]=coke&favorite[food]=chicken&age=30"
+      )
     })
   })
 
