@@ -1,0 +1,6 @@
+.github/
+gladney.ts
+gladney.spec.ts
+jest.config.jest
+tsconfig.json
+README.md
