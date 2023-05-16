@@ -38,42 +38,42 @@ float(n: number, decimalPlaces?: number): number
 Example:
 
 ```typescript
-float(4.24398, 3)
-// 4.244
+float(4.24398, 3) //=> 4.244
 ```
 
 </details>
 <details>
 <summary>&nbsp;&nbsp;sum</summary>
 
-### **sum(...arr: number[]): number**
+```typescript
+sum(...arr: number[]): number
+```
 
 Returns the sum of the provided numbers.
 <br><br>
 Example:
 
 ```typescript
-sum(1, 2, 3, 4, 5)
-// 15
+sum(1, 2, 3, 4, 5) //=> 15
 ```
 
 </details>
 <details>
 <summary>&nbsp;&nbsp;clampNumber</summary>
 <br>
-Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit. You can pass `false` or 0 for a limit parameter to bypass that limit.
+Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit. You can pass false or 0 for a limit parameter to bypass that limit.
 <br><br>
 
 ```typescript
-clampNumber(n: number, min: number | false: max: number | false): number
+clampNumber(n: number, min: number | false, max: number | false): number
 ```
 
 Example:
 
 ```typescript
-clamp(15, 3, 12) // 12
+clamp(15, 3, 12) //=> 12
 
-clamp(15, 16, 20) // 16
+clamp(15, 16, 20) //=> 16
 ```
 
 </details>
@@ -90,7 +90,7 @@ doubleDigit(n: number): string
 Example:
 
 ```typescript
-doubleDigit(9) // "09"
+doubleDigit(9) //=> "09"
 ```
 
 </details>
@@ -107,8 +107,7 @@ ordinal(n: number): string
 Example:
 
 ```typescript
-ordinal(4)
-// "4th"
+ordinal(4) //=> "4th"
 ```
 
 </details>
@@ -126,13 +125,13 @@ Example:
 
 ```typescript
 getRange(5, 10)
-// [5, 6, 7, 8, 9, 10]
+//=> [5, 6, 7, 8, 9, 10]
 
 getRange(0, 10, 2)
-// [0, 2, 4, 6, 8, 10]
+//=> [0, 2, 4, 6, 8, 10]
 
 getRange(10, 0, -2)
-// [10, 8, 6, 4, 2, 0]
+//=> [10, 8, 6, 4, 2, 0]
 ```
 
 </details>
@@ -174,7 +173,7 @@ Example:
 
 ```typescript
 getAmountOfTimeFromSeconds(2000000)
-//
+//=>
  {
     years: 0,
     months: 0,
@@ -185,8 +184,7 @@ getAmountOfTimeFromSeconds(2000000)
     seconds: 20
   }
 
-  getAmountOfTimeFromSeconds(2000000).inDays()
-// 23.14814814814815
+  getAmountOfTimeFromSeconds(2000000).inDays() //=> 23.14814814814815
 ```
 
 </details>
@@ -225,11 +223,9 @@ getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6): string
 Example:
 
 ```typescript
-getDayName(3)
-// "Wednesday"
+getDayName(3) //=> "Wednesday"
 
-getDayName(99)
-// undefined
+getDayName(99) //=> undefined
 ```
 
 </details>
@@ -272,8 +268,7 @@ lowerCaseNoSpaces(str: string): string
 Example:
 
 ```typescript
-lowerCaseNoSpaces("Hello World")
-// "helloworld"
+lowerCaseNoSpaces("Hello World") //=> "helloworld"
 ```
 
 <br>
@@ -291,11 +286,9 @@ truncate(str: string, lengthLimit: number, ending: string ): string
 Example:
 
 ```typescript
-truncate("Hello World!", 4)
-// "Hell..."
+truncate("Hello World!", 4) //=> "Hell..."
 
-truncate("Hello World!", 4, "/")
-// "Hell/"
+truncate("Hello World!", 4, "/") //=> "Hell/"
 ```
 
 </details>
@@ -310,14 +303,11 @@ _Note: includeLetters and includeNumbers both default to true_
 Example:
 
 ```typescript
-getRandomString(10)
-// "N3xO1pDs2f"
+getRandomString(10) //=> "N3xO1pDs2f"
 
-getRandomString(5, true, false)
-// "GjOxa"
+getRandomString(5, true, false) //=> "GjOxa"
 
-getRandomString(5, false, true)
-// "39281"
+getRandomString(5, false, true) //=> "39281"
 ```
 
 </details>
@@ -337,11 +327,9 @@ Example:
 ```typescript
 const isEven = (n: number) => n % 2 === 0
 
-isEvery([2, 4, 6, 8], (n) => isEven(n))
-// true
+isEvery([2, 4, 6, 8], (n) => isEven(n)) //=> true
 
-isEvery([2, 4, 7, 8], (n) => isEven(n))
-// false
+isEvery([2, 4, 7, 8], (n) => isEven(n)) //=> false
 ```
 
 </details>
@@ -357,11 +345,9 @@ Example:
 ```typescript
 const isEven = (n: number) => n % 2 === 0
 
-isAny([3, 5, 7, 9], (n) => isEven(n))
-// false
+isAny([3, 5, 7, 9], (n) => isEven(n)) //=> false
 
-isAny([2, 5, 7, 9], (n) => isEven(n))
-// true
+isAny([2, 5, 7, 9], (n) => isEven(n)) //=> true
 ```
 
 </details>
@@ -375,8 +361,7 @@ Returns the provided array with the items randomly ordered.
 Example:
 
 ```typescript
-shuffle([1, 2, 3, 4, 5])
-// [3, 5, 1, 4, 2]
+shuffle([1, 2, 3, 4, 5]) //=> [3, 5, 1, 4, 2]
 ```
 
 </details>
@@ -390,14 +375,11 @@ Returns a single dimensional array by default. If you pass a number for levels, 
 Example:
 
 ```typescript
-flatten([1, 2, [3, 4], 5])
-// [1, 2, 3, 4, 5]
+flatten([1, 2, [3, 4], 5]) //=> [1, 2, 3, 4, 5]
 
-flatten([1, 2, [[3, 4], 5]])
-// [1, 2, 3, 4, 5]
+flatten([1, 2, [[3, 4], 5]]) //=> [1, 2, 3, 4, 5]
 
-flatten([1, 2, [[3, 4], 5]], 1)
-// [1, 2, [3, 4], 5]
+flatten([1, 2, [[3, 4], 5]], 1) //=> [1, 2, [3, 4], 5]
 ```
 
 </details>
@@ -412,7 +394,7 @@ Example:
 
 ```typescript
 chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2)
-// [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
+//=> [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
 ```
 
 </details>
@@ -427,10 +409,10 @@ Example:
 
 ```typescript
 clampArray([1, 2, 3, 4, 5], 0, 3)
-// [1, 2, 3]
+//=> [1, 2, 3]
 
 clampArray([1, 2, 3], 5, false, "x")
-// [1, 2, 3, "x", "x"]
+//=> [1, 2, 3, "x", "x"]
 ```
 
 </details>
@@ -444,8 +426,7 @@ Returns an array of items that only appear once across all items of the provided
 Example:
 
 ```typescript
-getUnique([1, 2, 3], [3, 4, 5])
-// [1, 2, 4, 5]
+getUnique([1, 2, 3], [3, 4, 5]) //=> [1, 2, 4, 5]
 ```
 
 </details>
@@ -459,8 +440,7 @@ Returns an array of items that appear at least twice across all items of the pro
 Example:
 
 ```typescript
-getCommon([1, 2, 3, 4], [3, 4, 5])
-// [3, 4]
+getCommon([1, 2, 3, 4], [3, 4, 5]) //=> [3, 4]
 ```
 
 </details>
@@ -474,14 +454,11 @@ Returns a boolean of whether or not the two arrays have the same items. orderMat
 Example:
 
 ```typescript
-areArraysEqual([1, 2, 3], [1, 2, 3])
-// true
+areArraysEqual([1, 2, 3], [1, 2, 3]) //=> true
 
-areArraysEqual([3, 2, 1], [1, 2, 3])
-// false
+areArraysEqual([3, 2, 1], [1, 2, 3]) //=> false
 
-areArraysEqual([3, 2, 1], [1, 2, 3], false)
-// true
+areArraysEqual([3, 2, 1], [1, 2, 3], false) //=> true
 ```
 
 </details>
@@ -495,8 +472,7 @@ Returns the item in the array N spots from the last item.
 Example:
 
 ```typescript
-nthFromEnd([1, 2, 3, 4], 1)
-// 3
+nthFromEnd([1, 2, 3, 4], 1) //=> 3
 ```
 
 </details>
@@ -534,8 +510,7 @@ Returns the provided array with duplicates removed.
 Example:
 
 ```typescript
-removeDuplicates([1, 2, 1, 1, 2, 5])
-// [1, 2, 5]
+removeDuplicates([1, 2, 1, 1, 2, 5]) //=> [1, 2, 5]
 ```
 
 </details>
@@ -549,8 +524,7 @@ Returns an array of the rolling sum of an array.
 Example:
 
 ```typescript
-getRollingSum([1, 3, 5])
-// [1, 4, 9]
+getRollingSum([1, 3, 5]) //=> [1, 4, 9]
 ```
 
 </details>
@@ -570,8 +544,7 @@ Example:
 ```typescript
 const obj = { a: 1, b: 2, c: 3 }
 
-omitKeys(obj, "b", "c")
-// {a: 1}
+omitKeys(obj, "b", "c") //=> { a: 1 }
 ```
 
 </details>
@@ -587,8 +560,7 @@ Example:
 ```typescript
 const obj = { a: 1, b: 2, c: 3 }
 
-pickKeys(obj, "b", "c")
-// {b: 2, c: 3}
+pickKeys(obj, "b", "c") //=> { b: 2, c: 3 }
 ```
 
 </details>
@@ -605,7 +577,7 @@ Example:
 
 ```typescript
 combineObjects([{ a: 1 }, { b: 2 }, { c: 3 }])
-// {a: 1, b: 2, c: 3}
+//=> { a: 1, b: 2, c: 3 }
 ```
 
 </details>
@@ -621,8 +593,7 @@ Example:
 ```typescript
 const arr = [{ a: 1 }, { a: 2 }, { a: 3 }]
 
-sumOfKeyValues(arr, "a")
-// 6
+sumOfKeyValues(arr, "a") //=> 6
 ```
 
 </details>
@@ -639,7 +610,7 @@ Example:
 const arr = [{ a: 3 }, { a: 1 }, { a: 5 }]
 
 sortObjectsByKeyValue(arr, "a")
-// [{a: 1}, { a: 3 }, {a: 5}]
+//=> [{a: 1}, { a: 3 }, {a: 5}]
 ```
 
 </details>
@@ -664,7 +635,8 @@ const arr = [
       ]
 
 sortObjectsByKeyValues(arr, "a", "b", "c")
-// [
+//=>
+   [
     { a: 1, b: 1, c: 1 },
     { a: 1, b: 2, c: 1 },
     { a: 1, b: 2, c: 2 },
@@ -688,8 +660,7 @@ Example:
 ```typescript
 const arr = [{ suit: "Clubs" }, { suit: "Hearts" }, { suit: "Clubs" }]
 
-getKeyValueCounts(arr, "suit")
-// { "Clubs": 2, "Hearts": 1}
+getKeyValueCounts(arr, "suit") //=> { "Clubs": 2, "Hearts": 1 }
 ```
 
 </details>
@@ -706,9 +677,11 @@ Example:
 const arr = [{ suit: "Clubs", value: 2 }, {suit: "Hearts", value: 5}, {suit: "Clubs", value: 10}]
 
 groupObjectsByKeyValue(arr, "suit")
-// {
-    "Clubs": [{ suit: "Clubs" value: 2}, { suit: "Clubs", value: 10 }],
-    "Hearts": [{ suit: "Hearts", value: 5 }]}
+//=>
+    {
+      "Clubs": [{ suit: "Clubs" value: 2}, { suit: "Clubs", value: 10 }],
+      "Hearts": [{ suit: "Hearts", value: 5 }]
+    }
 ```
 
 </details>
@@ -722,8 +695,7 @@ Returns a string of an object's key and value pairs as a query parameter string.
 Example:
 
 ```typescript
-convertObjectToQueryParams({ age: 30, city: "Atlanta" })
-// "age=38&city=Atlanta"
+convertObjectToQueryParams({ age: 30, city: "Atlanta" }) //=> "age=38&city=Atlanta"
 ```
 
 </details>
@@ -799,8 +771,7 @@ const double = (n: number) => n * 2
 const triple = (n: number) => n * 3
 const doubleThenTriple = pipe(double, triple)
 
-doubleThenTriple(6)
-// 36
+doubleThenTriple(6) //=> 36
 ```
 
 </details>
@@ -852,10 +823,10 @@ Returns the window location's search params. Supports single-level nesting.
 // Browser location: website.com?search=john&page=1
 
 getBrowserLocationQueryParams()
-/* {
-    search: "john",
-    page: "1"
-   }
+/* => {
+        search: "john",
+        page: "1"
+      }
 */
 ```
 
@@ -916,12 +887,12 @@ enqueue(3)
 enqueue(4)
 
 executeOne()
-// 1
+//=> 1
 
 executeAll()
-// 2
-// 3
-// 4
+//=> 2
+//=> 3
+//=> 4
 ```
 
 </details>
