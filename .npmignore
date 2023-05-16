@@ -1,6 +1,5 @@
 .github/
 gladney.ts
 gladney.spec.ts
-jest.config.jest
+jest.config.js
 tsconfig.json
-README.md
