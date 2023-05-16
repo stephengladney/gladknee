@@ -533,6 +533,17 @@ describe("misc", () => {
       const obj = { name: "john", age: 30 }
       expect(_.convertObjectToQueryParams(obj)).toEqual("name=john&age=30")
     })
+
+    it("handles nesting", () => {
+      const obj = {
+        name: "john",
+        age: 30,
+        favorite: { drink: "coke", food: "chicken" },
+      }
+      expect(_.convertObjectToQueryParams(obj)).toEqual(
+        "name=john&age=30&favorite[drink]=coke&favorite[food]=chicken"
+      )
+    })
   })
 
   describe("debounce", () => {
