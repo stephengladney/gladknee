@@ -1,6 +1,6 @@
 # gladknee 😄🦵
 
-Gladknee is an open-source TypeScript utility library. It's written with functional programming conventions in mind.<br><br>
+Gladknee is an open-source TypeScript utility library.<br><br>
 
 #### What this library includes...
 
