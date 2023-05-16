@@ -534,7 +534,7 @@ describe("misc", () => {
       expect(_.convertObjectToQueryParams(obj)).toEqual("name=john&age=30")
     })
 
-    it("handles nesting", () => {
+    it("handles nesting (last param)", () => {
       const obj = {
         name: "john",
         age: 30,
@@ -542,6 +542,17 @@ describe("misc", () => {
       }
       expect(_.convertObjectToQueryParams(obj)).toEqual(
         "name=john&age=30&favorite[drink]=coke&favorite[food]=chicken"
+      )
+    })
+
+    it("handles nesting (middle param)", () => {
+      const obj = {
+        name: "john",
+        favorite: { drink: "coke", food: "chicken" },
+        age: 30,
+      }
+      expect(_.convertObjectToQueryParams(obj)).toEqual(
+        "name=john&favorite[drink]=coke&favorite[food]=chicken&age=30"
       )
     })
   })
