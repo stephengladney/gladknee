@@ -1045,7 +1045,7 @@ export function pipe<T>(
  **/
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  ms: number,
+  milliseconds: number,
   immediate: boolean
 ) {
   let wait: NodeJS.Timeout
@@ -1068,7 +1068,7 @@ export function debounce<T extends (...args: any[]) => any>(
       if (isWaiting) return getReturnObject(args)
       else {
         isWaiting = true
-        wait = setTimeout(() => (isWaiting = false), ms)
+        wait = setTimeout(() => (isWaiting = false), milliseconds)
 
         func(...args)
       }
@@ -1083,7 +1083,7 @@ export function debounce<T extends (...args: any[]) => any>(
         isWaiting = false
 
         func(...args)
-      }, ms)
+      }, milliseconds)
 
       return getReturnObject(args)
     }
