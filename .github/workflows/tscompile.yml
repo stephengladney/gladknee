@@ -1,12 +1,19 @@
+name: NPM Publish
+
 on:
   push:
-  branches: -main
+    branches:
+      - main
 
 jobs:
-  tsc:
-    name: tsc
+  publish:
+    runs-on: ubuntu-latest
     steps:
-      - name: compile TS
-        run: tsc
-      - name: publish to NPM
-        run: npm publish
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - run: npm run build
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
