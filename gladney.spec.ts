@@ -261,7 +261,7 @@ describe("arrays", () => {
   describe("sum", () => {
     it("returns the sum of an array of numbers", () => {
       const arr = [1, 2, 3, 4]
-      expect(_.sum(...arr)).toEqual(10)
+      expect(_.sumz(...arr)).toEqual(10)
     })
   })
 
