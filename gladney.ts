@@ -907,13 +907,12 @@ export function convertObjectToQueryParams(obj: object): string {
     if (typeof keyValue !== "object") {
       result += `${key}=${keyValue}` + (i < objectKeys.length - 1 ? "&" : "")
     } else {
-      Object.keys(keyValue).forEach((key2, i2) => {
+      const objectKeys2 = Object.keys(keyValue)
+      objectKeys2.forEach((key2, i2) => {
         const keyValue2 = keyValue[key2 as keyof typeof keyValue]
         result +=
           `${key}[${key2}]=${keyValue2}` +
-          (i2 <= Object.keys(keyValue).length - 1 && i < objectKeys.length - 1
-            ? "&"
-            : "")
+          (i2 < objectKeys2.length - 1 || i < objectKeys.length - 1 ? "&" : "")
       })
     }
   })
