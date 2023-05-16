@@ -16,6 +16,8 @@ jobs:
           node-version: "16.x"
           registry-url: "https://registry.npmjs.org"
       - run: npm ci
+      - run: tsc
+      - run: rm dist/gladney.spec.js dist/gladney.spec.d.ts
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
