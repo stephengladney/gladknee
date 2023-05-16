@@ -366,14 +366,14 @@ describe("objects", () => {
     })
   })
 
-  describe("sumOfKeyValues", () => {
+  describe("sumOfKeyValue", () => {
     it("returns the sum of the key value", () => {
       const arr = [
         { a: 1, b: 2 },
         { a: 2, b: 3 },
         { a: 3, b: 4 },
       ]
-      expect(_.sumOfKeyValues(arr, "a")).toBe(6)
+      expect(_.sumOfKeyValue(arr, "a")).toBe(6)
     })
   })
 

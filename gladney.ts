@@ -5,7 +5,7 @@ This is different from the native `toFixed()` method because it returns a number
 *
 * _Example:_
 * ```typescript
-* float(4.24398, 3) // 4.244
+* float(4.24398, 3) //=> 4.244
 * ```
  **/
 export function float(n: number, decimalPlaces?: number) {
@@ -16,7 +16,7 @@ export function float(n: number, decimalPlaces?: number) {
  *
  * Example:
  * ```typescript
- * sum(1, 4, 6) // 11
+ * sum(1, 4, 6) //=> 11
  * ```
  **/
 export function sum(...arr: number[]) {
@@ -28,8 +28,8 @@ export function sum(...arr: number[]) {
 *
 * _Example:_
 * ```typescript
-* clamp(15, 3, 12) // 12
-* clamp(15, 16, 20) // 16
+* clamp(15, 3, 12) //=> 12
+* clamp(15, 16, 20) //=> 16
 * ```
  **/
 export function clampNumber(
@@ -47,7 +47,7 @@ export function clampNumber(
  *
  * _Example:_
  * ```typescript
- * doubleDigit(9) // "09"
+ * doubleDigit(9) //=> "09"
  * ```
  **/
 export function doubleDigit(n: number) {
@@ -61,13 +61,13 @@ export function doubleDigit(n: number) {
  * _Example:_
  * ```typescript
  * getRange(5, 10)
- * // [5, 6, 7, 8, 9, 10]
+ * //=> [5, 6, 7, 8, 9, 10]
  *
  * getRange(0, 10, 2)
- * // [0, 2, 4, 6, 8, 10]
+ * //=> [0, 2, 4, 6, 8, 10]
  *
  * getRange(10, 0, -2)
- * // [10, 8, 6, 4, 2, 0]
+ * //=> [10, 8, 6, 4, 2, 0]
  * ```
  **/
 export function getRange(start: number, end: number, step = 1) {
@@ -90,7 +90,7 @@ export function getRange(start: number, end: number, step = 1) {
  *
  * _Example:_
  * ```typescript
- * ordinal(4) // "4th"
+ * ordinal(4) //=> "4th"
  * ```
  **/
 export function ordinal(n: number) {
@@ -137,10 +137,10 @@ const secondsInAYear = 31557600
  * _Example:_
  * ```typescript
  * getAmountOfTimeFromSeconds(2000000)
-// { years: 0, months: 0, weeks: 3, days: 2, hours: 3, minutes: 33, seconds: 20 }
+//=> { years: 0, months: 0, weeks: 3, days: 2, hours: 3, minutes: 33, seconds: 20 }
 
 * getAmountOfTimeFromSeconds(2000000).inMinutes()
-// 33333.333333333336
+//=> 33333.333333333336
 
 interface TimeObject {
   years: number
@@ -239,7 +239,7 @@ export function timeSince(date: Date): TimeObject {
  *
  * Example:
  * ```typescript
- *getDayName(3) // "Wednesday"
+ * getDayName(3) //=> "Wednesday"
  * ```
  **/
 export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
@@ -277,7 +277,7 @@ export function endOfToday() {
  * *
  * Example:
  * ```typescript
- * lowerCaseNoSpaces("Hello World") // "helloworld"
+ * lowerCaseNoSpaces("Hello World") //=> "helloworld"
  * ```
  **/
 export function lowerCaseNoSpaces(str: string) {
@@ -288,9 +288,9 @@ export function lowerCaseNoSpaces(str: string) {
  *
  * Example:
  * ```typescript
- * truncate("Hello World!", 4) // "Hell..."
+ * truncate("Hello World!", 4) //=> "Hell..."
 
-truncate("Hello World!", 4, "/") // "Hell/"
+truncate("Hello World!", 4, "/") //=> "Hell/"
  * ```
  **/
 export function truncate(
@@ -309,11 +309,11 @@ export function truncate(
  * 
  * Example:
  * ```typescript
- getRandomString(10) // "N3xO1pDs2f"
+ getRandomString(10) //=> "N3xO1pDs2f"
 
-getRandomString(5, true, false) // "GjOxa"
+getRandomString(5, true, false) //=> "GjOxa"
 
-getRandomString(5, false, true) // "39281"
+getRandomString(5, false, true) //=> "39281"
  * ```
  **/
 export function getRandomString(
@@ -341,9 +341,9 @@ export function getRandomString(
  * ```typescript
  const isEven = (n: number) => n % 2 === 0
 
-isEvery([2, 4, 6, 8], (n) => isEven(n)) // true
+isEvery([2, 4, 6, 8], (n) => isEven(n)) //=> true
 
-isEvery([2, 4, 7, 8], (n) => isEven(n)) // false
+isEvery([2, 4, 7, 8], (n) => isEven(n)) //=> false
  * ```
  **/
 export function isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean) {
@@ -356,9 +356,9 @@ export function isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean) {
  * ```typescript
  const isEven = (n: number) => n % 2 === 0
 
-isAny([3, 5, 7, 9], (n) => isEven(n)) // false
+isAny([3, 5, 7, 9], (n) => isEven(n)) //=> false
 
-isAny([2, 5, 7, 9], (n) => isEven(n)) // true
+isAny([2, 5, 7, 9], (n) => isEven(n)) //=> true
  * ```
  **/
 export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
@@ -369,7 +369,7 @@ export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
  * 
  * Example:
  * ```typescript
- shuffle([1, 2, 3, 4, 5]) // [3, 5, 1, 4, 2]
+ shuffle([1, 2, 3, 4, 5]) //=> [3, 5, 1, 4, 2]
  * ```
  **/
 export function shuffle<T>(array: T[]) {
@@ -396,9 +396,9 @@ export function shuffle<T>(array: T[]) {
  *
  * Example:
  * ```typescript
- * clampArray([1, 2, 3, 4, 5], 0, 3) // [1, 2, 3]
+ * clampArray([1, 2, 3, 4, 5], 0, 3) //=> [1, 2, 3]
 
-clampArray([1, 2, 3], 5, false, "x") // [1, 2, 3, "x", "x"]
+clampArray([1, 2, 3], 5, false, "x") //=> [1, 2, 3, "x", "x"]
  * ```
  **/
 export function clampArray<T>(
@@ -424,7 +424,7 @@ export function clampArray<T>(
  * Example:
  * ```typescript
  *chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2)
-// [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
+//=> [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
  * ```
  **/
 export function chunkArray<T>(arr: T[], chunkSize: number) {
@@ -443,9 +443,9 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
  *
  * Example:
  * ```typescript
- * flatten([1,[2,3,[4,5]],6]) // [1, 2, 3, 4, 5, 6]
+ * flatten([1,[2,3,[4,5]],6]) //=> [1, 2, 3, 4, 5, 6]
  *
- * flatten([1,[2,3,[4,5]],6], 1) // [1, 2, 3, [4, 5], 6]
+ * flatten([1,[2,3,[4,5]],6], 1) //=> [1, 2, 3, [4, 5], 6]
  * ```
  **/
 export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
@@ -514,7 +514,7 @@ export function insertionSort(arr: SortableArray) {
  *
  * Example:
  * ```typescript
- * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) // [1, 2, 3, 4, 5]
+ * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
 export function removeDuplicates(arr: any[]) {
@@ -550,7 +550,7 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
  * Example:
  * ```typescript
  * const arr = [1, 2, 3, 3, 4, 4, 4, 5]
- * getCount(arr, 4) // 3
+ * getCount(arr, 4) //=> 3
  * ```
  **/
 export function getCountOf<T>(arr: T[], target: T) {
@@ -564,7 +564,7 @@ export function getCountOf<T>(arr: T[], target: T) {
  * const arr1 = [1, 2, 3, 4]
  * const arr2 = [3, 4, 5, 6]
  *
- * getUniqueItems(arr1, arr2) // [1, 2, 5, 6]
+ * getUniqueItems(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
  * See also: `getCommonItems()` and `getSharedItems()`
  **/
@@ -593,7 +593,7 @@ export function getUniqueItems<T>(...arrs: T[][]) {
  * const arr2 = [3, 4, 5, 6]
  * const arr3 = [4, 5, 6, 7]
  *
- * getCommonItems(arr1, arr2, arr3) // [3, 4, 5, 6]
+ * getCommonItems(arr1, arr2, arr3) //=> [3, 4, 5, 6]
  * ```
  * See also: `getUniqueItems()` and `getSharedItems()`
  **/
@@ -619,7 +619,7 @@ export function getCommonItems<T>(...arrs: T[][]) {
  * const arr2 = [3, 4, 5, 6]
  * const arr3 = [4, 5, 6, 7]
  *
- * getSharedItems(arr1, arr2, arr3) // [4]
+ * getSharedItems(arr1, arr2, arr3) //=> [4]
  * ```
  * See also: `getUniqueItems()` and `getCommonItems()`
  **/
@@ -639,7 +639,7 @@ export function getSharedItems<T>(...arrs: T[][]) {
  *
  * Example:
  * ```typescript
- * nthFromEnd([1, 2, 3, 4, 5], 2) // 3
+ * nthFromEnd([1, 2, 3, 4, 5], 2) //=> 3
  * ```
  **/
 export function nthFromEnd<T>(arr: T[], n: number) {
@@ -654,11 +654,11 @@ export function nthFromEnd<T>(arr: T[], n: number) {
  * const arr2 = [1, 2, 3, 4]
  * const arr3 = [4, 3, 2, 1]
  *
- * areArraysEqual(arr1, arr2) // true
+ * areArraysEqual(arr1, arr2) //=> true
  *
- * areArraysEqual(arr2, arr3) // false
+ * areArraysEqual(arr2, arr3) //=> false
  *
- * areArraysEqual(arr2, arr3, false) // true
+ * areArraysEqual(arr2, arr3, false) //=> true
  * ```
  * NOTE: `orderMatters` is true by default.
  **/
@@ -683,7 +683,7 @@ export function areArraysEqual<T>(
  * ```typescript
  * const obj = { a: 1, b: 2, c: 3 }
  *
- * omitKeys(obj, "b") // { a: 1, c: 3 }
+ * omitKeys(obj, "b") //=> { a: 1, c: 3 }
  * ```
  **/
 export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
@@ -702,7 +702,7 @@ export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
  * ```typescript
  * const obj = { a: 1, b: 2, c: 3 }
  *
- * pickKeys(obj, "a", "c") // { a: 1, c: 3 }
+ * pickKeys(obj, "a", "c") //=> { a: 1, c: 3 }
  * ```
  **/
 export function pickKeys<T extends object, U extends keyof T>(
@@ -727,14 +727,15 @@ export function pickKeys<T extends object, U extends keyof T>(
  * const obj2 = { d: 4, e: 5, f: 6 }
  *
  * combineObjects(obj1, obj2)
- * // {
- * //   a: 1,
- * //   b: 2,
- * //   c: 3,
- * //   d: 4,
- * //   e: 5,
- * //   f: 6
- * // }
+ * //=>
+ *     {
+ *      a: 1,
+ *      b: 2,
+ *      c: 3,
+ *      d: 4,
+ *      e: 5,
+ *      f: 6
+ *     }
  * ```
  *
  * NOTE: If two objects have the same key, the latter object's value will result.
@@ -756,10 +757,10 @@ export function combineObjects(objs: { [key: string]: any }[]): object {
  * const obj1 = { a: 1, b: 2, c: 3 }
  * const obj2 = { a: 2, b: 3, c: 4 }
  *
- * sumOfKeyValues([obj1, obj2], "c") // 7
+ * sumOfKeyValue([obj1, obj2], "c") //=> 7
  * ```
  **/
-export function sumOfKeyValues<T extends object, U extends keyof T>(
+export function sumOfKeyValue<T extends object, U extends keyof T>(
   arr: (T & { [K in U]: number })[],
   key: U
 ) {
@@ -775,11 +776,12 @@ export function sumOfKeyValues<T extends object, U extends keyof T>(
  * const obj3 = { a: 2, b: 2 }
  *
  * sortObjectsByKeyValue([obj1, obj2, obj3], "a")
- * // [
- * //   { a: 1, b: 2 },
- * //   { a: 2, b: 2 },
- * //   { a: 3, b: 2 },
- * // ]
+ * //=>
+ *     [
+ *       { a: 1, b: 2 },
+ *       { a: 2, b: 2 },
+ *       { a: 3, b: 2 },
+ *     ]
  * ```
  **/
 export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
@@ -800,13 +802,14 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
  * const obj5 = { a: 2, b: 5, c: 3 }
  *
  * sortObjectsByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
- * // [
- * //   { a: 1, b: 6, c: 3 }
- * //   { a: 2, b: 4, c: 3 }
- * //   { a: 2, b: 5, c: 3 }
- * //   { a: 3, b: 2, c: 3 }
- * //   { a: 3, b: 2, c: 4 }
- * // ]
+ * //=>
+ *      [
+ *       { a: 1, b: 6, c: 3 }
+ *       { a: 2, b: 4, c: 3 }
+ *       { a: 2, b: 5, c: 3 }
+ *       { a: 3, b: 2, c: 3 }
+ *       { a: 3, b: 2, c: 4 }
+ *      ]
  * ```
  **/
 export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
@@ -833,7 +836,7 @@ export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
  * ```typescript
  * const arr = [{ name: "John"}, { name: "Sarah"}, { name: "John"}, { name: "Beth"}]
  *
- * getKeyValueCounts(arr, "name") // { John: 2, Sarah: 1, Beth: 1 }
+ * getKeyValueCounts(arr, "name") //=> { John: 2, Sarah: 1, Beth: 1 }
  * ```
  **/
 export function getKeyValueCounts<T extends object, U extends keyof T>(
@@ -861,18 +864,19 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
  * Example:
  * ```typescript
  * const arr = [
- *   { name: "John", age: 30},
- *   { name: "Sarah", age: 32 },
- *   { name: "John", age: 28 },
- *   { name: "Beth", age: 23}
+ *    { name: "John", age: 30},
+ *    { name: "Sarah", age: 32 },
+ *    { name: "John", age: 28 },
+ *    { name: "Beth", age: 23}
  * ]
  *
  * groupObjectsByKeyValue(arr, "name")
- * // {
- *      John: [{ name: "John", age: 30 }, {name: "John", age: 28 }]
- *      Sarah: [{ name: "Sarah", age: 32 }]
- *      Beth: [{name: "Beth", age: 23 }]
- * // }
+ * //=>
+ *      {
+ *        John: [{ name: "John", age: 30 }, {name: "John", age: 28 }]
+ *         Sarah: [{ name: "Sarah", age: 32 }]
+ *        Beth: [{name: "Beth", age: 23 }]
+ *      }
  * ```
  **/
 export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
@@ -892,7 +896,7 @@ export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
  *
  * Example:
  * ```typescript
- * convertObjectToQueryParams({ age: 30, city: "Atlanta" }) // "age=38&city=Atlanta"
+ * convertObjectToQueryParams({ age: 30, city: "Atlanta" }) //=> "age=38&city=Atlanta"
  * ```
  **/
 export function convertObjectToQueryParams(obj: object): string {
@@ -1013,7 +1017,7 @@ const double = (n: number) => n * 2
 const triple = (n: number) => n * 3
 const doubleThenTriple = pipe(double, triple)
 
-doubleThenTriple(6) // 36
+doubleThenTriple(6) //=> 36
 * ```
  **/
 export function pipe<T>(
@@ -1219,7 +1223,7 @@ type GeoCoords = {
  *
  * Example:
  * ```typescript
- * getBrowserGeolocation() // { latitude: 35.7402404, longitude: -82.3420191 }
+ * getBrowserGeolocation() //=> { latitude: 35.7402404, longitude: -82.3420191 }
  * ```
  **/
 export async function getBrowserGeolocation(timeoutInSeconds = 10) {

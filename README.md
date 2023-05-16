@@ -582,9 +582,9 @@ combineObjects([{ a: 1 }, { b: 2 }, { c: 3 }])
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;sumOfKeyValues</summary>
+<summary>&nbsp;&nbsp;sumOfKeyValue</summary>
 
-### **sumOfKeyValues<T extends object, U extends keyof T>(arr: (T & { [K in U]: number })[],key: U): number**
+### **sumOfKeyValue<T extends object, U extends keyof T>(arr: (T & { [K in U]: number })[],key: U): number**
 
 Returns the sum of the values of a specific shared key in an array of objects.
 <br><br>
@@ -593,7 +593,7 @@ Example:
 ```typescript
 const arr = [{ a: 1 }, { a: 2 }, { a: 3 }]
 
-sumOfKeyValues(arr, "a") //=> 6
+sumOfKeyValue(arr, "a") //=> 6
 ```
 
 </details>
