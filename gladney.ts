@@ -310,6 +310,43 @@ export function truncate(
     : str
 }
 
+/** Returns an escaped string that can be inserted into HTML
+ *
+ * Example:
+ * ```typescript
+ * escapeString("Hello <there>, my 'friend'") //=> "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+ * ```
+ */
+
+export function escapeString(str: string) {
+  let result: string
+  result = str.replace(/&/g, "&amp;")
+  result = result.replace(/</g, "&lt;")
+  result = result.replace(/>/g, "&gt;")
+  result = result.replace(/"/g, "&quot;")
+  result = result.replace(/'/g, "&#x27;")
+  result = result.replace(/`/g, "&#x60;")
+  return result
+}
+
+/** Takes an escaped string and returns an unescaped string
+ *
+ * Example:
+ * ```typescript
+ * unEscapeString("Hello <there>, my 'friend'") //=> "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+ * ```
+ */
+export function unEscapeString(str: string) {
+  let result: string
+  result = str.replace(/&amp;/g, "&")
+  result = result.replace(/&lt;/g, "<")
+  result = result.replace(/&gt;/g, ">")
+  result = result.replace(/&quot;/g, '"')
+  result = result.replace(/&#x27;/g, "'")
+  result = result.replace(/&#x60;/g, "`")
+  return result
+}
+
 /** Returns a random string of specified length. Can include letters and/or numbers.
  *
  * NOTE: `includeLetters` and `includeNumbers` both default to true.
@@ -967,6 +1004,27 @@ export function areObjectsEqual(...objs: object[]) {
  */
 export function deepCopy<T extends object>(obj: T): T {
   return JSON.parse(JSON.stringify(obj))
+}
+
+/** Returns an object with the keys and values reversed.
+ *
+ * NOTE: Values must be able to be converted to strings.
+ *
+ * Example:
+ * ```typescript
+ * flipKeyValues({ a: 1, b: 2, c: 3 }) //=> { "1": a, "2": b, "3": c}
+ * ```
+ */
+export function flipKeyValues<T extends object>(
+  obj: T
+): { [key: string]: string } {
+  const result: { [key: string]: string } = {}
+  const keys = Object.keys(obj)
+  const values = Object.values(obj)
+  values.forEach((value, i) => {
+    result[String(value)] = keys[i]
+  })
+  return result
 }
 
 // EXPRESS

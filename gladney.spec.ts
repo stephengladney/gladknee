@@ -150,6 +150,20 @@ describe("strings", () => {
       expect(_.truncate("Hello world", 8, "/")).toBe("Hello wo/")
     })
   })
+  describe("escapeString", () => {
+    it("returns a string with characters escaped", () => {
+      expect(_.escapeString("Hello <there>, my 'friend'")).toBe(
+        "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+      )
+    })
+  })
+  describe("unEscapeString", () => {
+    it("returns a string with characters unescaped", () => {
+      expect(
+        _.unEscapeString("Hello &lt;there&gt;, my &#x27;friend&#x27;")
+      ).toBe("Hello <there>, my 'friend'")
+    })
+  })
 })
 
 describe("arrays", () => {
