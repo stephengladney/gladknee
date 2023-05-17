@@ -951,6 +951,17 @@ export function areObjectsEqual(...objs: object[]) {
   }, true)
 }
 
+/** Returns a deep copy of an object.
+ *
+ * Example:
+ * ```typescript
+ * deepCopy({ a: 1, b: { c: 2 }, d: 3 }) //=> { a: 1, b: { c: 2 }, d: 3 }
+ * ```
+ */
+export function deepCopy<T extends object>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 // EXPRESS
 
 export type Handler = (req: Request, res: Response) => void
@@ -1122,6 +1133,12 @@ export function debounce<T extends (...args: any[]) => any>(
   }
 }
 
+/** Returns a memoized version of a function.
+ *
+ * _Memoization is the process of caching a function's result so that if the function is called
+ * with same parameters, the result can be retrieved from cache, rather than
+ * executing the function again._
+ */
 export function memoize<T extends (...args: any[]) => any>(func: T): T {
   const results: { [key: string]: ReturnType<T> } = {}
   return ((...args: Parameters<T>): ReturnType<T> => {

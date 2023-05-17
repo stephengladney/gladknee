@@ -469,6 +469,13 @@ describe("objects", () => {
       })
     })
   })
+
+  describe("deepCopy", () => {
+    it("returns a deep copy of the object", () => {
+      const nestedObject = { a: 1, b: { c: 2 }, d: 3, e: { f: { g: 4 } } }
+      expect(_.deepCopy(nestedObject)).toEqual(nestedObject)
+    })
+  })
 })
 
 describe("misc", () => {
