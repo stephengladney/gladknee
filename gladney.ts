@@ -388,6 +388,18 @@ export function shuffle<T>(array: T[]) {
   return _array
 }
 
+/** Returns a random element from an array
+ *
+ * Example:
+ * ```typescript
+ * getRandomItem([1, 2, 3, 4, 5, 6]) //=> 3
+ * ```
+ **/
+export function getRandomItem<T>(arr: T[]) {
+  const randomIndex = Math.floor(Math.random() * arr.length)
+  return arr[randomIndex]
+}
+
 /** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
  *  is larger than the length of the array, the fill will be added to the array as many times as necessary
  * to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
@@ -917,6 +929,26 @@ export function convertObjectToQueryParams(obj: object): string {
     }
   })
   return result
+}
+
+/** Returns a boolean representing if a set of objects have the same key value pairs.
+ *
+ * Example:
+ * ```typescript
+ * const obj1 = { a: 1, b:2, c: 3 }
+ * const obj2 = { a: 1, b:2, c: 3 }
+ * const obj3 = { a: 4, b:5, c: 6 }
+ *
+ * areObjectsEqual(ob1, obj2) //=> true
+ * areObjectsEqual(ob1, obj2, obj3) //=> false
+ * ```
+ */
+export function areObjectsEqual(...objs: object[]) {
+  const obj1 = objs[0]
+  objs.slice(1).reduce((acc, obj) => {
+    if (JSON.stringify(obj1) !== JSON.stringify(obj)) return false
+    else return acc
+  }, true)
 }
 
 // EXPRESS

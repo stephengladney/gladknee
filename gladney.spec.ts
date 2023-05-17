@@ -190,6 +190,14 @@ describe("arrays", () => {
     })
   })
 
+  describe("getRandomItem", () => {
+    it("gets a random item from the array", () => {
+      const arr = [1, 2, 3, 4, 5]
+      const randomItem = _.getRandomItem(arr)
+      expect(arr.includes(randomItem)).toBe(true)
+    })
+  })
+
   describe("clampArray", () => {
     it("enforces the maximum limit", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
