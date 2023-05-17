@@ -1198,6 +1198,18 @@ export function debounce<T extends (...args: any[]) => any>(
   }
 }
 
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): T {
+  const { enqueue, queue, executeAll } = createQueueAsync(func)
+  // const queue: { type: "execute" | "pause"; value: Parameters<T> | number }[] =
+  //   []
+  return ((...args: Parameters<T>) => {
+    enqueue(args)
+  }) as T
+}
+
 /** Returns a memoized version of a function.
  *
  * _Memoization is the process of caching a function's result so that if the function is called
@@ -1309,7 +1321,8 @@ type AsyncQueueObject = {
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
 export function createQueueAsync(
-  functionToExecute: (...args: any[]) => Promise<unknown>
+  functionToExecute: (...args: any[]) => Promise<unknown>,
+  delay?: number
 ): AsyncQueueObject {
   const queue: unknown[] = []
   let isBreakRequested = false
@@ -1324,10 +1337,12 @@ export function createQueueAsync(
       if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
       else await functionToExecute(queue[0])
       queue.shift()
+      if (delay) pauseAsync(delay)
       if (queue.length > 0) executeAll(ignoreErrors)
     } catch {
       if (ignoreErrors) {
         queue.shift()
+        if (delay) pauseAsync(delay)
         if (queue.length > 0) executeAll(true)
       }
     }
