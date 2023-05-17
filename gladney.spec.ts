@@ -586,6 +586,26 @@ describe("misc", () => {
     })
   })
 
+  describe("partial", () => {
+    it("calls the function correctly if not all parameters are originally passed", () => {
+      const subtract = (a: number, b: number) => a - b
+      const subtractFrom5 = _.partial(subtract, 5)
+      expect(subtractFrom5(1)).toEqual(4)
+    })
+
+    it("calls the function correctly if false is passed in for a former parameter", () => {
+      const subtract = (a: number, b: number) => a - b
+      const subtract5 = _.partial(subtract, false, 5)
+      expect(subtract5(12)).toEqual(7)
+    })
+
+    it("calls the function correctly if false is passed in for a former parameter", () => {
+      const subtract = (a: number, b: number) => a - b
+      const subtractFrom5 = _.partial(subtract, 5, false)
+      expect(subtractFrom5(1)).toEqual(4)
+    })
+  })
+
   describe("debounce", () => {
     it("immediate = true. invokes the function immediately on first call", () => {
       const func = jest.fn()

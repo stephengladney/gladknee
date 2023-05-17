@@ -1198,6 +1198,10 @@ export function debounce<T extends (...args: any[]) => any>(
   }
 }
 
+/** Returns a throttled version of a function. The throttled version can only execute once every N milliseconds,
+ * where N is the delay passed in to the throttle function.
+ *
+ **/
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
   delay: number
@@ -1205,7 +1209,7 @@ export function throttle<T extends (...args: any[]) => any>(
   const { enqueue, executeAll, queue } = createQueueAsync(func, delay)
 
   return ((...args: Parameters<T>) => {
-    enqueue(args)
+    enqueue(...args)
     if (queue.length > 1) return
     else executeAll()
   }) as T
@@ -1227,6 +1231,26 @@ export function memoize<T extends (...args: any[]) => any>(func: T): T {
       return results[argsAsString]
     }
   }) as T
+}
+
+type Falsy = null | undefined | false
+export function partial<T extends (...args: any[]) => any>(
+  func: T,
+  ...args: (Parameters<typeof func>[number] | Falsy)[]
+) {
+  const newArgsToCall: (Parameters<typeof func>[number] | Falsy)[] = []
+  let lastNewArgUsed = -1
+
+  return (...newArgs: (Parameters<typeof func>[number] | Falsy)[]) => {
+    args.forEach((arg) => {
+      if (!!arg && arg !== 0) newArgsToCall.push(arg)
+      else {
+        lastNewArgUsed++
+        newArgsToCall.push(newArgs[lastNewArgUsed])
+      }
+    })
+    return func(...newArgsToCall, ...newArgs.slice(lastNewArgUsed))
+  }
 }
 
 // BROWSER STUFF
