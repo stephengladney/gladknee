@@ -23,8 +23,8 @@ export function sum(...arr: number[]) {
   return arr.reduce((acc, i) => acc + i, 0)
 }
 
-export function randomNumber(min = 1, max: number) {
-  Math.floor(Math.random() * max + min)
+export function randomNumber(min: number, max: number) {
+  return Math.floor(Math.random() * max + min)
 }
 
 /** Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit.
