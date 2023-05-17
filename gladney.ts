@@ -1122,6 +1122,18 @@ export function debounce<T extends (...args: any[]) => any>(
   }
 }
 
+export function memoize<T extends (...args: any[]) => any>(func: T): T {
+  const results: { [key: string]: ReturnType<T> } = {}
+  return ((...args: Parameters<T>): ReturnType<T> => {
+    const argsAsString = args.join(",")
+    if (results[argsAsString]) return results[argsAsString]
+    else {
+      results[argsAsString] = func(...args)
+      return results[argsAsString]
+    }
+  }) as T
+}
+
 // BROWSER STUFF
 
 /** Prompts a user in their browser to save provided text to a file on their machine.
