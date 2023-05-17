@@ -23,6 +23,10 @@ export function sum(...arr: number[]) {
   return arr.reduce((acc, i) => acc + i, 0)
 }
 
+export function randomNumber(min = 1, max: number) {
+  Math.floor(Math.random() * max + min)
+}
+
 /** Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit.
  You can pass **false** or **0** for a limit parameter to bypass that limit.
 *
@@ -78,9 +82,12 @@ export function getRange(start: number, end: number, step = 1) {
       result.push(i)
     }
   } else {
-    if (step >= 0) return
-    for (let i = start; i >= end; i += step) {
-      result.push(i)
+    if (step === 1) step = -1
+    else if (step >= 0) return
+    else {
+      for (let i = start; i >= end; i += step) {
+        result.push(i)
+      }
     }
   }
   return result
@@ -1327,3 +1334,6 @@ export function getURLQueryParams() {
     } else return { ...acc, [key]: value }
   }, {})
 }
+
+/** A function that does nothing and returns nothing. Useful for linters that require a callback. */
+export function noOp() {}
