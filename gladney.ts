@@ -1202,11 +1202,12 @@ export function throttle<T extends (...args: any[]) => any>(
   func: T,
   delay: number
 ): T {
-  const { enqueue, queue, executeAll } = createQueueAsync(func)
-  // const queue: { type: "execute" | "pause"; value: Parameters<T> | number }[] =
-  //   []
+  const { enqueue, executeAll, queue } = createQueueAsync(func, delay)
+
   return ((...args: Parameters<T>) => {
     enqueue(args)
+    if (queue.length > 1) return
+    else executeAll()
   }) as T
 }
 
@@ -1274,9 +1275,9 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-export type QueueObject = {
+type QueueObject<T extends (...args: any[]) => unknown> = {
   queue: unknown[]
-  enqueue: Function
+  enqueue: (...args: Parameters<T>) => void
   executeOne: Function
   executeAll: Function
   breakOut: Function
@@ -1284,18 +1285,18 @@ export type QueueObject = {
 
 /** Returns a `QueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createQueue(functionToExecute: Function): QueueObject {
-  const queue: unknown[] = []
+export function createQueue<T extends (...args: any[]) => unknown>(
+  functionToExecute: T
+): QueueObject<T> {
+  const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = () => {
-    if (Array.isArray(queue[0])) functionToExecute(...queue[0])
-    else functionToExecute(queue[0])
+    functionToExecute(...queue[0])
     queue.shift()
   }
   const executeAll = () => {
     if (isBreakRequested) return
-    if (Array.isArray(queue[0])) functionToExecute(...queue[0])
-    else functionToExecute(queue[0])
+    functionToExecute(...queue[0])
     queue.shift()
     if (queue.length > 0) executeAll()
   }
@@ -1310,39 +1311,34 @@ export function createQueue(functionToExecute: Function): QueueObject {
   }
 }
 
-type AsyncQueueObject = {
-  queue: unknown[]
-  enqueue: Function
-  executeOne: Function
-  executeAll: (ignoreErrors?: boolean) => unknown
-  breakOut: Function
-}
+type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> =
+  QueueObject<T> & {
+    executeAll: (ignoreErrors?: boolean) => unknown
+  }
 
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createQueueAsync(
-  functionToExecute: (...args: any[]) => Promise<unknown>,
+function createQueueAsync<T extends (...args: any[]) => Promise<unknown>>(
+  functionToExecute: T,
   delay?: number
-): AsyncQueueObject {
-  const queue: unknown[] = []
+): AsyncQueueObject<T> {
+  const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {
-    if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
-    else await functionToExecute(queue[0])
+    await functionToExecute(...queue[0])
     queue.shift()
   }
   const executeAll = async (ignoreErrors = false) => {
     if (isBreakRequested) return
     try {
-      if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
-      else await functionToExecute(queue[0])
+      await functionToExecute(...queue[0])
       queue.shift()
-      if (delay) pauseAsync(delay)
+      if (delay) await pauseAsync(delay)
       if (queue.length > 0) executeAll(ignoreErrors)
     } catch {
       if (ignoreErrors) {
         queue.shift()
-        if (delay) pauseAsync(delay)
+        if (delay) await pauseAsync(delay)
         if (queue.length > 0) executeAll(true)
       }
     }
@@ -1352,7 +1348,7 @@ export function createQueueAsync(
       isBreakRequested = true
     },
     queue,
-    enqueue: (...args: unknown[]) => queue.push(args),
+    enqueue: (...args: Parameters<T>) => queue.push(args),
     executeOne,
     executeAll,
   }
