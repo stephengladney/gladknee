@@ -812,20 +812,32 @@ type GeoCoords = {
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;getBrowserLocationQueryParams</summary>
+<summary>&nbsp;&nbsp;getURLQueryParams</summary>
 
-### **getBrowserLocationQueryParams(): object**
+### **getURLQueryParams(): object**
 
 Returns the window location's search params. Supports single-level nesting.
 <br><br>
+Example:
 
 ```typescript
 // Browser location: website.com?search=john&page=1
 
-getBrowserLocationQueryParams()
+getURLQueryParams()
 /* => {
         search: "john",
         page: "1"
+      }
+*/
+// Nested example:
+// Browser location: website.com?search=john&favorite[food]=chicken
+
+getURLQueryParams()
+/* => {
+        search: "john",
+        favorite: {
+          food: "chicken"
+        }
       }
 */
 ```

@@ -1251,13 +1251,11 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
   else return browserLocation
 }
 
-/** Returns the window location's search params. Supports single-level nesting.
+/** Returns the window location's search params as an object. Supports single-level nesting.
  **/
-export function getBrowserLocationQueryParams() {
-  const params = window.location.search.slice(1).split("&")
-  return params.reduce((acc, param) => {
-    const paramSplit = param.split("=")
-    const [key, value] = paramSplit
+export function getURLQueryParams() {
+  const params = new URLSearchParams(window.location.search).entries()
+  return Array.from(params).reduce((acc, [key, value]: string[]) => {
     const objectRegEx = /(.+)\[(.+)\]/
     if (objectRegEx.test(key)) {
       const [_, parentKey, childKey] = objectRegEx.exec(key)!
