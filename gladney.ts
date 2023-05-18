@@ -512,10 +512,11 @@ export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
   }, [])
 }
 
-type SortableArray = (string | number)[]
+type StringOrNumberArray = (string | number)[]
 
-/** Returns an array sorted. This is safer than the default sort() method because it converts strings of numbers to actual
- * numbers and it compares each value for greater than less than, which helps when sorting negative numbers.
+/** Returns an array of numbers (or strings of numbers) sorted. This is safer than the default sort() method because it converts
+ * strings of numbers to actual numbers and it compares each value for greater than less than, which helps
+ * when sorting negative numbers.
  *
  * Example:
  * ```typescript
@@ -529,7 +530,7 @@ type SortableArray = (string | number)[]
  * ```
  *
  */
-export function safeSort(arr: SortableArray) {
+export function safeSort(arr: StringOrNumberArray) {
   const isNumberString = (str: string | number) => !isNaN(Number(str))
   return arr.sort((a, b) => {
     if (isNumberString(a)) return Number(a) - Number(b)
@@ -539,7 +540,7 @@ export function safeSort(arr: SortableArray) {
 
 /** Returns an array sorted (ascending) via bubble sort.
  **/
-export function bubbleSort(arr: SortableArray) {
+export function bubbleSort(arr: StringOrNumberArray) {
   let noSwaps
   for (var i = arr.length; i > 0; i--) {
     noSwaps = true
@@ -558,7 +559,7 @@ export function bubbleSort(arr: SortableArray) {
 
 /** Returns an array sorted (ascending) via selection sort.
  **/
-export function selectionSort(arr: SortableArray) {
+export function selectionSort(arr: StringOrNumberArray) {
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
     ([arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]])
 
@@ -577,7 +578,7 @@ export function selectionSort(arr: SortableArray) {
 
 /** Returns an array sorted (ascending) via insertion sort.
  **/
-export function insertionSort(arr: SortableArray) {
+export function insertionSort(arr: StringOrNumberArray) {
   var currentVal
   for (var i = 1; i < arr.length; i++) {
     currentVal = arr[i]
