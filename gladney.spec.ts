@@ -345,7 +345,7 @@ describe("arrays", () => {
     })
 
     it("arrays are equal, order doesn't matter", () => {
-      expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4], false)).toBe(true)
+      expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4])).toBe(true)
     })
 
     it("arrays are equal out of order, order doesn't matter", () => {
@@ -361,7 +361,7 @@ describe("arrays", () => {
     })
 
     it("arrays are not equal, order doesn't matter", () => {
-      expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4], false)).toBe(false)
+      expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4])).toBe(false)
     })
   })
 })
