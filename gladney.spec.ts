@@ -281,9 +281,24 @@ describe("arrays", () => {
   })
 
   describe("sum", () => {
-    it("returns the sum of an array of numbers", () => {
+    it("returns the sum of a set of numbers", () => {
       const arr = [1, 2, 3, 4]
       expect(_.sum(...arr)).toEqual(10)
+    })
+
+    it("returns the sum of an array of numbers", () => {
+      const arr = [1, 2, 3, 4]
+      expect(_.sum(arr)).toEqual(10)
+    })
+
+    it("returns the sum of several arrays of numbers", () => {
+      const arr = [1, 2, 3, 4]
+      expect(_.sum(arr, arr)).toEqual(20)
+    })
+
+    it("returns the sum of several numbers and an array of numbers", () => {
+      const arr = [1, 2, 3, 4]
+      expect(_.sum(arr, 1, 2, 3, 4)).toEqual(20)
     })
   })
 
@@ -453,7 +468,7 @@ describe("objects", () => {
   describe("combineObjects", () => {
     it("returns an object with all key/values from provided objects", () => {
       const objArray = [{ a: 1 }, { b: 2 }, { c: 3 }]
-      expect(_.combineObjects(objArray)).toEqual({ a: 1, b: 2, c: 3 })
+      expect(_.combineObjects(...objArray)).toEqual({ a: 1, b: 2, c: 3 })
     })
   })
 
