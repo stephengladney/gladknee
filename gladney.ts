@@ -365,30 +365,46 @@ export function mask(
   str: string,
   maskCharacter: string = "*",
   maskLength: number = str.length,
-  style: "leading" | "trailing" | "middle" = "trailing"
+  style: "leading" | "trailing" | "middle" = "trailing",
+  ignoreSpaces?: boolean
 ) {
-  switch (style) {
-    case "leading":
-      return maskCharacter.repeat(maskLength) + str.substring(maskLength)
-    case "trailing":
-      return (
-        str.substring(0, str.length - maskLength) +
-        maskCharacter.repeat(maskLength)
-      )
-    case "middle":
-      const length1 =
-        (str.length - maskLength) % 2 === 0
-          ? (str.length - maskLength) / 2
-          : Math.floor((str.length - maskLength) / 2)
-      const length2 =
-        (str.length - maskLength) % 2 === 0
-          ? (str.length - maskLength) / 2
-          : Math.ceil((str.length - maskLength) / 2)
-      return (
-        str.substring(0, length1) +
-        maskCharacter.repeat(maskLength) +
-        str.substring(str.length - length2)
-      )
+  if (ignoreSpaces) {
+    let result = ""
+    const _str = style === "leading" ? str : str.split("").reverse().join("")
+
+    let maskedCount = 0
+    _str.split("").forEach((char) => {
+      if (char === " ") result += " "
+      else if (maskedCount < maskLength) {
+        result += maskCharacter
+        maskedCount++
+      } else result += char
+    })
+    return style === "leading" ? result : result.split("").reverse().join("")
+  } else {
+    switch (style) {
+      case "leading":
+        return maskCharacter.repeat(maskLength) + str.substring(maskLength)
+      case "trailing":
+        return (
+          str.substring(0, str.length - maskLength) +
+          maskCharacter.repeat(maskLength)
+        )
+      case "middle":
+        const length1 =
+          (str.length - maskLength) % 2 === 0
+            ? (str.length - maskLength) / 2
+            : Math.floor((str.length - maskLength) / 2)
+        const length2 =
+          (str.length - maskLength) % 2 === 0
+            ? (str.length - maskLength) / 2
+            : Math.ceil((str.length - maskLength) / 2)
+        return (
+          str.substring(0, length1) +
+          maskCharacter.repeat(maskLength) +
+          str.substring(str.length - length2)
+        )
+    }
   }
 }
 
