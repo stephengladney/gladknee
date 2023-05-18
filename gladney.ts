@@ -19,9 +19,13 @@ export function float(n: number, decimalPlaces?: number) {
  * sum(1, 4, 6) //=> 11
  * ```
  **/
-export function sum(...arr: number[]) {
-  return arr.reduce((acc, i) => acc + i, 0)
+export function sum(...arr: (number | number[])[]) {
+  if (Array.isArray(arr[0])) {
+    return arr[0].reduce((acc, i) => acc + i, 0)
+  } else return (arr as number[]).reduce((acc, i) => acc + i, 0)
 }
+
+sum([1, 2, 3])
 
 /** Returns a random number within a given range
  *
@@ -869,7 +873,7 @@ export function pickKeys<T extends object, U extends keyof T>(
  *
  * NOTE: If two objects have the same key, the latter object's value will result.
  **/
-export function combineObjects(objs: object[]): object {
+export function combineObjects(...objs: object[]): object {
   const result: { [key: string]: any } = {}
   objs.forEach((obj) => {
     Object.keys(obj).forEach((key) => {
