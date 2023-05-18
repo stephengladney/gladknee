@@ -336,12 +336,59 @@ export function truncate(
           maxLength % 2 === 0 ? maxLength / 2 : Math.floor(maxLength / 2)
         const length2 =
           maxLength % 2 === 0 ? maxLength / 2 : Math.ceil(maxLength / 2)
-        return `${str.substring(0, length1)}${fill}${str.substring(
-          str.length - length2
-        )}`
+        return (
+          str.substring(0, length1) + fill + str.substring(str.length - length2)
+        )
     }
   } else {
     return str
+  }
+}
+
+/** Returns a string with a specific number of characters masked by * or custom character. You can also choose
+ * between a leading, trailing, or middle filler. (trailing by default)
+ *
+ * Example:
+ * ```typescript
+ * mask("Password") //=> "********"
+ *
+ * mask("Password", ".") //=> "........"
+ *
+ * mask("Password", "@", 4) //=> "Pass@@@@"
+ *
+ * mask("Password", "@", 4, "leading") //=> "@@@@word"
+ *
+ * mask("Password", "*", 4, "middle") //=> "Pa****rd"
+ * ```
+ **/
+export function mask(
+  str: string,
+  maskCharacter: string = "*",
+  maskLength: number = str.length,
+  style: "leading" | "trailing" | "middle" = "trailing"
+) {
+  switch (style) {
+    case "leading":
+      return maskCharacter.repeat(maskLength) + str.substring(maskLength)
+    case "trailing":
+      return (
+        str.substring(0, str.length - maskLength) +
+        maskCharacter.repeat(maskLength)
+      )
+    case "middle":
+      const length1 =
+        (str.length - maskLength) % 2 === 0
+          ? (str.length - maskLength) / 2
+          : Math.floor((str.length - maskLength) / 2)
+      const length2 =
+        (str.length - maskLength) % 2 === 0
+          ? (str.length - maskLength) / 2
+          : Math.ceil((str.length - maskLength) / 2)
+      return (
+        str.substring(0, length1) +
+        maskCharacter.repeat(maskLength) +
+        str.substring(str.length - length2)
+      )
   }
 }
 

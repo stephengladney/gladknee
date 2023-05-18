@@ -158,6 +158,29 @@ describe("strings", () => {
       expect(_.truncate("Hello world", 4, "...", "middle")).toBe("He...ld")
     })
   })
+
+  describe("mask", () => {
+    it("masks the entire string with * by default", () => {
+      expect(_.mask("Password")).toBe("********")
+    })
+
+    it("accepts a custom mask character", () => {
+      expect(_.mask("Password", ".")).toBe("........")
+    })
+
+    it("can be leading", () => {
+      expect(_.mask("Password", "*", 4, "leading")).toBe("****word")
+    })
+
+    it("can be trailing", () => {
+      expect(_.mask("Password", "*", 4, "trailing")).toBe("Pass****")
+    })
+
+    it("can be middle", () => {
+      expect(_.mask("Password", "*", 4, "middle")).toBe("Pa****rd")
+    })
+  })
+
   describe("escapeString", () => {
     it("returns a string with characters escaped", () => {
       expect(_.escapeString("Hello <there>, my 'friend'")).toBe(
