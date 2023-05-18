@@ -753,25 +753,44 @@ export function nthFromEnd<T>(arr: T[], n: number) {
 export function isEqual(
   thing1: object | [],
   thing2: object | [],
-  orderMatters = false
+  orderMatters = false,
+  isCaseSensitive = false
 ) {
   if (orderMatters) {
-    return JSON.stringify(thing1) === JSON.stringify(thing2)
+    if (isCaseSensitive) {
+      return JSON.stringify(thing1) === JSON.stringify(thing2)
+    } else {
+      return (
+        JSON.stringify(thing1).toLowerCase() ===
+        JSON.stringify(thing2).toLowerCase()
+      )
+    }
   } else if (Array.isArray(thing1) && Array.isArray(thing2)) {
     const _thing1 = [...(thing1 as [])].sort()
     const _thing2 = [...(thing2 as [])].sort()
     for (let i = 0; i < thing1.length; i++) {
-      if (_thing1[i] !== (_thing2 as [])[i]) return false
+      if (
+        (isCaseSensitive && _thing1[i] !== (_thing2 as [])[i]) ||
+        (!isCaseSensitive &&
+          String(_thing1[i]).toLowerCase() !==
+            String((_thing2 as [])[i]).toLowerCase())
+      )
+        return false
     }
     return true
   } else if (typeof thing1 === "object" && typeof thing2 === "object") {
     let isObjectsMatchUnordered = true
     Object.keys(thing1).forEach((key) => {
       if (
-        thing1[key as keyof typeof thing1] !==
-        thing2[key as keyof typeof thing2]
-      )
+        (isCaseSensitive &&
+          thing1[key as keyof typeof thing1] !==
+            thing2[key as keyof typeof thing2]) ||
+        (!isCaseSensitive &&
+          String(thing1[key as keyof typeof thing1]).toLowerCase() !==
+            String(thing2[key as keyof typeof thing2]).toLowerCase())
+      ) {
         isObjectsMatchUnordered = false
+      }
     })
     return isObjectsMatchUnordered
   } else return false
@@ -961,7 +980,7 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
 }
 
 /** Returns an object with keys corresponding to the values of a shared key. The values are arrays of objects
- *  that share the same value of that key.
+ *  that share the same value of that key. You can optionally pass in a boolean to apply case sensitivity. (false by default)
  *
  * Example:
  * ```typescript
@@ -988,16 +1007,14 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 ) {
   const result: { [key: string]: T[] } = {}
   arr.forEach((obj: T) => {
-    const keyValue = obj[key] as string
+    const keyValue = String(obj[key])
     if (
       result[keyValue] ||
-      (!isCaseSensitive && result[lowerCaseNoSpaces(keyValue)])
+      (!isCaseSensitive && result[keyValue.toLowerCase()])
     ) {
-      result[!isCaseSensitive ? lowerCaseNoSpaces(keyValue) : keyValue].push(
-        obj
-      )
+      result[!isCaseSensitive ? keyValue.toLowerCase() : keyValue].push(obj)
     } else {
-      result[!isCaseSensitive ? lowerCaseNoSpaces(keyValue) : keyValue] = [obj]
+      result[!isCaseSensitive ? keyValue.toLowerCase() : keyValue] = [obj]
     }
   })
   return result
