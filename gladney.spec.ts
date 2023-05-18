@@ -157,6 +157,10 @@ describe("strings", () => {
     it("can use a middle filler", () => {
       expect(_.truncate("Hello world", 4, "...", "middle")).toBe("He...ld")
     })
+
+    it("divides string correctly if uneven length", () => {
+      expect(_.truncate("Hello world", 5, "...", "middle")).toBe("He...rld")
+    })
   })
 
   describe("mask", () => {
@@ -178,6 +182,10 @@ describe("strings", () => {
 
     it("can be middle", () => {
       expect(_.mask("Password", "*", 4, "middle")).toBe("Pa****rd")
+    })
+
+    it("divides string correctly if uneven length", () => {
+      expect(_.mask("Hello world", ".", 2, "middle")).toBe("Hell..world")
     })
   })
 
