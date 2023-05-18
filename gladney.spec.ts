@@ -377,6 +377,29 @@ describe("arrays", () => {
       )
     })
   })
+
+  describe("safeSort", () => {
+    it("sorts numbers", () => {
+      expect(_.safeSort([4, 3, 2, 1])).toEqual([1, 2, 3, 4])
+    })
+
+    it("sorts strings", () => {
+      expect(_.safeSort(["d", "c", "b", "a"])).toEqual(["a", "b", "c", "d"])
+    })
+
+    it("sorts negative numbers correctly", () => {
+      expect(_.safeSort([-1, -2, -3, -4])).toEqual([-4, -3, -2, -1])
+    })
+
+    it("sorts number strings as numbers", () => {
+      expect(_.safeSort(["45", "167", "23", "1000"])).toEqual([
+        "23",
+        "45",
+        "167",
+        "1000",
+      ])
+    })
+  })
 })
 
 describe("objects", () => {

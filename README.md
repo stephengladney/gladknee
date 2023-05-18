@@ -5,10 +5,10 @@ Gladknee is an open-source TypeScript utility library.<br><br>
 #### What this library includes...
 
 <ul>
-<li>Abstractions of commonly needed functionality (i.e. lowerCaseNoSpaces, clampNumber, pause, etc)</li>
+<li>Abstractions of commonly needed functionality (i.e. lowerCaseNoSpaces, debounce, pause, etc)</li>
 <li>Safe alternatives to JavaScript weirdness (i.e. sorting negative numbers)</li>
 <li>Abstractions of common browser-related functionality (i.e. cookies, geolocation, saving files, etc)</li>
-<li>Abstractions of computer-sciency things (i.e. queue, stack, etc)</li>
+<li>Abstractions of computer-sciency things (i.e. sorting algorithms, queues, stacks, etc)</li>
 </ul>
 
 #### What this library does not include...
