@@ -769,25 +769,22 @@ export function isEqual(
     const _thing1 = [...(thing1 as [])].sort()
     const _thing2 = [...(thing2 as [])].sort()
     for (let i = 0; i < thing1.length; i++) {
-      if (
-        (isCaseSensitive && _thing1[i] !== (_thing2 as [])[i]) ||
-        (!isCaseSensitive &&
-          String(_thing1[i]).toLowerCase() !==
-            String((_thing2 as [])[i]).toLowerCase())
-      )
-        return false
+      const thing1value = isCaseSensitive
+        ? _thing1[i]
+        : String(_thing1[i]).toLowerCase()
+      const thing2value = isCaseSensitive
+        ? _thing2[i]
+        : String(_thing2[i]).toLowerCase()
+      if (thing1value !== thing2value) return false
     }
     return true
   } else if (typeof thing1 === "object" && typeof thing2 === "object") {
     let isObjectsMatchUnordered = true
     Object.keys(thing1).forEach((key) => {
+      const _key = isCaseSensitive ? key : String(key).toLowerCase()
       if (
-        (isCaseSensitive &&
-          thing1[key as keyof typeof thing1] !==
-            thing2[key as keyof typeof thing2]) ||
-        (!isCaseSensitive &&
-          String(thing1[key as keyof typeof thing1]).toLowerCase() !==
-            String(thing2[key as keyof typeof thing2]).toLowerCase())
+        thing1[_key as keyof typeof thing1] !==
+        thing2[_key as keyof typeof thing2]
       ) {
         isObjectsMatchUnordered = false
       }
@@ -1007,14 +1004,13 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 ) {
   const result: { [key: string]: T[] } = {}
   arr.forEach((obj: T) => {
-    const keyValue = String(obj[key])
-    if (
-      result[keyValue] ||
-      (!isCaseSensitive && result[keyValue.toLowerCase()])
-    ) {
-      result[!isCaseSensitive ? keyValue.toLowerCase() : keyValue].push(obj)
+    const keyValue = isCaseSensitive
+      ? String(obj[key])
+      : String(obj[key]).toLowerCase()
+    if (result[keyValue]) {
+      result[keyValue].push(obj)
     } else {
-      result[!isCaseSensitive ? keyValue.toLowerCase() : keyValue] = [obj]
+      result[keyValue] = [obj]
     }
   })
   return result
