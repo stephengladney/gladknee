@@ -150,6 +150,20 @@ describe("strings", () => {
       expect(_.truncate("Hello world", 8, "/")).toBe("Hello wo/")
     })
   })
+  describe("escapeString", () => {
+    it("returns a string with characters escaped", () => {
+      expect(_.escapeString("Hello <there>, my 'friend'")).toBe(
+        "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+      )
+    })
+  })
+  describe("unEscapeString", () => {
+    it("returns a string with characters unescaped", () => {
+      expect(
+        _.unEscapeString("Hello &lt;there&gt;, my &#x27;friend&#x27;")
+      ).toBe("Hello <there>, my 'friend'")
+    })
+  })
 })
 
 describe("arrays", () => {
@@ -185,8 +199,16 @@ describe("arrays", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
       const arrShuffled = _.shuffle(arr)
-      expect(_.areArraysEqual(arr, arrShuffled, false)).toBe(true)
-      expect(_.areArraysEqual(arr, arrShuffled)).toBe(false)
+      expect(_.isEqual(arr, arrShuffled)).toBe(true)
+      expect(_.isEqual(arr, arrShuffled, true)).toBe(false)
+    })
+  })
+
+  describe("getRandomItem", () => {
+    it("gets a random item from the array", () => {
+      const arr = [1, 2, 3, 4, 5]
+      const randomItem = _.getRandomItem(arr)
+      expect(arr.includes(randomItem)).toBe(true)
     })
   })
 
@@ -317,29 +339,98 @@ describe("arrays", () => {
     })
   })
 
-  describe("areArraysEqual", () => {
+  describe("isEqual", () => {
     it("arrays are equal, order matters", () => {
-      expect(_.areArraysEqual([1, 2, 3, 4], [1, 2, 3, 4])).toBe(true)
+      expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4], true)).toBe(true)
     })
 
     it("arrays are equal, order doesn't matter", () => {
-      expect(_.areArraysEqual([1, 2, 3, 4], [1, 2, 3, 4], false)).toBe(true)
+      expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4])).toBe(true)
     })
 
     it("arrays are equal out of order, order doesn't matter", () => {
-      expect(_.areArraysEqual([1, 2, 3, 4], [2, 1, 3, 4], false)).toBe(true)
+      expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4])).toBe(true)
     })
 
     it("arrays are equal out of order, order does matter", () => {
-      expect(_.areArraysEqual([1, 2, 3, 4], [2, 1, 3, 4])).toBe(false)
+      expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4], true)).toBe(false)
     })
 
     it("arrays are not equal, order does matter", () => {
-      expect(_.areArraysEqual([1, 2, 5, 4], [2, 1, 3, 4])).toBe(false)
+      expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4])).toBe(false)
     })
 
     it("arrays are not equal, order doesn't matter", () => {
-      expect(_.areArraysEqual([1, 2, 5, 4], [2, 1, 3, 4], false)).toBe(false)
+      expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4])).toBe(false)
+    })
+
+    it("objects are not equal", () => {
+      expect(_.isEqual({ a: 1, b: 2, c: 3 }, { d: 4, e: 5, f: 6 })).toBe(false)
+    })
+
+    it("objects are equal out of order, order doesn't matter", () => {
+      expect(_.isEqual({ a: 1, b: 2, c: 3 }, { c: 3, b: 2, a: 1 })).toBe(true)
+    })
+    it("objects are equal out of order, order does matter", () => {
+      expect(_.isEqual({ a: 1, b: 2, c: 3 }, { c: 3, b: 2, a: 1 }, true)).toBe(
+        false
+      )
+    })
+
+    it("objects are equal but diff case, case doesn't matter", () => {
+      expect(
+        _.isEqual(
+          { a: "A", b: "B", c: "C" },
+          { a: "a", b: "b", c: "c" },
+          true,
+          false
+        )
+      ).toBe(true)
+    })
+
+    it("objects are equal but diff case, case does matter", () => {
+      expect(
+        _.isEqual(
+          { a: "A", b: "B", c: "C" },
+          { a: "a", b: "b", c: "c" },
+          true,
+          true
+        )
+      ).toBe(false)
+    })
+
+    it("objects are equal but diff case and out of order, order and case don't matter", () => {
+      expect(
+        _.isEqual(
+          { a: "A", b: "B", c: "C" },
+          { c: "c", a: "a", b: "b" },
+          false,
+          false
+        )
+      ).toBe(true)
+    })
+  })
+
+  describe("safeSort", () => {
+    it("sorts numbers", () => {
+      expect(_.safeSort([4, 3, 2, 1])).toEqual([1, 2, 3, 4])
+    })
+
+    it("sorts strings", () => {
+      expect(_.safeSort(["d", "c", "b", "a"])).toEqual(["a", "b", "c", "d"])
+    })
+
+    it("sorts negative numbers correctly", () => {
+      expect(_.safeSort([-1, -2, -3, -4])).toEqual([-4, -3, -2, -1])
+    })
+
+    it("sorts number strings as numbers", () => {
+      expect(_.safeSort(["45", "167", "23", "1000"])).toEqual([
+        "23",
+        "45",
+        "167",
+        "1000",
+      ])
     })
   })
 })
@@ -377,14 +468,14 @@ describe("objects", () => {
     })
   })
 
-  describe("sortObjectsByKeyValue", () => {
+  describe("sortByKeyValue", () => {
     it("returns the array sorted by key value", () => {
       const arr = [
         { a: 1, b: 2 },
         { a: 2, b: 1 },
         { a: 3, b: 4 },
       ]
-      expect(_.sortObjectsByKeyValue(arr, "b")).toEqual([
+      expect(_.sortByKeyValue(arr, "b")).toEqual([
         { a: 2, b: 1 },
         { a: 1, b: 2 },
         { a: 3, b: 4 },
@@ -392,7 +483,7 @@ describe("objects", () => {
     })
   })
 
-  describe("sortObjectsByKeyValues", () => {
+  describe("sortByKeyValues", () => {
     it("returns the array sorted by key values", () => {
       const arr = [
         { a: 1, b: 2, c: 2 },
@@ -403,7 +494,7 @@ describe("objects", () => {
         { a: 2, b: 1, c: 3 },
         { a: 3, b: 4, c: 1 },
       ]
-      expect(_.sortObjectsByKeyValues(arr, "a", "b", "c")).toEqual([
+      expect(_.sortByKeyValues(arr, "a", "b", "c")).toEqual([
         { a: 1, b: 1, c: 1 },
         { a: 1, b: 2, c: 1 },
         { a: 1, b: 2, c: 2 },
@@ -446,7 +537,7 @@ describe("objects", () => {
     })
   })
 
-  describe("groupObjectsByKeyValue", () => {
+  describe("groupByKeyValue", () => {
     it("returns an object with groups of objects aligned by key value", () => {
       const arr = [
         { name: "Stephen" },
@@ -454,11 +545,47 @@ describe("objects", () => {
         { name: "Mike" },
         { name: "Stephen" },
       ]
-      expect(_.groupObjectsByKeyValue(arr, "name")).toEqual({
-        Stephen: [{ name: "Stephen" }, { name: "Stephen" }],
+      expect(_.groupByKeyValue(arr, "name")).toEqual({
+        stephen: [{ name: "Stephen" }, { name: "Stephen" }],
+        james: [{ name: "James" }],
+        mike: [{ name: "Mike" }],
+      })
+    })
+
+    it("is not case sensitive by default", () => {
+      const arr = [
+        { name: "Stephen" },
+        { name: "James" },
+        { name: "Mike" },
+        { name: "stephen" },
+      ]
+      expect(_.groupByKeyValue(arr, "name")).toEqual({
+        stephen: [{ name: "Stephen" }, { name: "stephen" }],
+        james: [{ name: "James" }],
+        mike: [{ name: "Mike" }],
+      })
+    })
+
+    it("separates not case matching values if case sensitive", () => {
+      const arr = [
+        { name: "Stephen" },
+        { name: "James" },
+        { name: "Mike" },
+        { name: "stephen" },
+      ]
+      expect(_.groupByKeyValue(arr, "name", true)).toEqual({
+        Stephen: [{ name: "Stephen" }],
         James: [{ name: "James" }],
         Mike: [{ name: "Mike" }],
+        stephen: [{ name: "stephen" }],
       })
+    })
+  })
+
+  describe("deepCopy", () => {
+    it("returns a deep copy of the object", () => {
+      const nestedObject = { a: 1, b: { c: 2 }, d: 3, e: { f: { g: 4 } } }
+      expect(_.deepCopy(nestedObject)).toEqual(nestedObject)
     })
   })
 })
@@ -554,6 +681,26 @@ describe("misc", () => {
       expect(_.convertObjectToQueryParams(obj)).toEqual(
         "name=john&favorite[drink]=coke&favorite[food]=chicken&age=30"
       )
+    })
+  })
+
+  describe("partial", () => {
+    it("calls the function correctly if not all parameters are originally passed", () => {
+      const subtract = (a: number, b: number) => a - b
+      const subtractFrom5 = _.partial(subtract, 5)
+      expect(subtractFrom5(1)).toEqual(4)
+    })
+
+    it("calls the function correctly if false is passed in for a former parameter", () => {
+      const subtract = (a: number, b: number) => a - b
+      const subtract5 = _.partial(subtract, false, 5)
+      expect(subtract5(12)).toEqual(7)
+    })
+
+    it("calls the function correctly if false is passed in for a former parameter", () => {
+      const subtract = (a: number, b: number) => a - b
+      const subtractFrom5 = _.partial(subtract, 5, false)
+      expect(subtractFrom5(1)).toEqual(4)
     })
   })
 

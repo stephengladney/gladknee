@@ -5,10 +5,10 @@ Gladknee is an open-source TypeScript utility library.<br><br>
 #### What this library includes...
 
 <ul>
-<li>Abstractions of commonly needed functionality (i.e. lowerCaseNoSpaces, clampNumber, pause, etc)</li>
+<li>Abstractions of commonly needed functionality (i.e. lowerCaseNoSpaces, debounce, pause, etc)</li>
 <li>Safe alternatives to JavaScript weirdness (i.e. sorting negative numbers)</li>
 <li>Abstractions of common browser-related functionality (i.e. cookies, geolocation, saving files, etc)</li>
-<li>Abstractions of computer-sciency things (i.e. queue, stack, etc)</li>
+<li>Abstractions of computer-sciency things (i.e. sorting algorithms, queues, stacks, etc)</li>
 </ul>
 
 #### What this library does not include...
@@ -598,9 +598,9 @@ sumOfKeyValue(arr, "a") //=> 6
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;sortObjectsByKeyValue</summary>
+<summary>&nbsp;&nbsp;sortByKeyValue</summary>
 
-### **sortObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
+### **sortByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
 
 Sorts an array of objects by a specific shared key's value.
 <br><br>
@@ -609,15 +609,15 @@ Example:
 ```typescript
 const arr = [{ a: 3 }, { a: 1 }, { a: 5 }]
 
-sortObjectsByKeyValue(arr, "a")
+sortByKeyValue(arr, "a")
 //=> [{a: 1}, { a: 3 }, {a: 5}]
 ```
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;sortObjectsByKeyValues</summary>
+<summary>&nbsp;&nbsp;sortByKeyValues</summary>
 
-### **sortObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], ...keys: U[])**
+### **sortByKeyValue<T extends object, U extends keyof T>(arr: T[], ...keys: U[])**
 
 Returns an array of objects with nested sorting based on the keys provided.
 <br><br>
@@ -634,7 +634,7 @@ const arr = [
         { a: 3, b: 4, c: 1 },
       ]
 
-sortObjectsByKeyValues(arr, "a", "b", "c")
+sortByKeyValues(arr, "a", "b", "c")
 //=>
    [
     { a: 1, b: 1, c: 1 },
@@ -665,9 +665,9 @@ getKeyValueCounts(arr, "suit") //=> { "Clubs": 2, "Hearts": 1 }
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;groupObjectsByKeyValue</summary>
+<summary>&nbsp;&nbsp;groupByKeyValue</summary>
 
-### **groupObjectsByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
+### **groupByKeyValue<T extends object, U extends keyof T>(arr: T[], key: U)**
 
 Returns an object with arrays of objects that share a specific value of a specific shared key in an array of objects.
 <br><br>
@@ -676,7 +676,7 @@ Example:
 ```typescript
 const arr = [{ suit: "Clubs", value: 2 }, {suit: "Hearts", value: 5}, {suit: "Clubs", value: 10}]
 
-groupObjectsByKeyValue(arr, "suit")
+groupByKeyValue(arr, "suit")
 //=>
     {
       "Clubs": [{ suit: "Clubs" value: 2}, { suit: "Clubs", value: 10 }],
@@ -812,20 +812,32 @@ type GeoCoords = {
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;getBrowserLocationQueryParams</summary>
+<summary>&nbsp;&nbsp;getURLQueryParams</summary>
 
-### **getBrowserLocationQueryParams(): object**
+### **getURLQueryParams(): object**
 
 Returns the window location's search params. Supports single-level nesting.
 <br><br>
+Example:
 
 ```typescript
 // Browser location: website.com?search=john&page=1
 
-getBrowserLocationQueryParams()
+getURLQueryParams()
 /* => {
         search: "john",
         page: "1"
+      }
+*/
+// Nested example:
+// Browser location: website.com?search=john&favorite[food]=chicken
+
+getURLQueryParams()
+/* => {
+        search: "john",
+        favorite: {
+          food: "chicken"
+        }
       }
 */
 ```

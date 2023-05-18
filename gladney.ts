@@ -23,6 +23,18 @@ export function sum(...arr: number[]) {
   return arr.reduce((acc, i) => acc + i, 0)
 }
 
+/** Returns a random number within a given range
+ *
+ * Example:
+ * ```typescript
+ * randomNumber(1, 100) //=> 39
+ * randomNumber(1, 10) //=> 6
+ * ```
+ **/
+export function randomNumber(min: number, max: number) {
+  return Math.floor(Math.random() * max + min)
+}
+
 /** Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit.
  You can pass **false** or **0** for a limit parameter to bypass that limit.
 *
@@ -78,9 +90,12 @@ export function getRange(start: number, end: number, step = 1) {
       result.push(i)
     }
   } else {
-    if (step >= 0) return
-    for (let i = start; i >= end; i += step) {
-      result.push(i)
+    if (step === 1) step = -1
+    else if (step >= 0) return
+    else {
+      for (let i = start; i >= end; i += step) {
+        result.push(i)
+      }
     }
   }
   return result
@@ -303,6 +318,43 @@ export function truncate(
     : str
 }
 
+/** Returns an escaped string that can be inserted into HTML
+ *
+ * Example:
+ * ```typescript
+ * escapeString("Hello <there>, my 'friend'") //=> "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+ * ```
+ */
+
+export function escapeString(str: string) {
+  let result: string
+  result = str.replace(/&/g, "&amp;")
+  result = result.replace(/</g, "&lt;")
+  result = result.replace(/>/g, "&gt;")
+  result = result.replace(/"/g, "&quot;")
+  result = result.replace(/'/g, "&#x27;")
+  result = result.replace(/`/g, "&#x60;")
+  return result
+}
+
+/** Takes an escaped string and returns an unescaped string
+ *
+ * Example:
+ * ```typescript
+ * unEscapeString("Hello <there>, my 'friend'") //=> "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+ * ```
+ */
+export function unEscapeString(str: string) {
+  let result: string
+  result = str.replace(/&amp;/g, "&")
+  result = result.replace(/&lt;/g, "<")
+  result = result.replace(/&gt;/g, ">")
+  result = result.replace(/&quot;/g, '"')
+  result = result.replace(/&#x27;/g, "'")
+  result = result.replace(/&#x60;/g, "`")
+  return result
+}
+
 /** Returns a random string of specified length. Can include letters and/or numbers.
  *
  * NOTE: `includeLetters` and `includeNumbers` both default to true.
@@ -388,7 +440,19 @@ export function shuffle<T>(array: T[]) {
   return _array
 }
 
-/** Returns an array with a minimum and/or maximum length limit enforced. If the minimum length
+/** Returns a random element from an array
+ *
+ * Example:
+ * ```typescript
+ * getRandomItem([1, 2, 3, 4, 5, 6]) //=> 3
+ * ```
+ **/
+export function getRandomItem<T>(arr: T[]) {
+  const randomIndex = Math.floor(Math.random() * arr.length)
+  return arr[randomIndex]
+}
+
+/** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
  *  is larger than the length of the array, the fill will be added to the array as many times as necessary
  * to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
  * fill is provided, `undefined` will be added. For min and max limits, you can pass `false` or 0 for a
@@ -456,11 +520,35 @@ export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
   }, [])
 }
 
-type SortableArray = (string | number)[]
+type StringOrNumberArray = (string | number)[]
+
+/** Returns an array of numbers (or strings of numbers) sorted. This is safer than the default sort() method because it converts
+ * strings of numbers to actual numbers and it compares each value for greater than less than, which helps
+ * when sorting negative numbers.
+ *
+ * Example:
+ * ```typescript
+ * [-1, -2, -3, -4].sort() //=> [-1, -2, -3, -4]
+ *
+ * safeSort([-1, -2, -3, -4]) //=> [-4, -3, -2, -1]
+ *
+ * ["45", "167", "23", "1000"].sort() //=> ["1000", "167", "23", "45"]
+ *
+ * safeSort(["45", "167", "23", "1000"]) //=> ["23", "45", "167", "1000"]
+ * ```
+ *
+ */
+export function safeSort(arr: StringOrNumberArray) {
+  const isNumberString = (str: string | number) => !isNaN(Number(str))
+  return arr.sort((a, b) => {
+    if (isNumberString(a)) return Number(a) - Number(b)
+    else return a < b ? -1 : 1
+  })
+}
 
 /** Returns an array sorted (ascending) via bubble sort.
  **/
-export function bubbleSort(arr: SortableArray) {
+export function bubbleSort(arr: StringOrNumberArray) {
   let noSwaps
   for (var i = arr.length; i > 0; i--) {
     noSwaps = true
@@ -479,7 +567,7 @@ export function bubbleSort(arr: SortableArray) {
 
 /** Returns an array sorted (ascending) via selection sort.
  **/
-export function selectionSort(arr: SortableArray) {
+export function selectionSort(arr: StringOrNumberArray) {
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
     ([arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]])
 
@@ -498,7 +586,7 @@ export function selectionSort(arr: SortableArray) {
 
 /** Returns an array sorted (ascending) via insertion sort.
  **/
-export function insertionSort(arr: SortableArray) {
+export function insertionSort(arr: StringOrNumberArray) {
   var currentVal
   for (var i = 1; i < arr.length; i++) {
     currentVal = arr[i]
@@ -646,33 +734,74 @@ export function nthFromEnd<T>(arr: T[], n: number) {
   return arr[arr.length - 1 - n]
 }
 
-/** Returns a boolean of whether or not the two arrays have the same items.
+/** Returns a boolean of whether or not two objects or two arrays have the same items or key value pairs. You can optionally
+ * pass in a boolean to require that the order of the items be the same.
  *
  * Example:
  * ```typescript
  * const arr1 = [1, 2, 3, 4]
- * const arr2 = [1, 2, 3, 4]
- * const arr3 = [4, 3, 2, 1]
+ * const arr2 = [4, 3, 2, 1]
  *
- * areArraysEqual(arr1, arr2) //=> true
+ * isEqual(arr1, arr2) //=> true
  *
- * areArraysEqual(arr2, arr3) //=> false
+ * isEqual(arr1, arr2, true) //=> false
+ * 
+ * const obj1 = { a: 1, b: 2, c: 3 }
+ * const obj2 = { c: 3, b: 2, a: 1 }
+
  *
- * areArraysEqual(arr2, arr3, false) //=> true
+ * isEqual(ob1, obj2) //=> true
+ * 
+ * isEqual(ob1, obj2,false) //=> false
  * ```
- * NOTE: `orderMatters` is true by default.
+ * 
+ * NOTE: `orderMatters` is false by default.
  **/
-export function areArraysEqual<T>(
-  array1: T[],
-  array2: T[],
-  orderMatters = true
+
+export function isEqual(
+  thing1: object | [],
+  thing2: object | [],
+  orderMatters = false,
+  isCaseSensitive = false
 ) {
-  const _array1 = orderMatters ? array1 : [...array1].sort()
-  const _array2 = orderMatters ? array2 : [...array2].sort()
-  for (let i = 0; i < array1.length; i++) {
-    if (_array1[i] !== _array2[i]) return false
-  }
-  return true
+  if (orderMatters) {
+    if (isCaseSensitive) {
+      return JSON.stringify(thing1) === JSON.stringify(thing2)
+    } else {
+      return (
+        JSON.stringify(thing1).toLowerCase() ===
+        JSON.stringify(thing2).toLowerCase()
+      )
+    }
+  } else if (Array.isArray(thing1) && Array.isArray(thing2)) {
+    const _thing1 = [...(thing1 as [])].sort()
+    const _thing2 = [...(thing2 as [])].sort()
+    for (let i = 0; i < thing1.length; i++) {
+      const thing1value = isCaseSensitive
+        ? _thing1[i]
+        : String(_thing1[i]).toLowerCase()
+      const thing2value = isCaseSensitive
+        ? _thing2[i]
+        : String(_thing2[i]).toLowerCase()
+      if (thing1value !== thing2value) return false
+    }
+    return true
+  } else if (typeof thing1 === "object" && typeof thing2 === "object") {
+    let isObjectsMatchUnordered = true
+    Object.keys(thing1).forEach((key) => {
+      if (
+        (isCaseSensitive &&
+          thing1[key as keyof typeof thing1] !==
+            thing2[key as keyof typeof thing2]) ||
+        (!isCaseSensitive &&
+          String(thing1[key as keyof typeof thing1]).toLowerCase() !==
+            String(thing2[key as keyof typeof thing2]).toLowerCase())
+      ) {
+        isObjectsMatchUnordered = false
+      }
+    })
+    return isObjectsMatchUnordered
+  } else return false
 }
 
 // OBJECTS
@@ -775,7 +904,7 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
  * const obj2 = { a: 1, b: 2 }
  * const obj3 = { a: 2, b: 2 }
  *
- * sortObjectsByKeyValue([obj1, obj2, obj3], "a")
+ * sortByKeyValue([obj1, obj2, obj3], "a")
  * //=>
  *     [
  *       { a: 1, b: 2 },
@@ -784,7 +913,7 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
  *     ]
  * ```
  **/
-export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
+export function sortByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U
 ) {
@@ -801,7 +930,7 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
  * const obj4 = { a: 2, b: 4, c: 3 }
  * const obj5 = { a: 2, b: 5, c: 3 }
  *
- * sortObjectsByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
+ * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
  * //=>
  *      [
  *       { a: 1, b: 6, c: 3 }
@@ -812,19 +941,19 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
  *      ]
  * ```
  **/
-export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
+export function sortByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
   ...keys: U[]
 ): T[] {
-  if (keys.length === 1) return sortObjectsByKeyValue(objs, keys[0])
+  if (keys.length === 1) return sortByKeyValue(objs, keys[0])
 
-  const groupedByKey = groupObjectsByKeyValue(objs, keys[0])
+  const groupedByKey = groupByKeyValue(objs, keys[0])
   const sortedKeyValues = Object.keys(groupedByKey).sort()
 
   return sortedKeyValues.reduce(
     (acc: T[], keyVal) => [
       ...acc,
-      ...sortObjectsByKeyValues(groupedByKey[keyVal], ...keys.slice(1)),
+      ...sortByKeyValues(groupedByKey[keyVal], ...keys.slice(1)),
     ],
     []
   )
@@ -842,7 +971,7 @@ export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
 export function getKeyValueCounts<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
-  isCaseSensitive?: boolean
+  isCaseSensitive = false
 ) {
   return arr.reduce((result: { [key: string]: number }, obj) => {
     const value = isCaseSensitive
@@ -859,7 +988,7 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
 }
 
 /** Returns an object with keys corresponding to the values of a shared key. The values are arrays of objects
- *  that share the same value of that key.
+ *  that share the same value of that key. You can optionally pass in a boolean to apply case sensitivity. (false by default)
  *
  * Example:
  * ```typescript
@@ -870,7 +999,7 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
  *    { name: "Beth", age: 23}
  * ]
  *
- * groupObjectsByKeyValue(arr, "name")
+ * groupByKeyValue(arr, "name")
  * //=>
  *      {
  *        John: [{ name: "John", age: 30 }, {name: "John", age: 28 }]
@@ -879,15 +1008,21 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
  *      }
  * ```
  **/
-export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
+export function groupByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
-  key: U
+  key: U,
+  isCaseSensitive = false
 ) {
   const result: { [key: string]: T[] } = {}
   arr.forEach((obj: T) => {
-    const keyValue = obj[key] as string
-    if (result[keyValue]) result[keyValue].push(obj)
-    else result[keyValue] = [obj]
+    const keyValue = isCaseSensitive
+      ? String(obj[key])
+      : String(obj[key]).toLowerCase()
+    if (result[keyValue]) {
+      result[keyValue].push(obj)
+    } else {
+      result[keyValue] = [obj]
+    }
   })
   return result
 }
@@ -917,6 +1052,125 @@ export function convertObjectToQueryParams(obj: object): string {
     }
   })
   return result
+}
+
+/** Returns a deep copy of an object.
+ *
+ * Example:
+ * ```typescript
+ * deepCopy({ a: 1, b: { c: 2 }, d: 3 }) //=> { a: 1, b: { c: 2 }, d: 3 }
+ * ```
+ */
+export function deepCopy<T extends object>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj))
+}
+
+/** Returns an object with the keys and values reversed.
+ *
+ * NOTE: Values must be able to be converted to strings.
+ *
+ * Example:
+ * ```typescript
+ * flipKeyValues({ a: 1, b: 2, c: 3 }) //=> { "1": a, "2": b, "3": c}
+ * ```
+ */
+export function flipKeyValues<T extends object>(
+  obj: T
+): { [key: string]: string } {
+  const result: { [key: string]: string } = {}
+  const keys = Object.keys(obj)
+  const values = Object.values(obj)
+  values.forEach((value, i) => {
+    result[String(value)] = keys[i]
+  })
+  return result
+}
+
+/**
+ * Runs a callback function on array of items and returns a single object with keys that match the return values.
+ * Each key's value is an array of items that provide the same result when having the callback function run on them.
+ *
+ * Example:
+ * ```typescript
+ * const ages = [{ age: 28 }, { age: 14 }, { age: 67 }, { age: 17 }, ]
+ *
+ * const canDrinkAlcohol = (obj:{ age: number }) => obj.age >= 21
+ *
+ * groupByCallbackResult(ages, canDrinkAlcohol)
+ * //=>
+ *      {
+ *        "true": [{ age: 28 }, { age: 67 }]
+ *        "false": [{ age: 14 }, { age: 17 }]
+ *      }
+ * ```
+ */
+export function groupByCallbackResult(things: any[], func: Function) {
+  const result: { [key: string]: any[] } = {}
+  things.forEach((thing) => {
+    const funcResult = String(func(thing))
+    if (result[funcResult]) result[funcResult].push(thing)
+    else result[funcResult] = [thing]
+  })
+  return result
+}
+
+export function getCallbackResultCounts(things: any, func: Function) {
+  const result: { [key: string]: number } = {}
+  const groupedByResult = groupByCallbackResult(things, func)
+
+  Object.keys(groupedByResult).forEach((key) => {
+    result[key] = groupedByResult[key].length
+  })
+
+  return result
+}
+
+/**
+ * Runs a callback function on array of items and returns an array of items that are sorted by the return value of running
+ * the callback function on the item.
+ *
+ * Example:
+ * ```typescript
+ const socialStats = [
+  { follows: 1, likes: 2 },
+  { follows: 5, likes: 1 },
+  { follows: 2, likes: 0 },
+  { follows: 4, likes: 3 },
+]
+
+// Adds the follows and likes to get a total popularity score
+const getPopularity = (obj: { follows: number; likes: number }) =>
+  obj.follows + obj.likes
+
+sortByCallbackResult(socialStats, getPopularity)
+//=>
+* [
+    {
+    follows: 2,
+    likes: 0,
+    },
+    {
+    follows: 1,
+    likes: 2,
+    },
+    {
+    follows: 5,
+    likes: 1,
+    },
+    {
+    follows: 4,
+    likes: 3,
+    },
+]
+ * ```
+ */
+
+export function sortByCallbackResult<T>(things: T[], func: Function) {
+  const groupedByResult = groupByCallbackResult(things, func)
+  return safeSort(Object.keys(groupedByResult)).reduce(
+    (acc, key) => [...acc, ...groupedByResult[key]],
+    [] as T[]
+  )
 }
 
 // EXPRESS
@@ -1090,6 +1344,62 @@ export function debounce<T extends (...args: any[]) => any>(
   }
 }
 
+/** Returns a throttled version of a function. The throttled version can only execute once every N milliseconds,
+ * where N is the delay passed in to the throttle function.
+ *
+ **/
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): T {
+  const { enqueue, executeAll, queue } = createQueueAsync(func, delay)
+
+  return ((...args: Parameters<T>) => {
+    enqueue(...args)
+    if (queue.length > 1) return
+    else executeAll()
+  }) as T
+}
+
+/** Returns a memoized version of a function.
+ *
+ * _Memoization is the process of caching a function's result so that if the function is called
+ * with same parameters, the result can be retrieved from cache, rather than
+ * executing the function again._
+ */
+export function memoize<T extends (...args: any[]) => any>(func: T): T {
+  const results: { [key: string]: ReturnType<T> } = {}
+  return ((...args: Parameters<T>): ReturnType<T> => {
+    const argsAsString = args.join(",")
+    if (results[argsAsString]) return results[argsAsString]
+    else {
+      results[argsAsString] = func(...args)
+      return results[argsAsString]
+    }
+  }) as T
+}
+
+type Falsy = null | undefined | false
+
+export function partial<T extends (...args: any[]) => any>(
+  func: T,
+  ...args: (Parameters<typeof func>[number] | Falsy)[]
+) {
+  const newArgsToCall: (Parameters<typeof func>[number] | Falsy)[] = []
+  let lastNewArgUsed = -1
+
+  return (...newArgs: (Parameters<typeof func>[number] | Falsy)[]) => {
+    args.forEach((arg) => {
+      if (!!arg && arg !== 0) newArgsToCall.push(arg)
+      else {
+        lastNewArgUsed++
+        newArgsToCall.push(newArgs[lastNewArgUsed])
+      }
+    })
+    return func(...newArgsToCall, ...newArgs.slice(lastNewArgUsed))
+  }
+}
+
 // BROWSER STUFF
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.
@@ -1136,9 +1446,9 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-export type QueueObject = {
+type QueueObject<T extends (...args: any[]) => unknown> = {
   queue: unknown[]
-  enqueue: Function
+  enqueue: (...args: Parameters<T>) => void
   executeOne: Function
   executeAll: Function
   breakOut: Function
@@ -1146,18 +1456,18 @@ export type QueueObject = {
 
 /** Returns a `QueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createQueue(functionToExecute: Function): QueueObject {
-  const queue: unknown[] = []
+export function createQueue<T extends (...args: any[]) => unknown>(
+  functionToExecute: T
+): QueueObject<T> {
+  const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = () => {
-    if (Array.isArray(queue[0])) functionToExecute(...queue[0])
-    else functionToExecute(queue[0])
+    functionToExecute(...queue[0])
     queue.shift()
   }
   const executeAll = () => {
     if (isBreakRequested) return
-    if (Array.isArray(queue[0])) functionToExecute(...queue[0])
-    else functionToExecute(queue[0])
+    functionToExecute(...queue[0])
     queue.shift()
     if (queue.length > 0) executeAll()
   }
@@ -1172,36 +1482,34 @@ export function createQueue(functionToExecute: Function): QueueObject {
   }
 }
 
-type AsyncQueueObject = {
-  queue: unknown[]
-  enqueue: Function
-  executeOne: Function
-  executeAll: (ignoreErrors?: boolean) => unknown
-  breakOut: Function
-}
+type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> =
+  QueueObject<T> & {
+    executeAll: (ignoreErrors?: boolean) => unknown
+  }
 
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createQueueAsync(
-  functionToExecute: (...args: any[]) => Promise<unknown>
-): AsyncQueueObject {
-  const queue: unknown[] = []
+function createQueueAsync<T extends (...args: any[]) => Promise<unknown>>(
+  functionToExecute: T,
+  delay?: number
+): AsyncQueueObject<T> {
+  const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {
-    if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
-    else await functionToExecute(queue[0])
+    await functionToExecute(...queue[0])
     queue.shift()
   }
   const executeAll = async (ignoreErrors = false) => {
     if (isBreakRequested) return
     try {
-      if (Array.isArray(queue[0])) await functionToExecute(...queue[0])
-      else await functionToExecute(queue[0])
+      await functionToExecute(...queue[0])
       queue.shift()
+      if (delay) await pauseAsync(delay)
       if (queue.length > 0) executeAll(ignoreErrors)
     } catch {
       if (ignoreErrors) {
         queue.shift()
+        if (delay) await pauseAsync(delay)
         if (queue.length > 0) executeAll(true)
       }
     }
@@ -1211,7 +1519,7 @@ export function createQueueAsync(
       isBreakRequested = true
     },
     queue,
-    enqueue: (...args: unknown[]) => queue.push(args),
+    enqueue: (...args: Parameters<T>) => queue.push(args),
     executeOne,
     executeAll,
   }
@@ -1251,13 +1559,11 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
   else return browserLocation
 }
 
-/** Returns the window location's search params. Supports single-level nesting.
+/** Returns the window location's search params as an object. Supports single-level nesting.
  **/
-export function getBrowserLocationQueryParams() {
-  const params = window.location.search.slice(1).split("&")
-  return params.reduce((acc, param) => {
-    const paramSplit = param.split("=")
-    const [key, value] = paramSplit
+export function getURLQueryParams() {
+  const params = new URLSearchParams(window.location.search).entries()
+  return Array.from(params).reduce((acc, [key, value]: string[]) => {
     const objectRegEx = /(.+)\[(.+)\]/
     if (objectRegEx.test(key)) {
       const [_, parentKey, childKey] = objectRegEx.exec(key)!
@@ -1268,3 +1574,6 @@ export function getBrowserLocationQueryParams() {
     } else return { ...acc, [key]: value }
   }, {})
 }
+
+/** A function that does nothing and returns nothing. Useful for linters that require a callback. */
+export function noOp() {}
