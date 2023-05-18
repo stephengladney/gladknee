@@ -199,8 +199,8 @@ describe("arrays", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
       const arrShuffled = _.shuffle(arr)
-      expect(_.areArraysEqual(arr, arrShuffled, false)).toBe(true)
-      expect(_.areArraysEqual(arr, arrShuffled)).toBe(false)
+      expect(_.isEqual(arr, arrShuffled)).toBe(true)
+      expect(_.isEqual(arr, arrShuffled, true)).toBe(false)
     })
   })
 
@@ -339,29 +339,29 @@ describe("arrays", () => {
     })
   })
 
-  describe("areArraysEqual", () => {
+  describe("isEqual", () => {
     it("arrays are equal, order matters", () => {
-      expect(_.areArraysEqual([1, 2, 3, 4], [1, 2, 3, 4])).toBe(true)
+      expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4], true)).toBe(true)
     })
 
     it("arrays are equal, order doesn't matter", () => {
-      expect(_.areArraysEqual([1, 2, 3, 4], [1, 2, 3, 4], false)).toBe(true)
+      expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4], false)).toBe(true)
     })
 
     it("arrays are equal out of order, order doesn't matter", () => {
-      expect(_.areArraysEqual([1, 2, 3, 4], [2, 1, 3, 4], false)).toBe(true)
+      expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4])).toBe(true)
     })
 
     it("arrays are equal out of order, order does matter", () => {
-      expect(_.areArraysEqual([1, 2, 3, 4], [2, 1, 3, 4])).toBe(false)
+      expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4], true)).toBe(false)
     })
 
     it("arrays are not equal, order does matter", () => {
-      expect(_.areArraysEqual([1, 2, 5, 4], [2, 1, 3, 4])).toBe(false)
+      expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4])).toBe(false)
     })
 
     it("arrays are not equal, order doesn't matter", () => {
-      expect(_.areArraysEqual([1, 2, 5, 4], [2, 1, 3, 4], false)).toBe(false)
+      expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4], false)).toBe(false)
     })
   })
 })
