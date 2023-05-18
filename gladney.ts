@@ -23,6 +23,14 @@ export function sum(...arr: number[]) {
   return arr.reduce((acc, i) => acc + i, 0)
 }
 
+/** Returns a random number within a given range
+ *
+ * Example:
+ * ```typescript
+ * randomNumber(1, 100) //=> 39
+ * randomNumber(1, 10) //=> 6
+ * ```
+ **/
 export function randomNumber(min: number, max: number) {
   return Math.floor(Math.random() * max + min)
 }
@@ -1100,6 +1108,17 @@ export function groupByCallbackResult(things: any[], func: Function) {
     if (result[funcResult]) result[funcResult].push(thing)
     else result[funcResult] = [thing]
   })
+  return result
+}
+
+export function getCallbackResultCounts(things: any, func: Function) {
+  const result: { [key: string]: number } = {}
+  const groupedByResult = groupByCallbackResult(things, func)
+
+  Object.keys(groupedByResult).forEach((key) => {
+    result[key] = groupedByResult[key].length
+  })
+
   return result
 }
 
