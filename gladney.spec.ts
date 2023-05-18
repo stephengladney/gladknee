@@ -142,12 +142,20 @@ describe("strings", () => {
   })
 
   describe("truncate", () => {
-    it("enforces the maximum length", () => {
+    it("enforces the maximum length and uses traililng by default", () => {
       expect(_.truncate("Hello world", 8)).toBe("Hello wo...")
     })
 
-    it("uses a custom ending", () => {
+    it("uses a custom filler", () => {
       expect(_.truncate("Hello world", 8, "/")).toBe("Hello wo/")
+    })
+
+    it("can use a leading filler", () => {
+      expect(_.truncate("Hello world", 4, "...", "leading")).toBe("...orld")
+    })
+
+    it("can use a middle filler", () => {
+      expect(_.truncate("Hello world", 4, "...", "middle")).toBe("He...ld")
     })
   })
   describe("escapeString", () => {

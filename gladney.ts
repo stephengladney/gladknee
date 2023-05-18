@@ -1,4 +1,5 @@
 import type { Router } from "express"
+import * as fs from "fs"
 
 /** Returns a number limited to a specific number of decimal places. 
 This is different from the native `toFixed()` method because it returns a number not a string. 
@@ -304,23 +305,44 @@ export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
-/** Returns a string limited to a max length with "..." or custom ending.
+/** Returns a string limited to a max length with "..." or custom filler. You can also choose between a leading, trailing,
+ * or middle filler. (trailing by default)
  *
  * Example:
  * ```typescript
  * truncate("Hello World!", 4) //=> "Hell..."
-
-truncate("Hello World!", 4, "/") //=> "Hell/"
+ *
+ * truncate("Hello World!", 4, "/") //=> "Hell/"
+ *
+ * truncate("Hello World!", 4, "...", "leading") //=> "...rld!"
+ *
+ * truncate("Hello World!", 4, "...", "middle") //=> "He...d!"
  * ```
  **/
 export function truncate(
   str: string,
-  lengthlevels: number,
-  ending: string = "..."
+  maxLength: number,
+  fill: string = "...",
+  style: "leading" | "trailing" | "middle" = "trailing"
 ) {
-  return str.length > lengthlevels
-    ? `${str.substring(0, lengthlevels)}${ending}`
-    : str
+  if (str.length > maxLength) {
+    switch (style) {
+      case "leading":
+        return `${fill}${str.substring(str.length - maxLength)}`
+      case "trailing":
+        return `${str.substring(0, maxLength)}${fill}`
+      case "middle":
+        const length1 =
+          maxLength % 2 === 0 ? maxLength / 2 : Math.floor(maxLength / 2)
+        const length2 =
+          maxLength % 2 === 0 ? maxLength / 2 : Math.ceil(maxLength / 2)
+        return `${str.substring(0, length1)}${fill}${str.substring(
+          str.length - length2
+        )}`
+    }
+  } else {
+    return str
+  }
 }
 
 /** Returns an escaped string that can be inserted into HTML
