@@ -169,23 +169,31 @@ describe("strings", () => {
     })
 
     it("accepts a custom mask character", () => {
-      expect(_.mask("Password", ".")).toBe("........")
+      expect(_.mask("Password", { maskWith: "." })).toBe("........")
     })
 
     it("can be leading", () => {
-      expect(_.mask("Password", "*", 4, "leading")).toBe("****word")
+      expect(
+        _.mask("Password", { maskWith: "*", style: "leading", maskLength: 4 })
+      ).toBe("****word")
     })
 
     it("can be trailing", () => {
-      expect(_.mask("Password", "*", 4, "trailing")).toBe("Pass****")
+      expect(
+        _.mask("Password", { maskWith: "*", style: "trailing", maskLength: 4 })
+      ).toBe("Pass****")
     })
 
     it("can be middle", () => {
-      expect(_.mask("Password", "*", 4, "middle")).toBe("Pa****rd")
+      expect(
+        _.mask("Password", { maskWith: "*", style: "middle", maskLength: 4 })
+      ).toBe("Pa****rd")
     })
 
     it("divides string correctly if uneven length", () => {
-      expect(_.mask("Hello world", ".", 2, "middle")).toBe("Hell..world")
+      expect(
+        _.mask("Hello world", { maskWith: ".", style: "middle", maskLength: 2 })
+      ).toBe("Hell..world")
     })
   })
 

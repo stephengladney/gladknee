@@ -346,7 +346,8 @@ export function truncate(
 }
 
 /** Returns a string with a specific number of characters masked by * or custom character. You can also choose
- * between a leading, trailing, or middle filler. (trailing by default)
+ * between a leading, trailing, or middle filler (default: trailing). You can also choose to ignore spaces
+ * when masking. (false by default)
  *
  * Example:
  * ```typescript
@@ -354,57 +355,68 @@ export function truncate(
  *
  * mask("Password", ".") //=> "........"
  *
- * mask("Password", "@", 4) //=> "Pass@@@@"
+ * mask("Password", "@", "trailing", 4) //=> "Pass@@@@"
  *
- * mask("Password", "@", 4, "leading") //=> "@@@@word"
+ * mask("Password", "@", "leading", 4) //=> "@@@@word"
  *
- * mask("Password", "*", 4, "middle") //=> "Pa****rd"
+ * mask("Password", "*", "middle", 4) //=> "Pa****rd"
+ *
+ * const secretPhrase = "This is a secret phrase."
+ * mask(secretPhrase, "*", "leading", secretPhrase.length, true) //=> "**** ** * ****** *******"
  * ```
  **/
 export function mask(
   str: string,
-  maskCharacter: string = "*",
-  maskLength: number = str.length,
-  style: "leading" | "trailing" | "middle" = "trailing",
-  ignoreSpaces?: boolean
+  config: {
+    maskWith?: string
+    style?: "leading" | "trailing" | "middle"
+    maskLength?: number
+    ignore?: string[]
+  } = {
+    maskWith: "*",
+    style: "trailing",
+    maskLength: str.length,
+    ignore: [],
+  }
 ) {
-  if (ignoreSpaces) {
-    let result = ""
-    const _str = style === "leading" ? str : str.split("").reverse().join("")
+  if (config?.style !== "middle") {
+    const _str =
+      config.style === "leading" ? str : str.split("").reverse().join("")
 
     let maskedCount = 0
-    _str.split("").forEach((char) => {
-      if (char === " ") result += " "
-      else if (maskedCount < maskLength) {
-        result += maskCharacter
+    const masked = _str.split("").reduce((acc, char) => {
+      if (config?.ignore && config.ignore.includes(char)) {
+        return acc + char
+      } else if (
+        !config?.maskLength ||
+        (config.maskLength && maskedCount < config.maskLength)
+      ) {
         maskedCount++
-      } else result += char
-    })
-    return style === "leading" ? result : result.split("").reverse().join("")
-  } else {
-    switch (style) {
-      case "leading":
-        return maskCharacter.repeat(maskLength) + str.substring(maskLength)
-      case "trailing":
-        return (
-          str.substring(0, str.length - maskLength) +
-          maskCharacter.repeat(maskLength)
-        )
-      case "middle":
-        const length1 =
-          (str.length - maskLength) % 2 === 0
-            ? (str.length - maskLength) / 2
-            : Math.floor((str.length - maskLength) / 2)
-        const length2 =
-          (str.length - maskLength) % 2 === 0
-            ? (str.length - maskLength) / 2
-            : Math.ceil((str.length - maskLength) / 2)
-        return (
-          str.substring(0, length1) +
-          maskCharacter.repeat(maskLength) +
-          str.substring(str.length - length2)
-        )
-    }
+        return acc + (config?.maskWith || "*")
+      } else return acc + char
+    }, "")
+    return config?.style === "leading"
+      ? masked
+      : masked.split("").reverse().join("")
+  }
+
+  if (config?.style === "middle" && !config?.ignore) {
+    const length1 =
+      (str.length - (config.maskLength || str.length)) % 2 === 0
+        ? (str.length - (config.maskLength || str.length)) / 2
+        : Math.floor((str.length - (config.maskLength || str.length)) / 2)
+    const length2 =
+      (str.length - (config.maskLength || str.length)) % 2 === 0
+        ? (str.length - (config.maskLength || str.length)) / 2
+        : Math.ceil((str.length - (config.maskLength || str.length)) / 2)
+    return (
+      str.substring(0, length1) +
+      (config?.maskWith || "*").repeat(config.maskLength || str.length) +
+      str.substring(str.length - length2)
+    )
+  }
+  if (config?.style === "middle" && config?.ignore) {
+    //adslknsd
   }
 }
 
