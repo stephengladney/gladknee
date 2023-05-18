@@ -877,7 +877,7 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
  * const obj2 = { a: 1, b: 2 }
  * const obj3 = { a: 2, b: 2 }
  *
- * sortObjectsByKeyValue([obj1, obj2, obj3], "a")
+ * sortByKeyValue([obj1, obj2, obj3], "a")
  * //=>
  *     [
  *       { a: 1, b: 2 },
@@ -886,7 +886,7 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
  *     ]
  * ```
  **/
-export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
+export function sortByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U
 ) {
@@ -903,7 +903,7 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
  * const obj4 = { a: 2, b: 4, c: 3 }
  * const obj5 = { a: 2, b: 5, c: 3 }
  *
- * sortObjectsByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
+ * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
  * //=>
  *      [
  *       { a: 1, b: 6, c: 3 }
@@ -914,19 +914,19 @@ export function sortObjectsByKeyValue<T extends object, U extends keyof T>(
  *      ]
  * ```
  **/
-export function sortObjectsByKeyValues<T extends object, U extends keyof T>(
+export function sortByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
   ...keys: U[]
 ): T[] {
-  if (keys.length === 1) return sortObjectsByKeyValue(objs, keys[0])
+  if (keys.length === 1) return sortByKeyValue(objs, keys[0])
 
-  const groupedByKey = groupObjectsByKeyValue(objs, keys[0])
+  const groupedByKey = groupByKeyValue(objs, keys[0])
   const sortedKeyValues = Object.keys(groupedByKey).sort()
 
   return sortedKeyValues.reduce(
     (acc: T[], keyVal) => [
       ...acc,
-      ...sortObjectsByKeyValues(groupedByKey[keyVal], ...keys.slice(1)),
+      ...sortByKeyValues(groupedByKey[keyVal], ...keys.slice(1)),
     ],
     []
   )
@@ -972,7 +972,7 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
  *    { name: "Beth", age: 23}
  * ]
  *
- * groupObjectsByKeyValue(arr, "name")
+ * groupByKeyValue(arr, "name")
  * //=>
  *      {
  *        John: [{ name: "John", age: 30 }, {name: "John", age: 28 }]
@@ -981,7 +981,7 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
  *      }
  * ```
  **/
-export function groupObjectsByKeyValue<T extends object, U extends keyof T>(
+export function groupByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U
 ) {

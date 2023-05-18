@@ -435,14 +435,14 @@ describe("objects", () => {
     })
   })
 
-  describe("sortObjectsByKeyValue", () => {
+  describe("sortByKeyValue", () => {
     it("returns the array sorted by key value", () => {
       const arr = [
         { a: 1, b: 2 },
         { a: 2, b: 1 },
         { a: 3, b: 4 },
       ]
-      expect(_.sortObjectsByKeyValue(arr, "b")).toEqual([
+      expect(_.sortByKeyValue(arr, "b")).toEqual([
         { a: 2, b: 1 },
         { a: 1, b: 2 },
         { a: 3, b: 4 },
@@ -450,7 +450,7 @@ describe("objects", () => {
     })
   })
 
-  describe("sortObjectsByKeyValues", () => {
+  describe("sortByKeyValues", () => {
     it("returns the array sorted by key values", () => {
       const arr = [
         { a: 1, b: 2, c: 2 },
@@ -461,7 +461,7 @@ describe("objects", () => {
         { a: 2, b: 1, c: 3 },
         { a: 3, b: 4, c: 1 },
       ]
-      expect(_.sortObjectsByKeyValues(arr, "a", "b", "c")).toEqual([
+      expect(_.sortByKeyValues(arr, "a", "b", "c")).toEqual([
         { a: 1, b: 1, c: 1 },
         { a: 1, b: 2, c: 1 },
         { a: 1, b: 2, c: 2 },
@@ -504,7 +504,7 @@ describe("objects", () => {
     })
   })
 
-  describe("groupObjectsByKeyValue", () => {
+  describe("groupByKeyValue", () => {
     it("returns an object with groups of objects aligned by key value", () => {
       const arr = [
         { name: "Stephen" },
@@ -512,7 +512,7 @@ describe("objects", () => {
         { name: "Mike" },
         { name: "Stephen" },
       ]
-      expect(_.groupObjectsByKeyValue(arr, "name")).toEqual({
+      expect(_.groupByKeyValue(arr, "name")).toEqual({
         Stephen: [{ name: "Stephen" }, { name: "Stephen" }],
         James: [{ name: "James" }],
         Mike: [{ name: "Mike" }],
