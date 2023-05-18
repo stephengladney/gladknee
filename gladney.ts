@@ -971,7 +971,7 @@ export function sortByKeyValues<T extends object, U extends keyof T>(
 export function getKeyValueCounts<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
-  isCaseSensitive?: boolean
+  isCaseSensitive = false
 ) {
   return arr.reduce((result: { [key: string]: number }, obj) => {
     const value = isCaseSensitive
@@ -1380,6 +1380,7 @@ export function memoize<T extends (...args: any[]) => any>(func: T): T {
 }
 
 type Falsy = null | undefined | false
+
 export function partial<T extends (...args: any[]) => any>(
   func: T,
   ...args: (Parameters<typeof func>[number] | Falsy)[]
