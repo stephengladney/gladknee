@@ -702,33 +702,55 @@ export function nthFromEnd<T>(arr: T[], n: number) {
   return arr[arr.length - 1 - n]
 }
 
-/** Returns a boolean of whether or not the two arrays have the same items.
+/** Returns a boolean of whether or not two objects or two arrays have the same items or key value pairs. You can optionally
+ * pass in a boolean to require that the order of the items be the same.
  *
  * Example:
  * ```typescript
  * const arr1 = [1, 2, 3, 4]
- * const arr2 = [1, 2, 3, 4]
- * const arr3 = [4, 3, 2, 1]
+ * const arr2 = [4, 3, 2, 1]
  *
- * areArraysEqual(arr1, arr2) //=> true
+ * isEqual(arr1, arr2) //=> true
  *
- * areArraysEqual(arr2, arr3) //=> false
+ * isEqual(arr1, arr2, true) //=> false
+ * 
+ * const obj1 = { a: 1, b: 2, c: 3 }
+ * const obj2 = { c: 3, b: 2, a: 1 }
+
  *
- * areArraysEqual(arr2, arr3, false) //=> true
+ * isEqual(ob1, obj2) //=> true
+ * 
+ * isEqual(ob1, obj2,false) //=> false
  * ```
- * NOTE: `orderMatters` is true by default.
+ * 
+ * NOTE: `orderMatters` is false by default.
  **/
-export function areArraysEqual<T>(
-  array1: T[],
-  array2: T[],
-  orderMatters = true
+
+export function isEqual(
+  thing1: object | [],
+  thing2: object | [],
+  orderMatters = false
 ) {
-  const _array1 = orderMatters ? array1 : [...array1].sort()
-  const _array2 = orderMatters ? array2 : [...array2].sort()
-  for (let i = 0; i < array1.length; i++) {
-    if (_array1[i] !== _array2[i]) return false
-  }
-  return true
+  if (orderMatters) {
+    return JSON.stringify(thing1) === JSON.stringify(thing2)
+  } else if (Array.isArray(thing1) && Array.isArray(thing2)) {
+    const _thing1 = [...(thing1 as [])].sort()
+    const _thing2 = [...(thing2 as [])].sort()
+    for (let i = 0; i < thing1.length; i++) {
+      if (_thing1[i] !== (_thing2 as [])[i]) return false
+    }
+    return true
+  } else if (typeof thing1 === "object" && typeof thing2 === "object") {
+    let isObjectsMatchUnordered = true
+    Object.keys(thing1).forEach((key) => {
+      if (
+        thing1[key as keyof typeof thing1] !==
+        thing2[key as keyof typeof thing2]
+      )
+        isObjectsMatchUnordered = false
+    })
+    return isObjectsMatchUnordered
+  } else return false
 }
 
 // OBJECTS
@@ -979,12 +1001,7 @@ export function convertObjectToQueryParams(obj: object): string {
  *
  * Example:
  * ```typescript
- * const obj1 = { a: 1, b:2, c: 3 }
- * const obj2 = { a: 1, b:2, c: 3 }
- * const obj3 = { a: 4, b:5, c: 6 }
  *
- * areObjectsEqual(ob1, obj2) //=> true
- * areObjectsEqual(ob1, obj2, obj3) //=> false
  * ```
  */
 export function areObjectsEqual(...objs: object[]) {
