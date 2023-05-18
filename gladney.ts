@@ -19,10 +19,11 @@ export function float(n: number, decimalPlaces?: number) {
  * sum(1, 4, 6) //=> 11
  * ```
  **/
-export function sum(...arr: (number | number[])[]) {
-  if (Array.isArray(arr[0])) {
-    return arr[0].reduce((acc, i) => acc + i, 0)
-  } else return (arr as number[]).reduce((acc, i) => acc + i, 0)
+export function sum(...arr: (number | number[])[]): number {
+  return arr.reduce((acc, i) => {
+    if (Array.isArray(i)) return (acc as number) + sum(...i)
+    else return (acc as number) + i
+  }, 0) as number
 }
 
 sum([1, 2, 3])
