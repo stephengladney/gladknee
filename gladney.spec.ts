@@ -513,9 +513,38 @@ describe("objects", () => {
         { name: "Stephen" },
       ]
       expect(_.groupByKeyValue(arr, "name")).toEqual({
-        Stephen: [{ name: "Stephen" }, { name: "Stephen" }],
+        stephen: [{ name: "Stephen" }, { name: "Stephen" }],
+        james: [{ name: "James" }],
+        mike: [{ name: "Mike" }],
+      })
+    })
+
+    it("is not case sensitive by default", () => {
+      const arr = [
+        { name: "Stephen" },
+        { name: "James" },
+        { name: "Mike" },
+        { name: "stephen" },
+      ]
+      expect(_.groupByKeyValue(arr, "name")).toEqual({
+        stephen: [{ name: "Stephen" }, { name: "stephen" }],
+        james: [{ name: "James" }],
+        mike: [{ name: "Mike" }],
+      })
+    })
+
+    it("separates not case matching values if case sensitive", () => {
+      const arr = [
+        { name: "Stephen" },
+        { name: "James" },
+        { name: "Mike" },
+        { name: "stephen" },
+      ]
+      expect(_.groupByKeyValue(arr, "name", true)).toEqual({
+        Stephen: [{ name: "Stephen" }],
         James: [{ name: "James" }],
         Mike: [{ name: "Mike" }],
+        stephen: [{ name: "stephen" }],
       })
     })
   })

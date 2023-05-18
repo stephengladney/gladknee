@@ -983,13 +983,22 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
  **/
 export function groupByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
-  key: U
+  key: U,
+  isCaseSensitive = false
 ) {
   const result: { [key: string]: T[] } = {}
   arr.forEach((obj: T) => {
     const keyValue = obj[key] as string
-    if (result[keyValue]) result[keyValue].push(obj)
-    else result[keyValue] = [obj]
+    if (
+      result[keyValue] ||
+      (!isCaseSensitive && result[lowerCaseNoSpaces(keyValue)])
+    ) {
+      result[!isCaseSensitive ? lowerCaseNoSpaces(keyValue) : keyValue].push(
+        obj
+      )
+    } else {
+      result[!isCaseSensitive ? lowerCaseNoSpaces(keyValue) : keyValue] = [obj]
+    }
   })
   return result
 }
