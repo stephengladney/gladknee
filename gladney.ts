@@ -514,7 +514,30 @@ export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
 
 type SortableArray = (string | number)[]
 
-/** Returns the provided array sorted (ascending) via bubble sort.
+/** Returns an array sorted. This is safer than the default sort() method because it converts strings of numbers to actual
+ * numbers and it compares each value for greater than less than, which helps when sorting negative numbers.
+ *
+ * Example:
+ * ```typescript
+ * [-1, -2, -3, -4].sort() //=> [-1, -2, -3, -4]
+ *
+ * safeSort([-1, -2, -3, -4]) //=> [-4, -3, -2, -1]
+ *
+ * ["45", "167", "23", "1000"].sort() //=> ["1000", "167", "23", "45"]
+ *
+ * safeSort(["45", "167", "23", "1000"]) //=> ["23", "45", "167", "1000"]
+ * ```
+ *
+ */
+export function safeSort(arr: SortableArray) {
+  const isNumberString = (str: string | number) => !isNaN(Number(str))
+  return arr.sort((a, b) => {
+    if (isNumberString(a)) return Number(a) - Number(b)
+    else return a < b ? -1 : 1
+  })
+}
+
+/** Returns an array sorted (ascending) via bubble sort.
  **/
 export function bubbleSort(arr: SortableArray) {
   let noSwaps
@@ -533,7 +556,7 @@ export function bubbleSort(arr: SortableArray) {
   return arr
 }
 
-/** Returns the provided array sorted (ascending) via selection sort.
+/** Returns an array sorted (ascending) via selection sort.
  **/
 export function selectionSort(arr: SortableArray) {
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
@@ -552,7 +575,7 @@ export function selectionSort(arr: SortableArray) {
   return arr
 }
 
-/** Returns the provided array sorted (ascending) via insertion sort.
+/** Returns an array sorted (ascending) via insertion sort.
  **/
 export function insertionSort(arr: SortableArray) {
   var currentVal
@@ -566,7 +589,7 @@ export function insertionSort(arr: SortableArray) {
   return arr
 }
 
-/** Returns the provided array with any duplicates removed.
+/** Returns an array with any duplicates removed.
  *
  * Example:
  * ```typescript
@@ -997,21 +1020,6 @@ export function convertObjectToQueryParams(obj: object): string {
   return result
 }
 
-/** Returns a boolean representing if a set of objects have the same key value pairs.
- *
- * Example:
- * ```typescript
- *
- * ```
- */
-export function areObjectsEqual(...objs: object[]) {
-  const obj1 = objs[0]
-  objs.slice(1).reduce((acc, obj) => {
-    if (JSON.stringify(obj1) !== JSON.stringify(obj)) return false
-    else return acc
-  }, true)
-}
-
 /** Returns a deep copy of an object.
  *
  * Example:
@@ -1042,6 +1050,82 @@ export function flipKeyValues<T extends object>(
     result[String(value)] = keys[i]
   })
   return result
+}
+
+/**
+ * Runs a callback function on array of items and returns a single object with keys that match the return values.
+ * Each key's value is an array of items that provide the same result when having the callback function run on them.
+ *
+ * Example:
+ * ```typescript
+ * const ages = [{ age: 28 }, { age: 14 }, { age: 67 }, { age: 17 }, ]
+ *
+ * const canDrinkAlcohol = (obj:{ age: number }) => obj.age >= 21
+ *
+ * groupByCallbackResult(ages, canDrinkAlcohol)
+ * //=>
+ *      {
+ *        "true": [{ age: 28 }, { age: 67 }]
+ *        "false": [{ age: 14 }, { age: 17 }]
+ *      }
+ * ```
+ */
+export function groupByCallbackResult(things: any[], func: Function) {
+  const result: { [key: string]: any[] } = {}
+  things.forEach((thing) => {
+    const funcResult = String(func(thing))
+    if (result[funcResult]) result[funcResult].push(thing)
+    else result[funcResult] = [thing]
+  })
+  return result
+}
+
+/**
+ * Runs a callback function on array of items and returns an array of items that are sorted by the return value of running
+ * the callback function on the item.
+ *
+ * Example:
+ * ```typescript
+ const socialStats = [
+  { follows: 1, likes: 2 },
+  { follows: 5, likes: 1 },
+  { follows: 2, likes: 0 },
+  { follows: 4, likes: 3 },
+]
+
+// Adds the follows and likes to get a total popularity score
+const getPopularity = (obj: { follows: number; likes: number }) =>
+  obj.follows + obj.likes
+
+sortByCallbackResult(socialStats, getPopularity)
+//=>
+* [
+    {
+    follows: 2,
+    likes: 0,
+    },
+    {
+    follows: 1,
+    likes: 2,
+    },
+    {
+    follows: 5,
+    likes: 1,
+    },
+    {
+    follows: 4,
+    likes: 3,
+    },
+]
+ * ```
+ */
+
+export function sortByCallbackResult<T>(things: T[], func: Function) {
+  const groupedByResult = groupByCallbackResult(things, func)
+  return safeSort(Object.keys(groupedByResult)).reduce(
+    (acc, key) => [...acc, ...groupedByResult[key]],
+    [] as T[]
+  )
 }
 
 // EXPRESS
