@@ -789,10 +789,13 @@ export function isEqual(
   } else if (typeof thing1 === "object" && typeof thing2 === "object") {
     let isObjectsMatchUnordered = true
     Object.keys(thing1).forEach((key) => {
-      const _key = isCaseSensitive ? key : String(key).toLowerCase()
       if (
-        thing1[_key as keyof typeof thing1] !==
-        thing2[_key as keyof typeof thing2]
+        (isCaseSensitive &&
+          thing1[key as keyof typeof thing1] !==
+            thing2[key as keyof typeof thing2]) ||
+        (!isCaseSensitive &&
+          String(thing1[key as keyof typeof thing1]).toLowerCase() !==
+            String(thing2[key as keyof typeof thing2]).toLowerCase())
       ) {
         isObjectsMatchUnordered = false
       }

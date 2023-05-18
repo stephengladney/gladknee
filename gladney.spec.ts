@@ -376,6 +376,39 @@ describe("arrays", () => {
         false
       )
     })
+
+    it("objects are equal but diff case, case doesn't matter", () => {
+      expect(
+        _.isEqual(
+          { a: "A", b: "B", c: "C" },
+          { a: "a", b: "b", c: "c" },
+          true,
+          false
+        )
+      ).toBe(true)
+    })
+
+    it("objects are equal but diff case, case does matter", () => {
+      expect(
+        _.isEqual(
+          { a: "A", b: "B", c: "C" },
+          { a: "a", b: "b", c: "c" },
+          true,
+          true
+        )
+      ).toBe(false)
+    })
+
+    it("objects are equal but diff case and out of order, order and case don't matter", () => {
+      expect(
+        _.isEqual(
+          { a: "A", b: "B", c: "C" },
+          { c: "c", a: "a", b: "b" },
+          false,
+          false
+        )
+      ).toBe(true)
+    })
   })
 
   describe("safeSort", () => {
