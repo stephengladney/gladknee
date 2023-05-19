@@ -234,34 +234,6 @@ describe("strings", () => {
 })
 
 describe("arrays", () => {
-  describe("isEvery", () => {
-    it("returns true if every item meets criteria", () => {
-      const arr = [2, 4, 6, 8]
-      const isEven = (n: number) => n % 2 === 0
-      expect(_.isEvery(arr, (n) => isEven(n))).toBe(true)
-    })
-
-    it("returns false if any item does not meet criteria", () => {
-      const arr = [2, 4, 7, 8]
-      const isEven = (n: number) => n % 2 === 0
-      expect(_.isEvery(arr, (n) => isEven(n))).toBe(false)
-    })
-  })
-
-  describe("isAny", () => {
-    it("returns true if any item meets criteria", () => {
-      const arr = [2, 3, 5, 7]
-      const isEven = (n: number) => n % 2 === 0
-      expect(_.isAny(arr, (n) => isEven(n))).toBe(true)
-    })
-
-    it("returns false if no item does meet criteria", () => {
-      const arr = [3, 5, 7, 9]
-      const isEven = (n: number) => n % 2 === 0
-      expect(_.isAny(arr, (n) => isEven(n))).toBe(false)
-    })
-  })
-
   describe("shuffle", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]

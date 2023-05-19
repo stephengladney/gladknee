@@ -506,36 +506,6 @@ export function capitalize(str: string, lowercaseOthers = false) {
 
 // ARRAYS
 
-/** Returns a boolean that reflects whether or not every item in an array meets a condition.
- * 
- * Example:
- * ```typescript
- const isEven = (n: number) => n % 2 === 0
-
-isEvery([2, 4, 6, 8], (n) => isEven(n)) //=> true
-
-isEvery([2, 4, 7, 8], (n) => isEven(n)) //=> false
- * ```
- **/
-export function isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean) {
-  return arr.filter(func).length === arr.length
-}
-
-/** Returns a boolean that reflects whether or not any item in an array meets a condition.
- * 
- * Example:
- * ```typescript
- const isEven = (n: number) => n % 2 === 0
-
-isAny([3, 5, 7, 9], (n) => isEven(n)) //=> false
-
-isAny([2, 5, 7, 9], (n) => isEven(n)) //=> true
- * ```
- **/
-export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
-  return arr.filter(func).length > 0
-}
-
 /** Returns an array with the items randomly ordered.
  * 
  * Example:
