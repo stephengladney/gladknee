@@ -654,6 +654,23 @@ describe("objects", () => {
     })
   })
 
+  describe("removeDuplicatesByKeyValue", () => {
+    it("removes any subsequent objects with the same key value", () => {
+      const members = [
+        { id: 1, name: "Stephen" },
+        { id: 2, name: "Andrea" },
+        { id: 1, name: "Monica" },
+        { id: 4, name: "Dylan" },
+      ]
+
+      expect(_.removeDuplicatesByKeyValue(members, "id")).toEqual([
+        { id: 1, name: "Stephen" },
+        { id: 2, name: "Andrea" },
+        { id: 4, name: "Dylan" },
+      ])
+    })
+  })
+
   describe("deepCopy", () => {
     it("returns a deep copy of the object", () => {
       const nestedObject = { a: 1, b: { c: 2 }, d: 3, e: { f: { g: 4 } } }

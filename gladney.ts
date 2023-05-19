@@ -1157,23 +1157,15 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 ]
  * ```
  */
-
 export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
   isCaseSensitive = false
 ) {
-  const values: { [key: string]: boolean } = {}
-  return arr.filter((obj) => {
-    const objectKeyValue = isCaseSensitive
-      ? String(obj[key])
-      : String(obj[String(key).toLowerCase() as U])
-    if (values[objectKeyValue]) return false
-    else {
-      values[String(obj[key])] = true
-      return true
-    }
-  })
+  const groupedByKey = groupByKeyValue(arr, key, isCaseSensitive)
+  return Object.keys(groupedByKey).reduce((acc, _key) => {
+    return [...acc, groupedByKey[_key][0]]
+  }, [] as T[])
 }
 
 /** Returns a string of an object's key and value pairs as a query parameter string. Supports one level of nesting.
