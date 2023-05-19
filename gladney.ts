@@ -346,8 +346,8 @@ export function truncate(
 }
 
 /** Returns a string with a specific number of characters masked by * or custom character. You can also choose
- * between a leading, trailing, or middle filler (default: trailing). You can also choose to ignore spaces
- * when masking. (false by default)
+ * between a leading, trailing, or middle filler (default: trailing) and can choose to ignore certain characters
+ * when masking.
  *
  * Example:
  * ```typescript
@@ -379,7 +379,7 @@ export function mask(
     ignore: [],
   }
 ) {
-  if (config?.style !== "middle") {
+  if (config?.style !== "middle" || !config?.style) {
     const _str =
       config.style === "leading" ? str : str.split("").reverse().join("")
 
@@ -398,25 +398,22 @@ export function mask(
     return config?.style === "leading"
       ? masked
       : masked.split("").reverse().join("")
-  }
-
-  if (config?.style === "middle" && !config?.ignore) {
+  } else {
     const length1 =
       (str.length - (config.maskLength || str.length)) % 2 === 0
         ? (str.length - (config.maskLength || str.length)) / 2
         : Math.floor((str.length - (config.maskLength || str.length)) / 2)
-    const length2 =
-      (str.length - (config.maskLength || str.length)) % 2 === 0
-        ? (str.length - (config.maskLength || str.length)) / 2
-        : Math.ceil((str.length - (config.maskLength || str.length)) / 2)
-    return (
-      str.substring(0, length1) +
-      (config?.maskWith || "*").repeat(config.maskLength || str.length) +
-      str.substring(str.length - length2)
-    )
-  }
-  if (config?.style === "middle" && config?.ignore) {
-    //adslknsd
+    let maskedCount = 0
+    return str.split("").reduce((acc, char, i) => {
+      const shouldIgnoreCharacter =
+        !!config?.ignore && config.ignore.includes(char)
+      if (shouldIgnoreCharacter) return acc + char
+      else if (i + 1 <= length1) return acc + char
+      else if (config?.maskLength && maskedCount < config?.maskLength) {
+        maskedCount++
+        return acc + (config?.maskWith || "*")
+      } else return acc + char
+    }, "")
   }
 }
 
