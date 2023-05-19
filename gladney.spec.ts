@@ -151,6 +151,16 @@ describe("strings", () => {
     })
   })
 
+  describe("capitalize", () => {
+    it("capitalizes the first letter", () => {
+      expect(_.capitalize("hello")).toBe("Hello")
+    })
+
+    it("can lowercase latter characters", () => {
+      expect(_.capitalize("hELLO", true)).toBe("Hello")
+    })
+  })
+
   describe("truncate", () => {
     it("enforces the maximum length and uses traililng by default", () => {
       expect(_.truncate("Hello world", 8)).toBe("Hello wo...")

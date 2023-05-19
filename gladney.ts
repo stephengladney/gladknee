@@ -494,6 +494,16 @@ export function getRandomString(
   return randomString
 }
 
+/**
+ * Returns a string with the first letter capitalized. Optionally pass in boolean to convert following characters to lower case.
+ */
+export function capitalize(str: string, lowercaseOthers = false) {
+  return (
+    str[0].toUpperCase() +
+    (lowercaseOthers ? str.slice(1).toLowerCase() : str.slice(1))
+  )
+}
+
 // ARRAYS
 
 /** Returns a boolean that reflects whether or not every item in an array meets a condition.
