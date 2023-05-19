@@ -134,6 +134,16 @@ describe("time & dates", () => {
   })
 })
 
+describe("isPast", () => {
+  it("returns true if the date has passed", () => {
+    expect(_.isPast(new Date("01-01-1979"))).toBe(true)
+  })
+
+  it("returns false if the date has not passed", () => {
+    expect(_.isPast(new Date("01-01-3000"))).toBe(false)
+  })
+})
+
 describe("strings", () => {
   describe("lowerCaseNoSpaces", () => {
     it("returns the string lowercased without spaces", () => {
@@ -819,6 +829,23 @@ describe("misc", () => {
       const { flush } = debouncedFunc()
       flush()
       expect(func).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe("rgbToHex", () => {
+    it("converts an RGB value to a hexadecimal code", () => {
+      expect(_.rgbToHex(189, 23, 123)).toBe("#BD177B")
+      expect(_.rgbToHex(255, 0, 0)).toBe("#FF0000")
+    })
+  })
+
+  describe("hexToRgb", () => {
+    it("converts a hexadecimal code to an RGB value", () => {
+      expect(_.hexToRgb("FF0000")).toEqual([255, 0, 0])
+    })
+
+    it("ignores the # symbol if present", () => {
+      expect(_.hexToRgb("#FF0000")).toEqual([255, 0, 0])
     })
   })
 })

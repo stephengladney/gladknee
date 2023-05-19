@@ -295,6 +295,12 @@ export function endOfToday() {
   return date
 }
 
+/** Returns a boolean of whether or not a certain date/time has passed.
+ **/
+export function isPast(date: Date) {
+  return new Date(date).getTime() < Date.now()
+}
+
 // STRINGS
 
 /** Returns a string in lowercase form with spaces removed.
@@ -710,7 +716,7 @@ export function insertionSort(arr: StringOrNumberArray) {
  * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
-export function removeDuplicates(arr: any[]) {
+export function removeDuplicates(arr: (number | string)[]) {
   return Array.from(new Set(arr))
 }
 
@@ -1130,6 +1136,46 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
     }
   })
   return result
+}
+
+/**
+ * Returns an array of objects where a value of a specific key can only occur once. The first instance of the key/value pair
+ * is preserved and subsequent instances are removed.
+ *
+ * Example:
+ * ```typescript
+ * const members = [
+    { id: 1, name: "Stephen" },
+    { id: 2, name: "Andrea" },
+    { id: 1, name: "Monica" },
+    { id: 4, name: "Dylan" },
+]
+ *
+ * removeDuplicatesByKeyValue(members, "id")
+ * //=>
+ * [{ id: 1, name: "Stephen" },
+    { id: 2, name: "Andrea" },
+    { id: 4, name: "Dylan" },
+]
+ * ```
+ */
+
+export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
+  arr: T[],
+  key: U,
+  isCaseSensitive = false
+) {
+  const values: { [key: string]: boolean } = {}
+  return arr.filter((obj) => {
+    const objectKeyValue = isCaseSensitive
+      ? String(obj[key])
+      : String(obj[String(key).toLowerCase() as U])
+    if (values[objectKeyValue]) return false
+    else {
+      values[String(obj[key])] = true
+      return true
+    }
+  })
 }
 
 /** Returns a string of an object's key and value pairs as a query parameter string. Supports one level of nesting.
@@ -1682,3 +1728,73 @@ export function getURLQueryParams() {
 
 /** A function that does nothing and returns nothing. Useful for linters that require a callback. */
 export function noOp() {}
+
+const hexValues = [
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+]
+
+/**
+ * Returns a hexadecimal code of an RGB value
+ *
+ * Example:
+ * ```typescript
+ * rgbToHex(255,0,0) //=> #FF0000
+ *
+ * rgbToHex(189,23,123) //=> #BD177B
+ * ```
+ */
+export function rgbToHex(red: number, green: number, blue: number): string {
+  const getHex = (n: number) => {
+    const firstValue = hexValues[Math.floor(n / 16)]
+    const secondValue = hexValues[n % 16]
+    return `${firstValue}${secondValue}`
+  }
+  return `#${getHex(red)}${getHex(green)}${getHex(blue)}`
+}
+
+/**
+ * Returns an RGB value of a hexadecimal code
+ *
+ * Example:
+ * ```typescript
+ * hexToRgb("#FF0000") //=> [255, 0, 0]
+ *
+ * hexToRgb("FF0000") //=> [255, 0, 0]
+ *
+ * rgbToHex("#BD177B") //=> [189, 23, 123]
+ * ```
+ */
+export function hexToRgb(hex: string): [number, number, number] {
+  const _hex = hex[0] === "#" ? hex.slice(1) : hex
+  const redHex = _hex.substring(0, 2)
+  const greenHex = _hex.substring(2, 4)
+  const blueHex = _hex.substring(4, 6)
+
+  const getNumberForHexCharacter = (hexCharacter: string) =>
+    hexValues.findIndex((x) => x === hexCharacter.toUpperCase())
+
+  const getNumberForHexString = (hexString: string) =>
+    getNumberForHexCharacter(hexString[0]) * 16 +
+    getNumberForHexCharacter(hexString[1])
+
+  return [
+    getNumberForHexString(redHex),
+    getNumberForHexString(greenHex),
+    getNumberForHexString(blueHex),
+  ]
+}
