@@ -561,6 +561,20 @@ export function getRandomItem<T>(arr: T[]) {
   return arr[randomIndex]
 }
 
+/** Returns an array of every Nth item in an array
+ *
+ * Example:
+ * ```typescript
+ * everyNth([1, 2, 3, 4, 5, 6, 7, 8, 9], 3) //=> [3, 6, 9]
+ * ```
+ **/
+export function everyNth(arr: any[], n: number) {
+  return arr.reduce((acc, item, index) => {
+    if ((index + 1) % n === 0) return [...acc, item]
+    else return acc
+  }, [])
+}
+
 /** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
  *  is larger than the length of the array, the fill will be added to the array as many times as necessary
  * to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
@@ -1138,7 +1152,7 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 
 /**
  * Returns an array of objects where a value of a specific key can only occur once. The first instance of the key/value pair
- * is preserved and subsequent instances are removed.
+ * is preserved and subsequent instances are removed. You can optionally pass in a boolean to make detection case sensitive.
  *
  * Example:
  * ```typescript

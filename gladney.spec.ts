@@ -269,6 +269,12 @@ describe("arrays", () => {
     })
   })
 
+  describe("everyNth", () => {
+    it("returns every Nth item in an arry", () => {
+      expect(_.everyNth([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)).toEqual([3, 6, 9])
+    })
+  })
+
   describe("clampArray", () => {
     it("enforces the maximum limit", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
