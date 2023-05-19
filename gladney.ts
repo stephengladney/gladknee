@@ -353,16 +353,19 @@ export function truncate(
  * ```typescript
  * mask("Password") //=> "********"
  *
- * mask("Password", ".") //=> "........"
+ * mask("Password", { maskWith: "." }) //=> "........"
  *
- * mask("Password", "@", "trailing", 4) //=> "Pass@@@@"
+ * mask("Password", { maskWith: "@", stylee: "trailing", maskLength: 4 }) //=> "Pass@@@@"
  *
- * mask("Password", "@", "leading", 4) //=> "@@@@word"
+ * mask("Password", { maskWith: "@", style: "leading", maskLength: 4 }) //=> "@@@@word"
  *
- * mask("Password", "*", "middle", 4) //=> "Pa****rd"
+ * mask("Password", { style: "middle", maskLength: 4 }) //=> "Pa****rd"
  *
  * const secretPhrase = "This is a secret phrase."
- * mask(secretPhrase, "*", "leading", secretPhrase.length, true) //=> "**** ** * ****** *******"
+ *
+ * mask(secretPhrase) //=> "************************"
+ *
+ * mask(secretPhrase, { ignore: [" "] }) //=> "**** ** * ****** *******"
  * ```
  **/
 export function mask(
