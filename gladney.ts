@@ -1,5 +1,4 @@
 import type { Router } from "express"
-import * as fs from "fs"
 
 /** Returns a number limited to a specific number of decimal places. 
 This is different from the native `toFixed()` method because it returns a number not a string. 
@@ -18,6 +17,10 @@ export function float(n: number, decimalPlaces?: number) {
  * Example:
  * ```typescript
  * sum(1, 4, 6) //=> 11
+ *
+ * sum([1, 4, 6]) //=> 11
+ *
+ * sum([1, 4, 6], [1, 4, 6]) //=> 22
  * ```
  **/
 export function sum(...arr: (number | number[])[]): number {
