@@ -30,8 +30,6 @@ export function sum(...arr: (number | number[])[]): number {
   }, 0) as number
 }
 
-sum([1, 2, 3])
-
 /** Returns a random number within a given range
  *
  * Example:
