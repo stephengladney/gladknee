@@ -504,6 +504,39 @@ export function capitalize(str: string, lowercaseOthers = false) {
   )
 }
 
+/**
+ * Returns a string lowercased with non letter characters removed and spaces and underscores replaced with a separator (- by default)
+ *
+ * Example:
+ * ```typescript
+ * slugify("This is the blog post title!") //=> "this_is_the_blog_post_title"
+ * ```
+ */
+export function slugify(str: string, separator = "-") {
+  const _str = str
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, separator)
+    .replace(/[^\w\-]+/g, separator)
+    .replace(/\_/g, separator)
+    .replace(/\-\-+/g, separator)
+  return _str[_str.length - 1] === separator ? shave(_str, 1) : _str
+}
+
+/**
+ * Returns a string or array with a certain number of characters removed. By default elements are removed from the end. You can pass in
+ * a negative number to remove them from the front.
+ *
+ * Example:
+ *
+ * shave("Hello", 2) //=> "Hel"
+ *
+ * shave("Hello", -2) //=> "llo"
+ */
+export function shave(iterable: string | unknown[], n: number) {
+  return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
+}
+
 // ARRAYS
 
 /** Returns an array with the items randomly ordered.

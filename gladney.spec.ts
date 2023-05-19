@@ -233,6 +233,42 @@ describe("strings", () => {
   })
 })
 
+describe("slugify", () => {
+  it("lowercases the text", () => {
+    expect(_.slugify("THIS")).toBe("this")
+  })
+
+  it("replaces spaces", () => {
+    expect(_.slugify("this is some text")).toBe("this-is-some-text")
+  })
+
+  it("trims whitespace", () => {
+    expect(_.slugify(" this is some text ")).toBe("this-is-some-text")
+  })
+
+  it("removes non-letter characters", () => {
+    expect(_.slugify("this is some text!")).toBe("this-is-some-text")
+  })
+
+  it("can use a custom separator", () => {
+    expect(_.slugify("this is some text!", "_")).toBe("this_is_some_text")
+  })
+})
+
+describe("shave", () => {
+  it("removes elements from the end of a string", () => {
+    expect(_.shave("hello", 2)).toBe("hel")
+  })
+
+  it("removes elements from the end of an array", () => {
+    expect(_.shave([1, 2, 3, 4], 2)).toEqual([1, 2])
+  })
+
+  it("removes elements from the beginning if n is negative", () => {
+    expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
+  })
+})
+
 describe("arrays", () => {
   describe("shuffle", () => {
     it("returns the array in a different order", () => {
