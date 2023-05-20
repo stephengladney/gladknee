@@ -134,6 +134,16 @@ describe("time & dates", () => {
   })
 })
 
+describe("isPast", () => {
+  it("returns true if the date has passed", () => {
+    expect(_.isPast(new Date("01-01-1979"))).toBe(true)
+  })
+
+  it("returns false if the date has not passed", () => {
+    expect(_.isPast(new Date("01-01-3000"))).toBe(false)
+  })
+})
+
 describe("strings", () => {
   describe("lowerCaseNoSpaces", () => {
     it("returns the string lowercased without spaces", () => {
@@ -141,15 +151,72 @@ describe("strings", () => {
     })
   })
 
+  describe("capitalize", () => {
+    it("capitalizes the first letter", () => {
+      expect(_.capitalize("hello")).toBe("Hello")
+    })
+
+    it("can lowercase latter characters", () => {
+      expect(_.capitalize("hELLO", true)).toBe("Hello")
+    })
+  })
+
   describe("truncate", () => {
-    it("enforces the maximum length", () => {
+    it("enforces the maximum length and uses traililng by default", () => {
       expect(_.truncate("Hello world", 8)).toBe("Hello wo...")
     })
 
-    it("uses a custom ending", () => {
+    it("uses a custom filler", () => {
       expect(_.truncate("Hello world", 8, "/")).toBe("Hello wo/")
     })
+
+    it("can use a leading filler", () => {
+      expect(_.truncate("Hello world", 4, "...", "leading")).toBe("...orld")
+    })
+
+    it("can use a middle filler", () => {
+      expect(_.truncate("Hello world", 4, "...", "middle")).toBe("He...ld")
+    })
+
+    it("divides string correctly if uneven length", () => {
+      expect(_.truncate("Hello world", 5, "...", "middle")).toBe("He...rld")
+    })
   })
+
+  describe("mask", () => {
+    it("masks the entire string with * by default", () => {
+      expect(_.mask("Password")).toBe("********")
+    })
+
+    it("accepts a custom mask character", () => {
+      expect(_.mask("Password", { maskWith: "." })).toBe("........")
+    })
+
+    it("can be leading", () => {
+      expect(
+        _.mask("Password", { maskWith: "*", style: "leading", maskLength: 4 })
+      ).toBe("****word")
+    })
+
+    it("can be trailing", () => {
+      expect(
+        _.mask("Password", { maskWith: "*", style: "trailing", maskLength: 4 })
+      ).toBe("Pass****")
+    })
+
+    it("can be middle", () => {
+      expect(
+        _.mask("Password", { maskWith: "*", style: "middle", maskLength: 4 })
+      ).toBe("Pa****rd")
+    })
+
+    it("divides string correctly if uneven length", () => {
+      expect(
+        _.mask("Hello world", { maskWith: ".", style: "middle", maskLength: 2 })
+      ).toBe("Hell..world")
+    })
+  })
+
   describe("escapeString", () => {
     it("returns a string with characters escaped", () => {
       expect(_.escapeString("Hello <there>, my 'friend'")).toBe(
@@ -166,35 +233,43 @@ describe("strings", () => {
   })
 })
 
+describe("slugify", () => {
+  it("lowercases the text", () => {
+    expect(_.slugify("THIS")).toBe("this")
+  })
+
+  it("replaces spaces", () => {
+    expect(_.slugify("this is some text")).toBe("this-is-some-text")
+  })
+
+  it("trims whitespace", () => {
+    expect(_.slugify(" this is some text ")).toBe("this-is-some-text")
+  })
+
+  it("removes non-letter characters", () => {
+    expect(_.slugify("this is some text!")).toBe("this-is-some-text")
+  })
+
+  it("can use a custom separator", () => {
+    expect(_.slugify("this is some text!", "_")).toBe("this_is_some_text")
+  })
+})
+
+describe("shave", () => {
+  it("removes elements from the end of a string", () => {
+    expect(_.shave("hello", 2)).toBe("hel")
+  })
+
+  it("removes elements from the end of an array", () => {
+    expect(_.shave([1, 2, 3, 4], 2)).toEqual([1, 2])
+  })
+
+  it("removes elements from the beginning if n is negative", () => {
+    expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
+  })
+})
+
 describe("arrays", () => {
-  describe("isEvery", () => {
-    it("returns true if every item meets criteria", () => {
-      const arr = [2, 4, 6, 8]
-      const isEven = (n: number) => n % 2 === 0
-      expect(_.isEvery(arr, (n) => isEven(n))).toBe(true)
-    })
-
-    it("returns false if any item does not meet criteria", () => {
-      const arr = [2, 4, 7, 8]
-      const isEven = (n: number) => n % 2 === 0
-      expect(_.isEvery(arr, (n) => isEven(n))).toBe(false)
-    })
-  })
-
-  describe("isAny", () => {
-    it("returns true if any item meets criteria", () => {
-      const arr = [2, 3, 5, 7]
-      const isEven = (n: number) => n % 2 === 0
-      expect(_.isAny(arr, (n) => isEven(n))).toBe(true)
-    })
-
-    it("returns false if no item does meet criteria", () => {
-      const arr = [3, 5, 7, 9]
-      const isEven = (n: number) => n % 2 === 0
-      expect(_.isAny(arr, (n) => isEven(n))).toBe(false)
-    })
-  })
-
   describe("shuffle", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -209,6 +284,12 @@ describe("arrays", () => {
       const arr = [1, 2, 3, 4, 5]
       const randomItem = _.getRandomItem(arr)
       expect(arr.includes(randomItem)).toBe(true)
+    })
+  })
+
+  describe("everyNth", () => {
+    it("returns every Nth item in an arry", () => {
+      expect(_.everyNth([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)).toEqual([3, 6, 9])
     })
   })
 
@@ -281,9 +362,24 @@ describe("arrays", () => {
   })
 
   describe("sum", () => {
-    it("returns the sum of an array of numbers", () => {
+    it("returns the sum of a set of numbers", () => {
       const arr = [1, 2, 3, 4]
       expect(_.sum(...arr)).toEqual(10)
+    })
+
+    it("returns the sum of an array of numbers", () => {
+      const arr = [1, 2, 3, 4]
+      expect(_.sum(arr)).toEqual(10)
+    })
+
+    it("returns the sum of several arrays of numbers", () => {
+      const arr = [1, 2, 3, 4]
+      expect(_.sum(arr, arr)).toEqual(20)
+    })
+
+    it("returns the sum of several numbers and an array of numbers", () => {
+      const arr = [1, 2, 3, 4]
+      expect(_.sum(arr, 1, 2, 3, 4)).toEqual(20)
     })
   })
 
@@ -453,7 +549,7 @@ describe("objects", () => {
   describe("combineObjects", () => {
     it("returns an object with all key/values from provided objects", () => {
       const objArray = [{ a: 1 }, { b: 2 }, { c: 3 }]
-      expect(_.combineObjects(objArray)).toEqual({ a: 1, b: 2, c: 3 })
+      expect(_.combineObjects(...objArray)).toEqual({ a: 1, b: 2, c: 3 })
     })
   })
 
@@ -579,6 +675,23 @@ describe("objects", () => {
         Mike: [{ name: "Mike" }],
         stephen: [{ name: "stephen" }],
       })
+    })
+  })
+
+  describe("removeDuplicatesByKeyValue", () => {
+    it("removes any subsequent objects with the same key value", () => {
+      const members = [
+        { id: 1, name: "Stephen" },
+        { id: 2, name: "Andrea" },
+        { id: 1, name: "Monica" },
+        { id: 4, name: "Dylan" },
+      ]
+
+      expect(_.removeDuplicatesByKeyValue(members, "id")).toEqual([
+        { id: 1, name: "Stephen" },
+        { id: 2, name: "Andrea" },
+        { id: 4, name: "Dylan" },
+      ])
     })
   })
 
@@ -757,6 +870,23 @@ describe("misc", () => {
       const { flush } = debouncedFunc()
       flush()
       expect(func).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe("rgbToHex", () => {
+    it("converts an RGB value to a hexadecimal code", () => {
+      expect(_.rgbToHex(189, 23, 123)).toBe("#BD177B")
+      expect(_.rgbToHex(255, 0, 0)).toBe("#FF0000")
+    })
+  })
+
+  describe("hexToRgb", () => {
+    it("converts a hexadecimal code to an RGB value", () => {
+      expect(_.hexToRgb("FF0000")).toEqual([255, 0, 0])
+    })
+
+    it("ignores the # symbol if present", () => {
+      expect(_.hexToRgb("#FF0000")).toEqual([255, 0, 0])
     })
   })
 })

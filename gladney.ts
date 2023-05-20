@@ -17,10 +17,17 @@ export function float(n: number, decimalPlaces?: number) {
  * Example:
  * ```typescript
  * sum(1, 4, 6) //=> 11
+ *
+ * sum([1, 4, 6]) //=> 11
+ *
+ * sum([1, 4, 6], [1, 4, 6]) //=> 22
  * ```
  **/
-export function sum(...arr: number[]) {
-  return arr.reduce((acc, i) => acc + i, 0)
+export function sum(...arr: (number | number[])[]): number {
+  return arr.reduce((acc, i) => {
+    if (Array.isArray(i)) return (acc as number) + sum(...i)
+    else return (acc as number) + i
+  }, 0) as number
 }
 
 /** Returns a random number within a given range
@@ -286,6 +293,12 @@ export function endOfToday() {
   return date
 }
 
+/** Returns a boolean of whether or not a certain date/time has passed.
+ **/
+export function isPast(date: Date) {
+  return new Date(date).getTime() < Date.now()
+}
+
 // STRINGS
 
 /** Returns a string in lowercase form with spaces removed.
@@ -299,23 +312,119 @@ export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
-/** Returns a string limited to a max length with "..." or custom ending.
+/** Returns a string limited to a max length with "..." or custom filler. You can also choose between a leading, trailing,
+ * or middle filler. (trailing by default)
  *
  * Example:
  * ```typescript
  * truncate("Hello World!", 4) //=> "Hell..."
-
-truncate("Hello World!", 4, "/") //=> "Hell/"
+ *
+ * truncate("Hello World!", 4, "/") //=> "Hell/"
+ *
+ * truncate("Hello World!", 4, "...", "leading") //=> "...rld!"
+ *
+ * truncate("Hello World!", 4, "...", "middle") //=> "He...d!"
  * ```
  **/
 export function truncate(
   str: string,
-  lengthlevels: number,
-  ending: string = "..."
+  maxLength: number,
+  fill: string = "...",
+  style: "leading" | "trailing" | "middle" = "trailing"
 ) {
-  return str.length > lengthlevels
-    ? `${str.substring(0, lengthlevels)}${ending}`
-    : str
+  if (str.length > maxLength) {
+    switch (style) {
+      case "leading":
+        return `${fill}${str.substring(str.length - maxLength)}`
+      case "trailing":
+        return `${str.substring(0, maxLength)}${fill}`
+      case "middle":
+        const length1 =
+          maxLength % 2 === 0 ? maxLength / 2 : Math.floor(maxLength / 2)
+        const length2 =
+          maxLength % 2 === 0 ? maxLength / 2 : Math.ceil(maxLength / 2)
+        return (
+          str.substring(0, length1) + fill + str.substring(str.length - length2)
+        )
+    }
+  } else {
+    return str
+  }
+}
+
+/** Returns a string with a specific number of characters masked by * or custom character. You can also choose
+ * between a leading, trailing, or middle filler (default: trailing) and can choose to ignore certain characters
+ * when masking.
+ *
+ * Example:
+ * ```typescript
+ * mask("Password") //=> "********"
+ *
+ * mask("Password", { maskWith: "." }) //=> "........"
+ *
+ * mask("Password", { maskWith: "@", stylee: "trailing", maskLength: 4 }) //=> "Pass@@@@"
+ *
+ * mask("Password", { maskWith: "@", style: "leading", maskLength: 4 }) //=> "@@@@word"
+ *
+ * mask("Password", { style: "middle", maskLength: 4 }) //=> "Pa****rd"
+ *
+ * const secretPhrase = "This is a secret phrase."
+ *
+ * mask(secretPhrase) //=> "************************"
+ *
+ * mask(secretPhrase, { ignore: [" "] }) //=> "**** ** * ****** *******"
+ * ```
+ **/
+export function mask(
+  str: string,
+  config: {
+    maskWith?: string
+    style?: "leading" | "trailing" | "middle"
+    maskLength?: number
+    ignore?: string[]
+  } = {
+    maskWith: "*",
+    style: "trailing",
+    maskLength: str.length,
+    ignore: [],
+  }
+) {
+  if (config?.style !== "middle" || !config?.style) {
+    const _str =
+      config.style === "leading" ? str : str.split("").reverse().join("")
+
+    let maskedCount = 0
+    const masked = _str.split("").reduce((acc, char) => {
+      if (config?.ignore && config.ignore.includes(char)) {
+        return acc + char
+      } else if (
+        !config?.maskLength ||
+        (config.maskLength && maskedCount < config.maskLength)
+      ) {
+        maskedCount++
+        return acc + (config?.maskWith || "*")
+      } else return acc + char
+    }, "")
+    return config?.style === "leading"
+      ? masked
+      : masked.split("").reverse().join("")
+  } else {
+    const length1 =
+      (str.length - (config.maskLength || str.length)) % 2 === 0
+        ? (str.length - (config.maskLength || str.length)) / 2
+        : Math.floor((str.length - (config.maskLength || str.length)) / 2)
+    let maskedCount = 0
+    return str.split("").reduce((acc, char, i) => {
+      const shouldIgnoreCharacter =
+        !!config?.ignore && config.ignore.includes(char)
+      if (shouldIgnoreCharacter) return acc + char
+      else if (i + 1 <= length1) return acc + char
+      else if (config?.maskLength && maskedCount < config?.maskLength) {
+        maskedCount++
+        return acc + (config?.maskWith || "*")
+      } else return acc + char
+    }, "")
+  }
 }
 
 /** Returns an escaped string that can be inserted into HTML
@@ -385,37 +494,50 @@ export function getRandomString(
   return randomString
 }
 
+/**
+ * Returns a string with the first letter capitalized. Optionally pass in boolean to convert following characters to lower case.
+ */
+export function capitalize(str: string, lowercaseOthers = false) {
+  return (
+    str[0].toUpperCase() +
+    (lowercaseOthers ? str.slice(1).toLowerCase() : str.slice(1))
+  )
+}
+
+/**
+ * Returns a string lowercased with non letter characters removed and spaces and underscores replaced with a separator (- by default)
+ *
+ * Example:
+ * ```typescript
+ * slugify("This is the blog post title!") //=> "this_is_the_blog_post_title"
+ * ```
+ */
+export function slugify(str: string, separator = "-") {
+  const _str = str
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, separator)
+    .replace(/[^\w\-]+/g, separator)
+    .replace(/\_/g, separator)
+    .replace(/\-\-+/g, separator)
+  return _str[_str.length - 1] === separator ? shave(_str, 1) : _str
+}
+
+/**
+ * Returns a string or array with a certain number of characters removed. By default elements are removed from the end. You can pass in
+ * a negative number to remove them from the front.
+ *
+ * Example:
+ *
+ * shave("Hello", 2) //=> "Hel"
+ *
+ * shave("Hello", -2) //=> "llo"
+ */
+export function shave(iterable: string | unknown[], n: number) {
+  return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
+}
+
 // ARRAYS
-
-/** Returns a boolean that reflects whether or not every item in an array meets a condition.
- * 
- * Example:
- * ```typescript
- const isEven = (n: number) => n % 2 === 0
-
-isEvery([2, 4, 6, 8], (n) => isEven(n)) //=> true
-
-isEvery([2, 4, 7, 8], (n) => isEven(n)) //=> false
- * ```
- **/
-export function isEvery<T>(arr: T[], func: (i: T, index?: number) => boolean) {
-  return arr.filter(func).length === arr.length
-}
-
-/** Returns a boolean that reflects whether or not any item in an array meets a condition.
- * 
- * Example:
- * ```typescript
- const isEven = (n: number) => n % 2 === 0
-
-isAny([3, 5, 7, 9], (n) => isEven(n)) //=> false
-
-isAny([2, 5, 7, 9], (n) => isEven(n)) //=> true
- * ```
- **/
-export function isAny<T>(arr: T[], func: (i: T, index?: number) => boolean) {
-  return arr.filter(func).length > 0
-}
 
 /** Returns an array with the items randomly ordered.
  * 
@@ -450,6 +572,20 @@ export function shuffle<T>(array: T[]) {
 export function getRandomItem<T>(arr: T[]) {
   const randomIndex = Math.floor(Math.random() * arr.length)
   return arr[randomIndex]
+}
+
+/** Returns an array of every Nth item in an array
+ *
+ * Example:
+ * ```typescript
+ * everyNth([1, 2, 3, 4, 5, 6, 7, 8, 9], 3) //=> [3, 6, 9]
+ * ```
+ **/
+export function everyNth(arr: any[], n: number) {
+  return arr.reduce((acc, item, index) => {
+    if ((index + 1) % n === 0) return [...acc, item]
+    else return acc
+  }, [])
 }
 
 /** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
@@ -605,7 +741,7 @@ export function insertionSort(arr: StringOrNumberArray) {
  * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
-export function removeDuplicates(arr: any[]) {
+export function removeDuplicates(arr: (number | string)[]) {
   return Array.from(new Set(arr))
 }
 
@@ -869,7 +1005,7 @@ export function pickKeys<T extends object, U extends keyof T>(
  *
  * NOTE: If two objects have the same key, the latter object's value will result.
  **/
-export function combineObjects(objs: object[]): object {
+export function combineObjects(...objs: object[]): object {
   const result: { [key: string]: any } = {}
   objs.forEach((obj) => {
     Object.keys(obj).forEach((key) => {
@@ -1025,6 +1161,38 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
     }
   })
   return result
+}
+
+/**
+ * Returns an array of objects where a value of a specific key can only occur once. The first instance of the key/value pair
+ * is preserved and subsequent instances are removed. You can optionally pass in a boolean to make detection case sensitive.
+ *
+ * Example:
+ * ```typescript
+ * const members = [
+    { id: 1, name: "Stephen" },
+    { id: 2, name: "Andrea" },
+    { id: 1, name: "Monica" },
+    { id: 4, name: "Dylan" },
+]
+ *
+ * removeDuplicatesByKeyValue(members, "id")
+ * //=>
+ * [{ id: 1, name: "Stephen" },
+    { id: 2, name: "Andrea" },
+    { id: 4, name: "Dylan" },
+]
+ * ```
+ */
+export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
+  arr: T[],
+  key: U,
+  isCaseSensitive = false
+) {
+  const groupedByKey = groupByKeyValue(arr, key, isCaseSensitive)
+  return Object.keys(groupedByKey).reduce((acc, _key) => {
+    return [...acc, groupedByKey[_key][0]]
+  }, [] as T[])
 }
 
 /** Returns a string of an object's key and value pairs as a query parameter string. Supports one level of nesting.
@@ -1577,3 +1745,73 @@ export function getURLQueryParams() {
 
 /** A function that does nothing and returns nothing. Useful for linters that require a callback. */
 export function noOp() {}
+
+const hexValues = [
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+]
+
+/**
+ * Returns a hexadecimal code of an RGB value
+ *
+ * Example:
+ * ```typescript
+ * rgbToHex(255,0,0) //=> #FF0000
+ *
+ * rgbToHex(189,23,123) //=> #BD177B
+ * ```
+ */
+export function rgbToHex(red: number, green: number, blue: number): string {
+  const getHex = (n: number) => {
+    const firstValue = hexValues[Math.floor(n / 16)]
+    const secondValue = hexValues[n % 16]
+    return `${firstValue}${secondValue}`
+  }
+  return `#${getHex(red)}${getHex(green)}${getHex(blue)}`
+}
+
+/**
+ * Returns an RGB value of a hexadecimal code
+ *
+ * Example:
+ * ```typescript
+ * hexToRgb("#FF0000") //=> [255, 0, 0]
+ *
+ * hexToRgb("FF0000") //=> [255, 0, 0]
+ *
+ * rgbToHex("#BD177B") //=> [189, 23, 123]
+ * ```
+ */
+export function hexToRgb(hex: string): [number, number, number] {
+  const _hex = hex[0] === "#" ? hex.slice(1) : hex
+  const redHex = _hex.substring(0, 2)
+  const greenHex = _hex.substring(2, 4)
+  const blueHex = _hex.substring(4, 6)
+
+  const getNumberForHexCharacter = (hexCharacter: string) =>
+    hexValues.findIndex((x) => x === hexCharacter.toUpperCase())
+
+  const getNumberForHexString = (hexString: string) =>
+    getNumberForHexCharacter(hexString[0]) * 16 +
+    getNumberForHexCharacter(hexString[1])
+
+  return [
+    getNumberForHexString(redHex),
+    getNumberForHexString(greenHex),
+    getNumberForHexString(blueHex),
+  ]
+}
