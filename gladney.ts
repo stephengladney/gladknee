@@ -524,6 +524,22 @@ export function slugify(str: string, separator = "-") {
 }
 
 /**
+ * Returns a boolean of whether or not a string is directly convertible to a number.
+ *
+ * Example:
+ * ```typescript
+ * isNumericString("33") //=> true
+ *
+ * isNumericString("4.12") //=> true
+ *
+ * isNumericString("hello") //=> false
+ * ```
+ */
+export function isNumericString(str: string) {
+  return !isNaN(Number(str))
+}
+
+/**
  * Returns a string or array with a certain number of characters removed. By default elements are removed from the end. You can pass in
  * a negative number to remove them from the front.
  *
@@ -673,9 +689,9 @@ type StringOrNumberArray = (string | number)[]
  *
  */
 export function safeSort(arr: StringOrNumberArray) {
-  const isNumberString = (str: string | number) => !isNaN(Number(str))
+  const isNumberish = (str: string | number) => !isNaN(Number(str))
   return arr.sort((a, b) => {
-    if (isNumberString(a)) return Number(a) - Number(b)
+    if (isNumberish(a)) return Number(a) - Number(b)
     else return a < b ? -1 : 1
   })
 }
