@@ -537,8 +537,6 @@ export function shave(iterable: string | unknown[], n: number) {
   return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
 }
 
-// ARRAYS
-
 /** Returns an array with the items randomly ordered.
  * 
  * Example:
@@ -939,8 +937,6 @@ export function isEqual(
     return isObjectsMatchUnordered
   } else return false
 }
-
-// OBJECTS
 
 /** Returns an object with specific keys removed.
  *
@@ -1394,8 +1390,6 @@ export function convertQueryParamOperators(params: {}) {
   return output
 }
 
-// MISC
-
 /** Takes a promise and wraps it in another promise that rejects if the original promise takes longer to resolve than a
  * specific amount of time in milliseconds. If the original promise resolves before the timeout, that value is returned.
  **/
@@ -1567,8 +1561,6 @@ export function partial<T extends (...args: any[]) => any>(
     return func(...newArgsToCall, ...newArgs.slice(lastNewArgUsed))
   }
 }
-
-// BROWSER STUFF
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.
  **/
