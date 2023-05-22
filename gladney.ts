@@ -1251,12 +1251,10 @@ export function deepCopy<T extends object>(obj: T): T {
  *
  * Example:
  * ```typescript
- * flipKeyValues({ a: 1, b: 2, c: 3 }) //=> { "1": a, "2": b, "3": c}
+ * invert({ a: 1, b: 2, c: 3 }) //=> { "1": a, "2": b, "3": c}
  * ```
  */
-export function flipKeyValues<T extends object>(
-  obj: T
-): { [key: string]: string } {
+export function invert<T extends object>(obj: T): { [key: string]: string } {
   const result: { [key: string]: string } = {}
   const keys = Object.keys(obj)
   const values = Object.values(obj)

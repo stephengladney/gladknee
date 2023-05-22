@@ -701,6 +701,16 @@ describe("objects", () => {
       expect(_.deepCopy(nestedObject)).toEqual(nestedObject)
     })
   })
+
+  describe("invert", () => {
+    it("swaps the keys and values", () => {
+      expect(_.invert({ a: 1, b: 2, c: 3 })).toEqual({
+        "1": "a",
+        "2": "b",
+        "3": "c",
+      })
+    })
+  })
 })
 
 describe("misc", () => {
