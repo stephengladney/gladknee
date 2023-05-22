@@ -1337,8 +1337,6 @@ export function sortByCallbackResult<T>(things: T[], func: Function) {
   )
 }
 
-// EXPRESS
-
 export type Handler = (req: Request, res: Response) => void
 type Handlers = {
   index?: Handler
@@ -1365,8 +1363,6 @@ export function createExpressRoutes(handlers: Handlers): Router {
 
   return router
 }
-
-// SEQUELIZE
 
 export function convertQueryParamOperators(params: {}) {
   const output = {}
