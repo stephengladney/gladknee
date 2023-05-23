@@ -255,6 +255,16 @@ describe("slugify", () => {
   })
 })
 
+describe("isNumericString", () => {
+  it("returns true if the string only contains numbers", () => {
+    expect(_.isNumericString("3524")).toBe(true)
+  })
+
+  it("returns false if the string only contains non-numbers", () => {
+    expect(_.isNumericString("3524a")).toBe(false)
+  })
+})
+
 describe("shave", () => {
   it("removes elements from the end of a string", () => {
     expect(_.shave("hello", 2)).toBe("hel")
@@ -699,6 +709,16 @@ describe("objects", () => {
     it("returns a deep copy of the object", () => {
       const nestedObject = { a: 1, b: { c: 2 }, d: 3, e: { f: { g: 4 } } }
       expect(_.deepCopy(nestedObject)).toEqual(nestedObject)
+    })
+  })
+
+  describe("invert", () => {
+    it("swaps the keys and values", () => {
+      expect(_.invert({ a: 1, b: 2, c: 3 })).toEqual({
+        "1": "a",
+        "2": "b",
+        "3": "c",
+      })
     })
   })
 })

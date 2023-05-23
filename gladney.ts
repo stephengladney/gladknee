@@ -524,6 +524,22 @@ export function slugify(str: string, separator = "-") {
 }
 
 /**
+ * Returns a boolean of whether or not a string is directly convertible to a number.
+ *
+ * Example:
+ * ```typescript
+ * isNumericString("33") //=> true
+ *
+ * isNumericString("4.12") //=> true
+ *
+ * isNumericString("hello") //=> false
+ * ```
+ */
+export function isNumericString(str: string) {
+  return !isNaN(Number(str))
+}
+
+/**
  * Returns a string or array with a certain number of characters removed. By default elements are removed from the end. You can pass in
  * a negative number to remove them from the front.
  *
@@ -536,8 +552,6 @@ export function slugify(str: string, separator = "-") {
 export function shave(iterable: string | unknown[], n: number) {
   return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
 }
-
-// ARRAYS
 
 /** Returns an array with the items randomly ordered.
  * 
@@ -675,9 +689,9 @@ type StringOrNumberArray = (string | number)[]
  *
  */
 export function safeSort(arr: StringOrNumberArray) {
-  const isNumberString = (str: string | number) => !isNaN(Number(str))
+  const isNumberish = (str: string | number) => !isNaN(Number(str))
   return arr.sort((a, b) => {
-    if (isNumberString(a)) return Number(a) - Number(b)
+    if (isNumberish(a)) return Number(a) - Number(b)
     else return a < b ? -1 : 1
   })
 }
@@ -939,8 +953,6 @@ export function isEqual(
     return isObjectsMatchUnordered
   } else return false
 }
-
-// OBJECTS
 
 /** Returns an object with specific keys removed.
  *
@@ -1239,12 +1251,10 @@ export function deepCopy<T extends object>(obj: T): T {
  *
  * Example:
  * ```typescript
- * flipKeyValues({ a: 1, b: 2, c: 3 }) //=> { "1": a, "2": b, "3": c}
+ * invert({ a: 1, b: 2, c: 3 }) //=> { "1": a, "2": b, "3": c}
  * ```
  */
-export function flipKeyValues<T extends object>(
-  obj: T
-): { [key: string]: string } {
+export function invert<T extends object>(obj: T): { [key: string]: string } {
   const result: { [key: string]: string } = {}
   const keys = Object.keys(obj)
   const values = Object.values(obj)
@@ -1341,8 +1351,6 @@ export function sortByCallbackResult<T>(things: T[], func: Function) {
   )
 }
 
-// EXPRESS
-
 export type Handler = (req: Request, res: Response) => void
 type Handlers = {
   index?: Handler
@@ -1370,8 +1378,6 @@ export function createExpressRoutes(handlers: Handlers): Router {
   return router
 }
 
-// SEQUELIZE
-
 export function convertQueryParamOperators(params: {}) {
   const output = {}
   for (let param in params) {
@@ -1393,8 +1399,6 @@ export function convertQueryParamOperators(params: {}) {
   }
   return output
 }
-
-// MISC
 
 /** Takes a promise and wraps it in another promise that rejects if the original promise takes longer to resolve than a
  * specific amount of time in milliseconds. If the original promise resolves before the timeout, that value is returned.
@@ -1567,8 +1571,6 @@ export function partial<T extends (...args: any[]) => any>(
     return func(...newArgsToCall, ...newArgs.slice(lastNewArgUsed))
   }
 }
-
-// BROWSER STUFF
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.
  **/
