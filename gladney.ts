@@ -544,10 +544,11 @@ export function isNumericString(str: string) {
  * a negative number to remove them from the front.
  *
  * Example:
- *
+ * ```typescript
  * shave("Hello", 2) //=> "Hel"
  *
  * shave("Hello", -2) //=> "llo"
+ * ```
  */
 export function shave(iterable: string | unknown[], n: number) {
   return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
