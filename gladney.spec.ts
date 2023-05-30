@@ -703,6 +703,21 @@ describe("objects", () => {
         { id: 4, name: "Dylan" },
       ])
     })
+
+    it("can preserve the last instance", () => {
+      const members = [
+        { id: 1, name: "Stephen" },
+        { id: 2, name: "Andrea" },
+        { id: 1, name: "Monica" },
+        { id: 4, name: "Dylan" },
+      ]
+
+      expect(_.removeDuplicatesByKeyValue(members, "id", false, true)).toEqual([
+        { id: 1, name: "Monica" },
+        { id: 2, name: "Andrea" },
+        { id: 4, name: "Dylan" },
+      ])
+    })
   })
 
   describe("deepCopy", () => {

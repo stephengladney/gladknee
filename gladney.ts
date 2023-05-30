@@ -30,6 +30,37 @@ export function sum(...arr: (number | number[])[]): number {
   }, 0) as number
 }
 
+/** Returns the mean of a set of numbers.
+ *
+ * Example:
+ * ```typescript
+ * mean(1, 4, 6, 7) //=> 4.5
+ * ```
+ **/
+export function mean(...arr: (number | number[])[]) {
+  const len = Array.isArray(arr[0]) ? getCombinedLength(arr) : arr.length
+  return sum(...arr) / len
+}
+
+/** Returns the mean of a set of numbers.
+ *
+ * Example:
+ * ```typescript
+ * mean(1, 2, 3) //=> 2
+ *
+ * mean(1, 2, 3, 4) //=> 2.5
+ * ```
+ **/
+export function median(...arr: number[]) {
+  const isOdd = arr.length % 2 !== 0
+  if (isOdd) return arr[Math.floor(arr.length / 2)]
+  else
+    return mean(
+      arr[Math.floor(arr.length / 2) - 1],
+      arr[Math.floor(arr.length / 2)]
+    )
+}
+
 /** Returns a random number within a given range
  *
  * Example:
@@ -362,7 +393,7 @@ export function truncate(
  *
  * mask("Password", { maskWith: "." }) //=> "........"
  *
- * mask("Password", { maskWith: "@", stylee: "trailing", maskLength: 4 }) //=> "Pass@@@@"
+ * mask("Password", { maskWith: "@", style: "trailing", maskLength: 4 }) //=> "Pass@@@@"
  *
  * mask("Password", { maskWith: "@", style: "leading", maskLength: 4 }) //=> "@@@@word"
  *
@@ -450,7 +481,7 @@ export function escapeString(str: string) {
  *
  * Example:
  * ```typescript
- * unEscapeString("Hello <there>, my 'friend'") //=> "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+ * unEscapeString("Hello &lt;there&gt;, my &#x27;friend&#x27;") //=> "Hello <there>, my 'friend'"
  * ```
  */
 export function unEscapeString(str: string) {
@@ -575,6 +606,17 @@ export function shuffle<T>(array: T[]) {
     ]
   }
   return _array
+}
+
+/** Returns the total number of items from a set of arrays.
+ * 
+ * Example:
+ * ```typescript
+ getCombinedLength([1, 2, 3], [1, 2]) //=> 5
+ * ```
+ **/
+export function getCombinedLength(...arr: any[][]) {
+  return arr.reduce((acc, i) => acc + i.length, 0)
 }
 
 /** Returns a random element from an array
@@ -1079,7 +1121,7 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
  * const obj4 = { a: 2, b: 4, c: 3 }
  * const obj5 = { a: 2, b: 5, c: 3 }
  *
- * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
+ * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], "a", "b", "c")
  * //=>
  *      [
  *       { a: 1, b: 6, c: 3 }
@@ -1177,8 +1219,9 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 }
 
 /**
- * Returns an array of objects where a value of a specific key can only occur once. The first instance of the key/value pair
- * is preserved and subsequent instances are removed. You can optionally pass in a boolean to make detection case sensitive.
+ * Returns an array of objects where a value of a specific key can only occur once. You can optionally pass in a boolean 
+ * to make detection case sensitive. By default, the first instance of the key/value pair is preserved and subsequent instances 
+ * are removed. You can pass in a boolean to preserve the last instance instead.
  *
  * Example:
  * ```typescript
@@ -1200,11 +1243,15 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
-  isCaseSensitive = false
+  isCaseSensitive = false,
+  preserveLast = false
 ) {
   const groupedByKey = groupByKeyValue(arr, key, isCaseSensitive)
   return Object.keys(groupedByKey).reduce((acc, _key) => {
-    return [...acc, groupedByKey[_key][0]]
+    return [
+      ...acc,
+      groupedByKey[_key][preserveLast ? groupedByKey[_key].length - 1 : 0],
+    ]
   }, [] as T[])
 }
 
@@ -1324,22 +1371,10 @@ const getPopularity = (obj: { follows: number; likes: number }) =>
 sortByCallbackResult(socialStats, getPopularity)
 //=>
 * [
-    {
-    follows: 2,
-    likes: 0,
-    },
-    {
-    follows: 1,
-    likes: 2,
-    },
-    {
-    follows: 5,
-    likes: 1,
-    },
-    {
-    follows: 4,
-    likes: 3,
-    },
+  { follows: 2, likes: 0 }, // getPopularity() = 2
+  { follows: 1, likes: 2 }, // getPopularity() = 3
+  { follows: 5, likes: 1 }, // getPopularity() = 6
+  { follows: 4, likes: 3 }, // getPopularity() = 7
 ]
  * ```
  */
@@ -1541,13 +1576,13 @@ export function throttle<T extends (...args: any[]) => any>(
  * executing the function again._
  */
 export function memoize<T extends (...args: any[]) => any>(func: T): T {
-  const results: { [key: string]: ReturnType<T> } = {}
+  const cached: { [key: string]: ReturnType<T> } = {}
   return ((...args: Parameters<T>): ReturnType<T> => {
     const argsAsString = args.join(",")
-    if (results[argsAsString]) return results[argsAsString]
+    if (cached[argsAsString]) return cached[argsAsString]
     else {
-      results[argsAsString] = func(...args)
-      return results[argsAsString]
+      cached[argsAsString] = func(...args)
+      return cached[argsAsString]
     }
   }) as T
 }
