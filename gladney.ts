@@ -1002,8 +1002,8 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
  * groupByKeyValue(arr, "name")
  * //=>
  *      {
- *        John: [{ name: "John", age: 30 }, {name: "John", age: 28 }]
- *         Sarah: [{ name: "Sarah", age: 32 }]
+ *        John: [{ name: "John", age: 30 }, {name: "John", age: 28 }],
+ *        Sarah: [{ name: "Sarah", age: 32 }],
  *        Beth: [{name: "Beth", age: 23 }]
  *      }
  * ```
