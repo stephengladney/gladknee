@@ -362,7 +362,7 @@ export function truncate(
  *
  * mask("Password", { maskWith: "." }) //=> "........"
  *
- * mask("Password", { maskWith: "@", stylee: "trailing", maskLength: 4 }) //=> "Pass@@@@"
+ * mask("Password", { maskWith: "@", style: "trailing", maskLength: 4 }) //=> "Pass@@@@"
  *
  * mask("Password", { maskWith: "@", style: "leading", maskLength: 4 }) //=> "@@@@word"
  *
@@ -496,6 +496,15 @@ export function getRandomString(
 
 /**
  * Returns a string with the first letter capitalized. Optionally pass in boolean to convert following characters to lower case.
+ *
+ * Example:
+ * ```typescript
+ * capitalize("stephen") //=> "Stephen"
+ *
+ * capitalize("hELLO", true) //=> "Hello"
+ *
+ * capitalize("hELLO", false) //=> "HELLO"
+ * ```
  */
 export function capitalize(str: string, lowercaseOthers = false) {
   return (
@@ -509,7 +518,9 @@ export function capitalize(str: string, lowercaseOthers = false) {
  *
  * Example:
  * ```typescript
- * slugify("This is the blog post title!") //=> "this_is_the_blog_post_title"
+ * slugify("This is the blog post title!") //=> "this-is-the-blog-post-title"
+ *
+ * slugify("This is the blog post title!", "_") //=> "this_is_the_blog_post_title"
  * ```
  */
 export function slugify(str: string, separator = "-") {
@@ -545,9 +556,11 @@ export function isNumericString(str: string) {
  *
  * Example:
  *
+ * ```typescript
  * shave("Hello", 2) //=> "Hel"
  *
  * shave("Hello", -2) //=> "llo"
+ * ```
  */
 export function shave(iterable: string | unknown[], n: number) {
   return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
@@ -902,7 +915,7 @@ export function nthFromEnd<T>(arr: T[], n: number) {
  *
  * isEqual(ob1, obj2) //=> true
  * 
- * isEqual(ob1, obj2,false) //=> false
+ * isEqual(ob1, obj2, false) //=> false
  * ```
  * 
  * NOTE: `orderMatters` is false by default.
@@ -1151,7 +1164,7 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
  * //=>
  *      {
  *        John: [{ name: "John", age: 30 }, {name: "John", age: 28 }]
- *         Sarah: [{ name: "Sarah", age: 32 }]
+ *        Sarah: [{ name: "Sarah", age: 32 }]
  *        Beth: [{name: "Beth", age: 23 }]
  *      }
  * ```
@@ -1323,22 +1336,10 @@ const getPopularity = (obj: { follows: number; likes: number }) =>
 sortByCallbackResult(socialStats, getPopularity)
 //=>
 * [
-    {
-    follows: 2,
-    likes: 0,
-    },
-    {
-    follows: 1,
-    likes: 2,
-    },
-    {
-    follows: 5,
-    likes: 1,
-    },
-    {
-    follows: 4,
-    likes: 3,
-    },
+    { follows: 2, likes: 0 },
+    { follows: 1, likes: 2 },
+    { follows: 5, likes: 1 },
+    { follows: 4, likes: 3 },
 ]
  * ```
  */
@@ -1772,9 +1773,9 @@ const hexValues = [
  *
  * Example:
  * ```typescript
- * rgbToHex(255,0,0) //=> #FF0000
+ * rgbToHex(255, 0, 0) //=> #FF0000
  *
- * rgbToHex(189,23,123) //=> #BD177B
+ * rgbToHex(189, 23, 123) //=> #BD177B
  * ```
  */
 export function rgbToHex(red: number, green: number, blue: number): string {
