@@ -1531,11 +1531,9 @@ export function throttle<T extends (...args: any[]) => any>(
         isWaiting = false
       }, delay)
 
-      if (enqueueEarlyCalls) {
-        enqueue(...args)
-        if (queue.length > 1) return
-        else executeAll()
-      } else func(...args)
+      enqueue(...args)
+      if (queue.length > 1) return
+      else executeAll()
     }
   }) as T
 }
