@@ -886,17 +886,6 @@ export function getSharedItems<T>(...arrs: T[][]) {
   return result
 }
 
-/** Returns the item in the array N spots from the last item.
- *
- * Example:
- * ```typescript
- * nthFromEnd([1, 2, 3, 4, 5], 2) //=> 3
- * ```
- **/
-export function nthFromEnd<T>(arr: T[], n: number) {
-  return arr[arr.length - 1 - n]
-}
-
 /** Returns a boolean of whether or not two objects or two arrays have the same items or key value pairs. You can optionally
  * pass in a boolean to require that the order of the items be the same.
  *
@@ -1520,17 +1509,34 @@ export function debounce<T extends (...args: any[]) => any>(
 /** Returns a throttled version of a function. The throttled version can only execute once every N milliseconds,
  * where N is the delay passed in to the throttle function.
  *
+ * An optional third parameter indicates whether subsequent calls of the function before the
+ * delay period has passed should be enqueued and run once the delay passes (true) or
+ * or simply ignored (false). The default is true.
+ *
  **/
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
-  delay: number
+  delay: number,
+  enqueueEarlyCalls = true
 ): T {
   const { enqueue, executeAll, queue } = createQueueAsync(func, delay)
-
+  let isWaiting = false
   return ((...args: Parameters<T>) => {
-    enqueue(...args)
-    if (queue.length > 1) return
-    else executeAll()
+    if (isWaiting) {
+      if (enqueueEarlyCalls) enqueue(...args)
+      else return
+    } else {
+      isWaiting = true
+      setTimeout(() => {
+        isWaiting = false
+      }, delay)
+
+      if (enqueueEarlyCalls) {
+        enqueue(...args)
+        if (queue.length > 1) return
+        else executeAll()
+      } else func(...args)
+    }
   }) as T
 }
 

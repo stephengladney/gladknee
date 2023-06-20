@@ -416,12 +416,6 @@ describe("arrays", () => {
     })
   })
 
-  describe("nthFromEnd", () => {
-    it("returns the item N spots from the end", () => {
-      expect(_.nthFromEnd([1, 2, 3, 4], 1)).toEqual(3)
-    })
-  })
-
   describe("flatten", () => {
     it("returns a three dimensional array flattened to a one dimensional array", () => {
       expect(
@@ -889,6 +883,43 @@ describe("misc", () => {
       const debouncedFunc = _.debounce(func, 500, false)
       const { flush } = debouncedFunc()
       flush()
+      expect(func).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe("throttle", () => {
+    it("will not execute a function more than once in the alloted time", () => {
+      const func = jest.fn()
+      const throttledFunc = _.throttle(func, 2000)
+      throttledFunc()
+      throttledFunc()
+      expect(func).toHaveBeenCalledTimes(1)
+    })
+
+    it("executes a function again after the alloted time", async () => {
+      const func = jest.fn()
+      const throttledFunc = _.throttle(func, 100, false)
+      throttledFunc()
+      await _.pauseAsync(200)
+      throttledFunc()
+      expect(func).toHaveBeenCalledTimes(2)
+    })
+
+    it("enqueues early requests by default", async () => {
+      const func = jest.fn()
+      const throttledFunc = _.throttle(func, 100)
+      throttledFunc()
+      throttledFunc()
+      await _.pauseAsync(300)
+      expect(func).toHaveBeenCalledTimes(2)
+    })
+
+    it("ignores early requests if enqueueEarlyCalls is false", async () => {
+      const func = jest.fn()
+      const throttledFunc = _.throttle(func, 100, false)
+      throttledFunc()
+      throttledFunc()
+      await _.pauseAsync(300)
       expect(func).toHaveBeenCalledTimes(1)
     })
   })
