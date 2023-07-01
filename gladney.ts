@@ -1520,7 +1520,7 @@ export function throttle<T extends (...args: any[]) => any>(
   delay: number,
   enqueueEarlyCalls = true
 ): T {
-  const { enqueue, executeAll, queue } = createQueueAsync(func, delay)
+  const { enqueue, executeAll, queue } = createAsyncQueue(func, delay)
   let isWaiting = false
   return ((...args: Parameters<T>) => {
     if (isWaiting) {
@@ -1626,16 +1626,15 @@ type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> = {
   queue: unknown[]
   enqueue: (...args: Parameters<T>) => void
   executeOne: Function
-  breakOut: Function
   executeAll: (ignoreErrors?: boolean) => unknown
+  breakOut: Function
 }
 
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-function createQueueAsync<T extends (...args: any[]) => Promise<unknown>>(
-  functionToExecute: T,
-  delay?: number
-): AsyncQueueObject<T> {
+export function createAsyncQueue<
+  T extends (...args: any[]) => Promise<unknown>
+>(functionToExecute: T, delay?: number): AsyncQueueObject<T> {
   const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {
