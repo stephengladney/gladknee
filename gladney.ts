@@ -886,8 +886,9 @@ export function getSharedItems<T>(...arrs: T[][]) {
   return result
 }
 
-/** Returns a boolean of whether or not two objects or two arrays have the same items or key value pairs. You can optionally
- * pass in a boolean to require that the order of the items be the same.
+/** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
+ * optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
+ * apply case sensitivity (default: false).
  *
  * Example:
  * ```typescript
@@ -916,7 +917,7 @@ export function isEqual(
   orderMatters = false,
   isCaseSensitive = false
 ) {
-  if (orderMatters) {
+  if (orderMatters && Array.isArray(thing1) && Array.isArray(thing2)) {
     if (isCaseSensitive) {
       return JSON.stringify(thing1) === JSON.stringify(thing2)
     } else {
