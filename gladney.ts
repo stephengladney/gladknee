@@ -1519,7 +1519,7 @@ export function throttle<T extends (...args: any[]) => any>(
   delay: number,
   enqueueEarlyCalls = true
 ): T {
-  const { enqueue, executeAll, queue } = createQueueAsync(func, delay)
+  const { enqueue, executeAll, queue } = createAsyncQueue(func, delay)
   let isWaiting = false
   return ((...args: Parameters<T>) => {
     if (isWaiting) {
@@ -1623,53 +1623,19 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-type QueueObject<T extends (...args: any[]) => unknown> = {
+type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> = {
   queue: unknown[]
   enqueue: (...args: Parameters<T>) => void
   executeOne: Function
-  executeAll: Function
+  executeAll: (ignoreErrors?: boolean) => unknown
   breakOut: Function
 }
 
-/** Returns a `QueueObject` which includes a queue, enqueue function, and two execute methods.
- **/
-export function createQueue<T extends (...args: any[]) => unknown>(
-  functionToExecute: T
-): QueueObject<T> {
-  const queue: unknown[][] = []
-  let isBreakRequested = false
-  const executeOne = () => {
-    functionToExecute(...queue[0])
-    queue.shift()
-  }
-  const executeAll = () => {
-    if (isBreakRequested) return
-    functionToExecute(...queue[0])
-    queue.shift()
-    if (queue.length > 0) executeAll()
-  }
-  return {
-    queue,
-    enqueue: (...args: unknown[]) => queue.push(args),
-    executeOne,
-    executeAll,
-    breakOut: () => {
-      isBreakRequested = true
-    },
-  }
-}
-
-type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> =
-  QueueObject<T> & {
-    executeAll: (ignoreErrors?: boolean) => unknown
-  }
-
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-function createQueueAsync<T extends (...args: any[]) => Promise<unknown>>(
-  functionToExecute: T,
-  delay?: number
-): AsyncQueueObject<T> {
+export function createAsyncQueue<
+  T extends (...args: any[]) => Promise<unknown>
+>(functionToExecute: T, delay?: number): AsyncQueueObject<T> {
   const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {
