@@ -886,8 +886,9 @@ export function getSharedItems<T>(...arrs: T[][]) {
   return result
 }
 
-/** Returns a boolean of whether or not two objects or two arrays have the same items or key value pairs. You can optionally
- * pass in a boolean to require that the order of the items be the same.
+/** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
+ * optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
+ * apply case sensitivity (default: false).
  *
  * Example:
  * ```typescript
@@ -916,7 +917,7 @@ export function isEqual(
   orderMatters = false,
   isCaseSensitive = false
 ) {
-  if (orderMatters) {
+  if (orderMatters && Array.isArray(thing1) && Array.isArray(thing2)) {
     if (isCaseSensitive) {
       return JSON.stringify(thing1) === JSON.stringify(thing2)
     } else {
@@ -1519,7 +1520,7 @@ export function throttle<T extends (...args: any[]) => any>(
   delay: number,
   enqueueEarlyCalls = true
 ): T {
-  const { enqueue, executeAll, queue } = createQueueAsync(func, delay)
+  const { enqueue, executeAll, queue } = createAsyncQueue(func, delay)
   let isWaiting = false
   return ((...args: Parameters<T>) => {
     if (isWaiting) {
@@ -1531,11 +1532,9 @@ export function throttle<T extends (...args: any[]) => any>(
         isWaiting = false
       }, delay)
 
-      if (enqueueEarlyCalls) {
-        enqueue(...args)
-        if (queue.length > 1) return
-        else executeAll()
-      } else func(...args)
+      enqueue(...args)
+      if (queue.length > 1) return
+      else executeAll()
     }
   }) as T
 }
@@ -1623,53 +1622,19 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-type QueueObject<T extends (...args: any[]) => unknown> = {
+type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> = {
   queue: unknown[]
   enqueue: (...args: Parameters<T>) => void
   executeOne: Function
-  executeAll: Function
+  executeAll: (ignoreErrors?: boolean) => unknown
   breakOut: Function
 }
 
-/** Returns a `QueueObject` which includes a queue, enqueue function, and two execute methods.
- **/
-export function createQueue<T extends (...args: any[]) => unknown>(
-  functionToExecute: T
-): QueueObject<T> {
-  const queue: unknown[][] = []
-  let isBreakRequested = false
-  const executeOne = () => {
-    functionToExecute(...queue[0])
-    queue.shift()
-  }
-  const executeAll = () => {
-    if (isBreakRequested) return
-    functionToExecute(...queue[0])
-    queue.shift()
-    if (queue.length > 0) executeAll()
-  }
-  return {
-    queue,
-    enqueue: (...args: unknown[]) => queue.push(args),
-    executeOne,
-    executeAll,
-    breakOut: () => {
-      isBreakRequested = true
-    },
-  }
-}
-
-type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> =
-  QueueObject<T> & {
-    executeAll: (ignoreErrors?: boolean) => unknown
-  }
-
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-function createQueueAsync<T extends (...args: any[]) => Promise<unknown>>(
-  functionToExecute: T,
-  delay?: number
-): AsyncQueueObject<T> {
+export function createAsyncQueue<
+  T extends (...args: any[]) => Promise<unknown>
+>(functionToExecute: T, delay?: number): AsyncQueueObject<T> {
   const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {

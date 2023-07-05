@@ -861,57 +861,9 @@ Returns the value of a specific cookie.
 <br>
 
 </details>
-<details>
-<summary>&nbsp;&nbsp;createQueue</summary>
-
-### **createQueue(functionToExecute: Function): QueueObject**
-
-Returns a **QueueObject** which includes a queue, enqueue function, and two execute methods.
-<br>
-<br>
-`executeOne()` will call the function on the first item in the queue and then remove that item from the queue.
-<br><br>
-`executeAll()` will call the function every item in the queue and remove each item after execution.
-<br><br>
-`breakOut()` halts the `executeAll()` function.
-<br><br>
-Example:
-
-```typescript
-type QueueObject = {
-  queue: unknown[]
-  enqueue: Function
-  executeOne: Function
-  executeAll: Function
-  breakOut: Function
-}
-```
-
-```typescript
-const log = (n: any) => {
-  console.log(n)
-}
-const { queue, enqueue, executeOne, executeAll, breakOut } = createQueue(log)
-
-enqueue(1)
-enqueue(2)
-enqueue(3)
-enqueue(4)
-
-executeOne()
-//=> 1
-
-executeAll()
-//=> 2
-//=> 3
-//=> 4
-```
-
-</details>
-<details>
 <summary>&nbsp;&nbsp;createQueueAsync</summary>
 
-### **createQueueAsync(functionToExecute: Function): AsyncQueueObject**
+### **createAsyncQueue(functionToExecute: Function): AsyncQueueObject**
 
 Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two execute methods.
 <br>
@@ -925,7 +877,7 @@ Returns a **AsyncQueueObject** which includes a queue, enqueue function, and two
 Example:
 
 ```typescript
-type QueueObject = {
+type AsyncQueueObject = {
   queue: unknown[]
   enqueue: Function
   executeOne: Function

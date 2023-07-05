@@ -471,11 +471,6 @@ describe("arrays", () => {
     it("objects are equal out of order, order doesn't matter", () => {
       expect(_.isEqual({ a: 1, b: 2, c: 3 }, { c: 3, b: 2, a: 1 })).toBe(true)
     })
-    it("objects are equal out of order, order does matter", () => {
-      expect(_.isEqual({ a: 1, b: 2, c: 3 }, { c: 3, b: 2, a: 1 }, true)).toBe(
-        false
-      )
-    })
 
     it("objects are equal but diff case, case doesn't matter", () => {
       expect(
