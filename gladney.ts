@@ -129,6 +129,55 @@ export function ordinal(n: number) {
   }
 }
 
+/** Returns the mean of a set of numbers.
+ *
+ * _Example:_
+ * ```typescript
+ * mean(1, 2, 3, 4, 5) //=> 3
+ *
+ * mean([1, 2, 3, 4, 5]) //=> 3
+ * ```
+ **/
+export function mean(...numbers: (number | number[])[]) {
+  return sum(...numbers) / numbers.length
+}
+
+/** Returns the mean of a set of numbers.
+ *
+ * _Example:_
+ * ```typescript
+ * mean(1, 2, 3, 4, 5) //=> 3
+ *
+ * mean([1, 2, 3, 4, 5]) //=> 3
+ * ```
+ **/
+export function median(...numbers: (number | number[])[]) {
+  const sorted = safeSort(flatten(numbers)) as number[]
+  if (sorted.length % 2 === 0) {
+    return mean(sorted[sorted.length / 2], sorted[sorted.length / 2 - 1])
+  } else {
+    return sorted[Math.floor(sorted.length / 2)]
+  }
+}
+
+/** Returns the mode of a set of numbers.
+ *
+ * _Example:_
+ * ```typescript
+ * mode(1, 2, 3, 4, 5) //=> 2
+ *
+ * mode([1, 2, 3, 4, 5]) //=> 2
+ *
+ * mode(1, 2, 2, 3, 4, 4, 5) //=> [2, 4]
+ * ```
+ **/
+export function mode(...numbers: (number | number[])[]) {
+  const counts = getCounts(flatten(numbers))
+  const mostCommon = getKeyWithLargestValue(counts)
+  if (Array.isArray(mostCommon)) return mostCommon.map((key) => Number(key))
+  else return Number(mostCommon)
+}
+
 export interface TimeObject {
   years: number
   months: number
@@ -279,13 +328,13 @@ export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
 
 /** Returns a Date of the current date with a time of 0:00:00.
  **/
-export function beginningOfToday() {
+export function todayStart() {
   return new Date(new Date().toDateString())
 }
 
 /** Returns a Date of the current date with a time of 23:59:59.
  **/
-export function endOfToday() {
+export function todayEnd() {
   const date = new Date()
   date.setHours(23)
   date.setMinutes(59)
@@ -1267,6 +1316,37 @@ export function invert<T extends object>(obj: T): { [key: string]: string } {
   return result
 }
 
+/** Returns the key with highest numerical value. Returns an array of keys if two or more keys have the same numerical value.
+ *
+ *
+ * Example:
+ * ```typescript
+ * getKeyWithLargestValue({ a: 1, b: 2, c: 3 }) //=> "c"
+ *
+ * getKeyWithLargestValue({ a: 1, b: 3, c: 3 }) //=> ["b", "c"]
+ * ```
+ */
+export function getKeyWithLargestValue<T extends object>(obj: T) {
+  type KeyValueResult = {
+    key: string
+    value: number
+  }
+  let result: KeyValueResult[] = []
+  for (let key in obj) {
+    const value = Number(obj[key])
+    const highestValue = result.length > 0 ? result[0].value : 0
+
+    if (value > highestValue) {
+      result = [{ key, value }]
+    } else if (value === highestValue) {
+      result.push({ key, value })
+    }
+  }
+  if (result.length > 1) {
+    return result.map(({ key }) => key)
+  } else return result[0].key
+}
+
 /**
  * Runs a callback function on array of items and returns a single object with keys that match the return values.
  * Each key's value is an array of items that provide the same result when having the callback function run on them.
@@ -1511,7 +1591,7 @@ export function debounce<T extends (...args: any[]) => any>(
  * where N is the delay passed in to the throttle function.
  *
  * An optional third parameter indicates whether subsequent calls of the function before the
- * delay period has passed should be enqueued and run once the delay passes (true) or
+ * delay period has passed should be enqueued and run once the delay passes (true)
  * or simply ignored (false). The default is true.
  *
  **/
