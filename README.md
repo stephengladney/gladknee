@@ -230,24 +230,24 @@ getDayName(99) //=> undefined
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;beginningOfToday</summary>
+<summary>&nbsp;&nbsp;todayStart</summary>
 <br>
 Returns a Date object with the date of today and time of 00:00:00
 <br><br>
 
 ```typescript
-beginningOfToday(): Date
+todayStart(): Date
 ```
 
 </details>
 <details>
-<summary>&nbsp;&nbsp;endOfToday</summary>
+<summary>&nbsp;&nbsp;todayEnd</summary>
 <br>
 Returns a Date object with the date of today and time of 23:59:59
 <br><br>
 
 ```typescript
-endOfToday(): Date
+todayEnd(): Date
 ```
 
 </details>
