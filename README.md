@@ -21,6 +21,14 @@ Gladknee is an open-source TypeScript utility library.<br><br>
 </ul>
 <br>
 
+#### Installation
+
+To add to your project, just run `npm install gladknee`
+
+### Documentation
+
+You can read the full documentation at <a href="https://gladknee.readme.io/">https://gladknee.readme.io/</a>
+
 ### Methods
 
 <details>
