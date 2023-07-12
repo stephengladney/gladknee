@@ -109,9 +109,9 @@ describe("time & dates", () => {
     })
   })
 
-  describe("beginningOfToday", () => {
+  describe("todayStart", () => {
     it("returns a date object with today at 0:00:00", () => {
-      const testDate = _.beginningOfToday()
+      const testDate = _.todayStart()
       expect(testDate.getDate()).toBe(new Date().getDate())
       expect(testDate.getMonth()).toBe(new Date().getMonth())
       expect(testDate.getFullYear()).toBe(new Date().getFullYear())
@@ -121,9 +121,9 @@ describe("time & dates", () => {
     })
   })
 
-  describe("endOfToday", () => {
+  describe("todayEnd", () => {
     it("returns a date object with today at 23:59:59", () => {
-      const testDate = _.endOfToday()
+      const testDate = _.todayEnd()
       expect(testDate.getDate()).toBe(new Date().getDate())
       expect(testDate.getMonth()).toBe(new Date().getMonth())
       expect(testDate.getFullYear()).toBe(new Date().getFullYear())

@@ -71,8 +71,8 @@ exports.saveTextToFileInBrowser =
   exports.getRandomString =
   exports.truncate =
   exports.lowerCaseNoSpaces =
-  exports.endOfToday =
-  exports.beginningOfToday =
+  exports.todayEnd =
+  exports.todayStart =
   exports.getDayName =
   exports.timeSince =
   exports.timeUntil =
@@ -326,20 +326,20 @@ function getDayName(day) {
 exports.getDayName = getDayName
 /** Returns a Date of the current date with a time of 0:00:00.
  **/
-function beginningOfToday() {
+function todayStart() {
   return new Date(new Date().toDateString())
 }
-exports.beginningOfToday = beginningOfToday
+exports.todayStart = todayStart
 /** Returns a Date of the current date with a time of 23:59:59.
  **/
-function endOfToday() {
+function todayEnd() {
   const date = new Date()
   date.setHours(23)
   date.setMinutes(59)
   date.setSeconds(59)
   return date
 }
-exports.endOfToday = endOfToday
+exports.todayEnd = todayEnd
 // STRINGS
 /** Returns the provided string in lowercase form with spaces removed.
  * *
