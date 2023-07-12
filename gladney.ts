@@ -142,7 +142,7 @@ export function mean(...numbers: (number | number[])[]) {
   return sum(...numbers) / numbers.length
 }
 
-/** Returns the mean of a set of numbers.
+/** Returns the median of a set of numbers.
  *
  * _Example:_
  * ```typescript
@@ -164,7 +164,7 @@ export function median(...numbers: (number | number[])[]) {
  *
  * _Example:_
  * ```typescript
- * mode(1, 2, 3, 4, 5) //=> 2
+x * mode(1, 2, 3, 4, 5) //=> 2
  *
  * mode([1, 2, 3, 4, 5]) //=> 2
  *
@@ -665,10 +665,10 @@ export function everyNth(arr: any[], n: number) {
 }
 
 /** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
- *  is larger than the length of the array, the fill will be added to the array as many times as necessary
- * to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
- * fill is provided, `undefined` will be added. For min and max limits, you can pass `false` or 0 for a
- * limit parameter to bypass.
+ is larger than the length of the array, the fill will be added to the array as many times as necessary
+ to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
+ fill is provided, `undefined` will be added. For min and max limits, you can pass `false` or 0 for a
+ limit parameter to bypass.
  *
  * Example:
  * ```typescript
@@ -735,8 +735,8 @@ export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
 type StringOrNumberArray = (string | number)[]
 
 /** Returns an array of numbers (or strings of numbers) sorted. This is safer than the default sort() method because it converts
- * strings of numbers to actual numbers and it compares each value for greater than less than, which helps
- * when sorting negative numbers.
+ strings of numbers to actual numbers and it compares each value for greater than less than, which helps
+ when sorting negative numbers.
  *
  * Example:
  * ```typescript
@@ -834,7 +834,7 @@ export function getRollingSum(arr: number[], decimalPlaces?: number) {
 }
 
 /** Returns an object with items from an array as keys and values of the number of
- * instances of these values in the array.
+ instances of these values in the array.
  **/
 export function getCounts<T>(arr: T[]): { [key: string]: number } {
   const result: { [key: string]: number } = {}
@@ -849,8 +849,8 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
  *
  * Example:
  * ```typescript
- * const arr = [1, 2, 3, 3, 4, 4, 4, 5]
- * getCount(arr, 4) //=> 3
+ const arr = [1, 2, 3, 3, 4, 4, 4, 5]
+ getCount(arr, 4) //=> 3
  * ```
  **/
 export function getCountOf<T>(arr: T[], target: T) {
@@ -861,10 +861,10 @@ export function getCountOf<T>(arr: T[], target: T) {
  *
  * Example:
  * ```typescript
- * const arr1 = [1, 2, 3, 4]
- * const arr2 = [3, 4, 5, 6]
- *
- * getUniqueItems(arr1, arr2) //=> [1, 2, 5, 6]
+ const arr1 = [1, 2, 3, 4]
+ const arr2 = [3, 4, 5, 6]
+ 
+ getUniqueItems(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
  * See also: `getCommonItems()` and `getSharedItems()`
  **/
@@ -889,11 +889,11 @@ export function getUniqueItems<T>(...arrs: T[][]) {
  *
  * Example:
  * ```typescript
- * const arr1 = [1, 2, 3, 4]
- * const arr2 = [3, 4, 5, 6]
- * const arr3 = [4, 5, 6, 7]
- *
- * getCommonItems(arr1, arr2, arr3) //=> [3, 4, 5, 6]
+ const arr1 = [1, 2, 3, 4]
+ const arr2 = [3, 4, 5, 6]
+ const arr3 = [4, 5, 6, 7]
+ 
+ getCommonItems(arr1, arr2, arr3) //=> [3, 4, 5, 6]
  * ```
  * See also: `getUniqueItems()` and `getSharedItems()`
  **/
@@ -915,11 +915,11 @@ export function getCommonItems<T>(...arrs: T[][]) {
  *
  * Example:
  * ```typescript
- * const arr1 = [1, 2, 3, 4]
- * const arr2 = [3, 4, 5, 6]
- * const arr3 = [4, 5, 6, 7]
- *
- * getSharedItems(arr1, arr2, arr3) //=> [4]
+ const arr1 = [1, 2, 3, 4]
+ const arr2 = [3, 4, 5, 6]
+ const arr3 = [4, 5, 6, 7]
+ 
+ getSharedItems(arr1, arr2, arr3) //=> [4]
  * ```
  * See also: `getUniqueItems()` and `getCommonItems()`
  **/
@@ -936,17 +936,17 @@ export function getSharedItems<T>(...arrs: T[][]) {
 }
 
 /** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
- * optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
- * apply case sensitivity (default: false).
+ optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
+ apply case sensitivity (default: false).
  *
  * Example:
  * ```typescript
- * const arr1 = [1, 2, 3, 4]
- * const arr2 = [4, 3, 2, 1]
- *
- * isEqual(arr1, arr2) //=> true
- *
- * isEqual(arr1, arr2, true) //=> false
+ const arr1 = [1, 2, 3, 4]
+ const arr2 = [4, 3, 2, 1]
+ 
+ isEqual(arr1, arr2) //=> true
+
+ isEqual(arr1, arr2, true) //=> false
  * 
  * const obj1 = { a: 1, b: 2, c: 3 }
  * const obj2 = { c: 3, b: 2, a: 1 }
@@ -959,6 +959,22 @@ export function getSharedItems<T>(...arrs: T[][]) {
  * 
  * NOTE: `orderMatters` is false by default.
  **/
+
+/** Returns the provided array with two items' positions swapped
+ *
+ * Example:
+ * ```typescript
+ * swapItems([0, 1, 2, 3, 4], 1, 3) //=> [0, 3, 2, 1, 4]
+ * ```
+ */
+
+export function swapItems(arr: unknown[], index1: number, index2: number) {
+  return arr.map((item, i) => {
+    if (i === index1) return arr[index2]
+    if (i === index2) return arr[index1]
+    return item
+  })
+}
 
 export function isEqual(
   thing1: object | [],
