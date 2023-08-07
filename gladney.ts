@@ -450,7 +450,7 @@ export function escapeString(str: string) {
  *
  * Example:
  * ```typescript
- * unEscapeString("Hello <there>, my 'friend'") //=> "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+ * unEscapeString(""Hello &lt;there&gt;, my &#x27;friend&#x27;"") //=> "Hello <there>, my 'friend'"
  * ```
  */
 export function unEscapeString(str: string) {
@@ -482,11 +482,10 @@ export function getRandomString(
   includeLetters = true,
   includeNumbers = true
 ): string {
-  const chars = includeLetters
-    ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    : "" + includeNumbers
-    ? "0123456789"
-    : ""
+  const chars =
+    (includeLetters
+      ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+      : "") + (includeNumbers ? "0123456789" : "")
   let randomString = ""
   for (let i = 1; i <= length; i++) {
     randomString += chars[Math.floor(Math.random() * chars.length)]
@@ -1788,4 +1787,22 @@ export function hexToRgb(hex: string): [number, number, number] {
     getNumberForHexString(greenHex),
     getNumberForHexString(blueHex),
   ]
+}
+
+/**
+ * Returns a lorem ipsum paragraph. Optionally pass in a word count.
+ *
+ * Example:
+ * ```typescript
+ * loremIpsum(5) //=> "Lorem ipsum dolor sit amet,"
+ *
+ * ```
+ */
+export function loremIpsum(wordCount?: number) {
+  const li =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  if (wordCount) {
+    const words = li.split(" ")
+    return words.slice(0, wordCount).join(" ")
+  } else return li
 }
