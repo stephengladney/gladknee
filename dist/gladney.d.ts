@@ -166,10 +166,10 @@ export declare function timeSince(date: Date): TimeObject
 export declare function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6): string
 /** Returns a Date of the current date with a time of 0:00:00.
  **/
-export declare function beginningOfToday(): Date
+export declare function todayStart(): Date
 /** Returns a Date of the current date with a time of 23:59:59.
  **/
-export declare function endOfToday(): Date
+export declare function todayEnd(): Date
 /** Returns the provided string in lowercase form with spaces removed.
  * *
  * Example:
