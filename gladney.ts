@@ -583,19 +583,19 @@ export function slugify(str: string, separator = "-") {
 }
 
 /**
- * Returns a boolean of whether or not a string is directly convertible to a number.
+ * Returns a boolean of whether or not the input is directly convertible to a number.
  *
  * Example:
  * ```typescript
- * isNumericString("33") //=> true
+ * isNumericString(33) //=> true
  *
  * isNumericString("4.12") //=> true
  *
  * isNumericString("hello") //=> false
  * ```
  */
-export function isNumericString(str: string) {
-  return !isNaN(Number(str))
+export function isNumeric(n: string | number) {
+  return !isNaN(Number(n))
 }
 
 /**
@@ -1390,7 +1390,7 @@ export function groupByCallbackResult(things: any[], func: Function) {
   return result
 }
 
-export function getCallbackResultCounts(things: any, func: Function) {
+export function getCallbackResultCounts(things: any[], func: Function) {
   const result: { [key: string]: number } = {}
   const groupedByResult = groupByCallbackResult(things, func)
 
@@ -1547,7 +1547,7 @@ export function pipe<T>(
   }
 }
 
-/** Returns a debounced version of the function passed. Acccepts custom delay in
+/** Returns a debounced version of the function passed. Accepts custom delay in
  * milliseconds and immediate boolean for leading/trailing.
  *
  * * If `immediate` is `true`, the function will execute immediately on the first call. The function
@@ -1860,9 +1860,6 @@ export function rgbToHex(red: number, green: number, blue: number): string {
  * ```typescript
  * hexToRgb("#FF0000") //=> [255, 0, 0]
  *
- * hexToRgb("FF0000") //=> [255, 0, 0]
- *
- * rgbToHex("#BD177B") //=> [189, 23, 123]
  * ```
  */
 export function hexToRgb(hex: string): [number, number, number] {
