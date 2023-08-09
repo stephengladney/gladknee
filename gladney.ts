@@ -477,6 +477,17 @@ export function mask(
   }
 }
 
+export function pad(
+  str: string,
+  length: number,
+  char: string,
+  style: "leading" | "trailing"
+) {
+  if (str.length >= length) return str
+
+  const filler = char.repeat(length - str.length)
+  return style === "leading" ? filler + str : str + filler
+}
 /** Returns an escaped string that can be inserted into HTML
  *
  * Example:
