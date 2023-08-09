@@ -1,9 +1,13 @@
 import * as _ from "./gladney"
 
 describe("numbers", () => {
-  describe("float", () => {
+  describe("round", () => {
     it("returns a number to the specific number of decimal places", () => {
-      expect(_.float(3.4567, 2)).toBe(3.46)
+      expect(_.round(3.4567, 0.01)).toBe(3.46)
+    })
+
+    it("returns a number to the specific number of 10s", () => {
+      expect(_.round(528, 10)).toBe(530)
     })
   })
 

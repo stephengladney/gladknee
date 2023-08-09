@@ -1,15 +1,16 @@
 import type { Router } from "express"
 
-/** Returns a number limited to a specific number of decimal places. 
-This is different from the native `toFixed()` method because it returns a number not a string. 
+/** Returns a number rounded to a specific level of precision. 
 *
 * _Example:_
 * ```typescript
-* float(4.24398, 3) //=> 4.244
+* round(4.24398, .001) //=> 4.244
+
+* round(528, 10) //=> 530
 * ```
  **/
-export function float(n: number, decimalPlaces?: number) {
-  return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
+export function round(n: number, precision: number) {
+  return Math.round(n / precision) * precision
 }
 
 /** Returns the sum of given numbers.
@@ -839,11 +840,11 @@ export function removeDuplicateObjects(arr: object[]) {
 
 /** Returns an array of the rolling sum of an array of numbers.
  **/
-export function getRollingSum(arr: number[], decimalPlaces?: number) {
+export function getRollingSum(arr: number[], precision?: number) {
   return arr.reduce(
     (acc, i, index) =>
       index > 0
-        ? [...acc, float(acc[acc.length - 1] + Number(i), decimalPlaces)]
+        ? [...acc, round(acc[acc.length - 1] + Number(i), precision ?? 1)]
         : [i],
     [] as number[]
   )
