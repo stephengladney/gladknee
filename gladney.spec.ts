@@ -255,13 +255,17 @@ describe("slugify", () => {
   })
 })
 
-describe("isNumericString", () => {
+describe("isNumeric", () => {
+  it("returns true if the parameter is a number", () => {
+    expect(_.isNumeric(24)).toBe(true)
+  })
+
   it("returns true if the string only contains numbers", () => {
-    expect(_.isNumericString("3524")).toBe(true)
+    expect(_.isNumeric("3524")).toBe(true)
   })
 
   it("returns false if the string only contains non-numbers", () => {
-    expect(_.isNumericString("3524a")).toBe(false)
+    expect(_.isNumeric("3524a")).toBe(false)
   })
 })
 
