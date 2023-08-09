@@ -604,7 +604,7 @@ describe("objects", () => {
   })
 
   describe("sortByKeyValues", () => {
-    it("returns the array sorted by key values", () => {
+    it("returns the array sorted by key values (all asc)", () => {
       const arr = [
         { a: 1, b: 2, c: 2 },
         { a: 1, b: 2, c: 1 },
@@ -614,13 +614,59 @@ describe("objects", () => {
         { a: 2, b: 1, c: 3 },
         { a: 3, b: 4, c: 1 },
       ]
-      expect(_.sortByKeyValues(arr, "a", "b", "c")).toEqual([
+      expect(_.sortByKeyValues(arr, ["a", "b", "c"])).toEqual([
         { a: 1, b: 1, c: 1 },
         { a: 1, b: 2, c: 1 },
         { a: 1, b: 2, c: 2 },
         { a: 1, b: 3, c: 2 },
         { a: 2, b: 1, c: 3 },
         { a: 2, b: 2, c: 1 },
+        { a: 3, b: 4, c: 1 },
+      ])
+    })
+
+    it("returns the array sorted by key values (all desc)", () => {
+      const arr = [
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 1, c: 1 },
+        { a: 1, b: 3, c: 2 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
+        { a: 3, b: 4, c: 1 },
+      ]
+      expect(
+        _.sortByKeyValues(arr, ["a", "b", "c"], ["desc", "desc", "desc"])
+      ).toEqual([
+        { a: 3, b: 4, c: 1 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
+        { a: 1, b: 3, c: 2 },
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 1, c: 1 },
+      ])
+    })
+
+    it("returns the array sorted by key values (mixed)", () => {
+      const arr = [
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 1, c: 1 },
+        { a: 1, b: 3, c: 2 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
+        { a: 3, b: 4, c: 1 },
+      ]
+      expect(
+        _.sortByKeyValues(arr, ["a", "b", "c"], ["asc", "desc", "asc"])
+      ).toEqual([
+        { a: 1, b: 3, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 1, c: 1 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
         { a: 3, b: 4, c: 1 },
       ])
     })

@@ -1128,7 +1128,8 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
   return arr.reduce((acc, i) => acc + i[key], 0)
 }
 
-/** Sorts an array of objects by a specific shared key's value.
+/** Return an array of objects sorted by a specific shared key's value. Optionally pass in "desc" as a
+ * third parameter to sort in descending order.
  *
  * Example:
  * ```typescript
@@ -1156,7 +1157,9 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
   )
 }
 
-/** Returns an array of objects with nested sorting based on a set of specific shared keys.
+/** Returns an array of objects with nested sorting based on a set of specific shared keys. Optionally
+ * pass in a third parameter which is an array of "asc" or "desc" values to specify the order
+ * of sorting for each key. The default is all ascending.
  *
  * Example:
  * ```typescript
@@ -1166,7 +1169,7 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
  * const obj4 = { a: 2, b: 4, c: 3 }
  * const obj5 = { a: 2, b: 5, c: 3 }
  *
- * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], "a", "b", "c")
+ * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], ["a", "b", "c"])
  * //=>
  *      [
  *       { a: 1, b: 6, c: 3 }
@@ -1175,21 +1178,34 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
  *       { a: 3, b: 2, c: 3 }
  *       { a: 3, b: 2, c: 4 }
  *      ]
+ * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], ["a", "b", "c"], ["asc", "desc", "asc"])
+ * //=>
+ *      [
+ *       { a: 1, b: 6, c: 3 }
+ *       { a: 2, b: 5, c: 3 }
+ *       { a: 2, b: 4, c: 3 }
+ *       { a: 3, b: 2, c: 3 }
+ *       { a: 3, b: 2, c: 4 }
+ *      ]
  * ```
  **/
 export function sortByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
-  ...keys: U[]
+  keys: U[],
+  orders?: ("asc" | "desc")[]
 ): T[] {
-  if (keys.length === 1) return sortByKeyValue(objs, keys[0])
+  if (keys.length === 1)
+    return sortByKeyValue(objs, keys[0], orders ? orders[0] : undefined)
 
   const groupedByKey = groupByKeyValue(objs, keys[0])
   const sortedKeyValues = Object.keys(groupedByKey).sort()
 
+  if (orders && orders[0] === "desc") sortedKeyValues.reverse()
+
   return sortedKeyValues.reduce(
     (acc: T[], keyVal) => [
       ...acc,
-      ...sortByKeyValues(groupedByKey[keyVal], ...keys.slice(1)),
+      ...sortByKeyValues(groupedByKey[keyVal], keys.slice(1), orders?.slice(1)),
     ],
     []
   )
