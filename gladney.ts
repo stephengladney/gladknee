@@ -751,7 +751,7 @@ type StringOrNumberArray = (string | number)[]
  */
 export function safeSort(arr: StringOrNumberArray) {
   const isNumberish = (str: string | number) => !isNaN(Number(str))
-  return arr.sort((a, b) => {
+  return [...arr].sort((a, b) => {
     if (isNumberish(a)) return Number(a) - Number(b)
     else return a < b ? -1 : 1
   })
@@ -761,52 +761,55 @@ export function safeSort(arr: StringOrNumberArray) {
  **/
 export function bubbleSort(arr: StringOrNumberArray) {
   let noSwaps
-  for (var i = arr.length; i > 0; i--) {
+  const _arr = [...arr]
+  for (var i = _arr.length; i > 0; i--) {
     noSwaps = true
     for (var j = 0; j < i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        const temp = arr[j]
-        arr[j] = arr[j + 1]
-        arr[j + 1] = temp
+      if (_arr[j] > _arr[j + 1]) {
+        const temp = _arr[j]
+        _arr[j] = _arr[j + 1]
+        _arr[j + 1] = temp
         noSwaps = false
       }
     }
     if (noSwaps) break
   }
-  return arr
+  return _arr
 }
 
 /** Returns an array sorted (ascending) via selection sort.
  **/
 export function selectionSort(arr: StringOrNumberArray) {
+  const _arr = [...arr]
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
     ([arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]])
 
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 0; i < _arr.length; i++) {
     let lowest = i
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[lowest] > arr[j]) {
+    for (let j = i + 1; j < _arr.length; j++) {
+      if (_arr[lowest] > _arr[j]) {
         lowest = j
       }
     }
-    if (i !== lowest) swap(arr, i, lowest)
+    if (i !== lowest) swap(_arr, i, lowest)
   }
 
-  return arr
+  return _arr
 }
 
 /** Returns an array sorted (ascending) via insertion sort.
  **/
 export function insertionSort(arr: StringOrNumberArray) {
   var currentVal
-  for (var i = 1; i < arr.length; i++) {
-    currentVal = arr[i]
-    for (var j = i - 1; j >= 0 && arr[j] > currentVal; j--) {
-      arr[j + 1] = arr[j]
+  const _arr = [...arr]
+  for (var i = 1; i < _arr.length; i++) {
+    currentVal = _arr[i]
+    for (var j = i - 1; j >= 0 && _arr[j] > currentVal; j--) {
+      _arr[j + 1] = _arr[j]
     }
-    arr[j + 1] = currentVal
+    _arr[j + 1] = currentVal
   }
-  return arr
+  return _arr
 }
 
 /** Returns an array with any duplicates removed.
