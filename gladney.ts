@@ -823,6 +823,22 @@ export function removeDuplicates(arr: (number | string)[]) {
   return Array.from(new Set(arr))
 }
 
+/** Returns an array with any duplicate objects removed.
+ *
+ * Example:
+ * ```typescript
+ * const obj = { a: 1, b: 2, c: 3 }
+ * removeDuplicates([obj, obj, obj]) //=> [{ a: 1, b: 2, c: 3 }]
+ * ```
+ **/
+export function removeDuplicateObjects(arr: object[]) {
+  const strings = arr.map((obj) => JSON.stringify(obj))
+  const uniques = new Set(strings)
+  return Array.from(uniques).map((str) => JSON.parse(str))
+}
+
+export function union(...arrs: unknown[][]) {}
+
 /** Returns an array of the rolling sum of an array of numbers.
  **/
 export function getRollingSum(arr: number[], decimalPlaces?: number) {

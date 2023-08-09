@@ -375,6 +375,14 @@ describe("arrays", () => {
     })
   })
 
+  describe("removeDuplicateObjects", () => {
+    it("returns the array with duplicate objects removed", () => {
+      const obj = { a: 1, b: 2, c: 3 }
+      const arr = [obj, obj, obj]
+      expect(_.removeDuplicateObjects(arr)).toEqual([{ a: 1, b: 2, c: 3 }])
+    })
+  })
+
   describe("sum", () => {
     it("returns the sum of a set of numbers", () => {
       const arr = [1, 2, 3, 4]
