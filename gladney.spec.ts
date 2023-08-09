@@ -588,6 +588,19 @@ describe("objects", () => {
         { a: 3, b: 4 },
       ])
     })
+
+    it("returns the array sorted by key value decsending", () => {
+      const arr = [
+        { a: 1, b: 2 },
+        { a: 2, b: 1 },
+        { a: 3, b: 4 },
+      ]
+      expect(_.sortByKeyValue(arr, "b", "desc")).toEqual([
+        { a: 3, b: 4 },
+        { a: 1, b: 2 },
+        { a: 2, b: 1 },
+      ])
+    })
   })
 
   describe("sortByKeyValues", () => {

@@ -837,8 +837,6 @@ export function removeDuplicateObjects(arr: object[]) {
   return Array.from(uniques).map((str) => JSON.parse(str))
 }
 
-export function union(...arrs: unknown[][]) {}
-
 /** Returns an array of the rolling sum of an array of numbers.
  **/
 export function getRollingSum(arr: number[], decimalPlaces?: number) {
@@ -1149,9 +1147,13 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
  **/
 export function sortByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
-  key: U
+  key: U,
+  order: "asc" | "desc" = "asc"
 ) {
-  return arr.sort((a, b) => (a[key] < b[key] ? -1 : 1))
+  const isAscending = order === "asc"
+  return [...arr].sort((a, b) =>
+    a[key] < b[key] ? (isAscending ? -1 : 1) : isAscending ? 1 : -1
+  )
 }
 
 /** Returns an array of objects with nested sorting based on a set of specific shared keys.
@@ -1164,7 +1166,7 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
  * const obj4 = { a: 2, b: 4, c: 3 }
  * const obj5 = { a: 2, b: 5, c: 3 }
  *
- * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
+ * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], "a", "b", "c")
  * //=>
  *      [
  *       { a: 1, b: 6, c: 3 }
