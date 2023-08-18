@@ -1146,6 +1146,14 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
  *       { a: 2, b: 2 },
  *       { a: 3, b: 2 },
  *     ]
+ *
+ * sortByKeyValue([obj1, obj2, obj3], "a", "desc")
+ * //=>
+ *     [
+ *       { a: 3, b: 2 },
+ *       { a: 2, b: 2 },
+ *       { a: 1, b: 2 },
+ *     ]
  * ```
  **/
 export function sortByKeyValue<T extends object, U extends keyof T>(
@@ -1194,20 +1202,20 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
 export function sortByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
   keys: U[],
-  orders?: ("asc" | "desc")[]
+  order?: ("asc" | "desc")[]
 ): T[] {
   if (keys.length === 1)
-    return sortByKeyValue(objs, keys[0], orders ? orders[0] : undefined)
+    return sortByKeyValue(objs, keys[0], order ? order[0] : undefined)
 
   const groupedByKey = groupByKeyValue(objs, keys[0])
   const sortedKeyValues = Object.keys(groupedByKey).sort()
 
-  if (orders && orders[0] === "desc") sortedKeyValues.reverse()
+  if (order && order[0] === "desc") sortedKeyValues.reverse()
 
   return sortedKeyValues.reduce(
     (acc: T[], keyVal) => [
       ...acc,
-      ...sortByKeyValues(groupedByKey[keyVal], keys.slice(1), orders?.slice(1)),
+      ...sortByKeyValues(groupedByKey[keyVal], keys.slice(1), order?.slice(1)),
     ],
     []
   )
