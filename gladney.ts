@@ -831,22 +831,12 @@ export function insertionSort(arr: StringOrNumberArray) {
  * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
-export function removeDuplicates(arr: (number | string)[]) {
-  return Array.from(new Set(arr))
-}
-
-/** Returns an array with any duplicate objects removed.
- *
- * Example:
- * ```typescript
- * const obj = { a: 1, b: 2, c: 3 }
- * removeDuplicates([obj, obj, obj]) //=> [{ a: 1, b: 2, c: 3 }]
- * ```
- **/
-export function removeDuplicateObjects(arr: object[]) {
-  const strings = arr.map((obj) => JSON.stringify(obj))
-  const uniques = new Set(strings)
-  return Array.from(uniques).map((str) => JSON.parse(str))
+export function removeDuplicates(arr: (number | string | object)[]) {
+  if (typeof arr[0] === "object") {
+    const strings = arr.map((obj) => JSON.stringify(obj))
+    const uniques = new Set(strings)
+    return Array.from(uniques).map((str) => JSON.parse(str))
+  } else return Array.from(new Set(arr))
 }
 
 /** Returns an array of the rolling sum of an array of numbers.
