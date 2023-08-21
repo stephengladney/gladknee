@@ -1,9 +1,13 @@
 import * as _ from "./gladney"
 
 describe("numbers", () => {
-  describe("float", () => {
+  describe("round", () => {
     it("returns a number to the specific number of decimal places", () => {
-      expect(_.float(3.4567, 2)).toBe(3.46)
+      expect(_.round(3.4567, 0.01)).toBe(3.46)
+    })
+
+    it("returns a number to the specific number of 10s", () => {
+      expect(_.round(528, 10)).toBe(530)
     })
   })
 
@@ -373,6 +377,12 @@ describe("arrays", () => {
       const arr = [1, 1, 2, 3, 4, 4, 5]
       expect(_.removeDuplicates(arr)).toEqual([1, 2, 3, 4, 5])
     })
+
+    it("returns the array with duplicate objects removed", () => {
+      const obj = { a: 1, b: 2, c: 3 }
+      const arr = [obj, obj, obj]
+      expect(_.removeDuplicates(arr)).toEqual([{ a: 1, b: 2, c: 3 }])
+    })
   })
 
   describe("sum", () => {
@@ -580,10 +590,23 @@ describe("objects", () => {
         { a: 3, b: 4 },
       ])
     })
+
+    it("returns the array sorted by key value decsending", () => {
+      const arr = [
+        { a: 1, b: 2 },
+        { a: 2, b: 1 },
+        { a: 3, b: 4 },
+      ]
+      expect(_.sortByKeyValue(arr, "b", "desc")).toEqual([
+        { a: 3, b: 4 },
+        { a: 1, b: 2 },
+        { a: 2, b: 1 },
+      ])
+    })
   })
 
   describe("sortByKeyValues", () => {
-    it("returns the array sorted by key values", () => {
+    it("returns the array sorted by key values (all asc)", () => {
       const arr = [
         { a: 1, b: 2, c: 2 },
         { a: 1, b: 2, c: 1 },
@@ -593,13 +616,59 @@ describe("objects", () => {
         { a: 2, b: 1, c: 3 },
         { a: 3, b: 4, c: 1 },
       ]
-      expect(_.sortByKeyValues(arr, "a", "b", "c")).toEqual([
+      expect(_.sortByKeyValues(arr, ["a", "b", "c"])).toEqual([
         { a: 1, b: 1, c: 1 },
         { a: 1, b: 2, c: 1 },
         { a: 1, b: 2, c: 2 },
         { a: 1, b: 3, c: 2 },
         { a: 2, b: 1, c: 3 },
         { a: 2, b: 2, c: 1 },
+        { a: 3, b: 4, c: 1 },
+      ])
+    })
+
+    it("returns the array sorted by key values (all desc)", () => {
+      const arr = [
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 1, c: 1 },
+        { a: 1, b: 3, c: 2 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
+        { a: 3, b: 4, c: 1 },
+      ]
+      expect(
+        _.sortByKeyValues(arr, ["a", "b", "c"], ["desc", "desc", "desc"])
+      ).toEqual([
+        { a: 3, b: 4, c: 1 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
+        { a: 1, b: 3, c: 2 },
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 1, c: 1 },
+      ])
+    })
+
+    it("returns the array sorted by key values (mixed)", () => {
+      const arr = [
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 1, c: 1 },
+        { a: 1, b: 3, c: 2 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
+        { a: 3, b: 4, c: 1 },
+      ]
+      expect(
+        _.sortByKeyValues(arr, ["a", "b", "c"], ["asc", "desc", "asc"])
+      ).toEqual([
+        { a: 1, b: 3, c: 2 },
+        { a: 1, b: 2, c: 1 },
+        { a: 1, b: 2, c: 2 },
+        { a: 1, b: 1, c: 1 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 1, c: 3 },
         { a: 3, b: 4, c: 1 },
       ])
     })
