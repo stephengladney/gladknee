@@ -477,6 +477,15 @@ export function mask(
   }
 }
 
+/** Adds a number of a specific character to a string to achieve a minimum length.
+ *
+ * Example:
+ * ```typescript
+ * pad("Hello", 10, ".") //=> "Hello....."
+ *
+ * pad("Hello", 10, ".", "leading") //=> ".....Hello"
+ * ```
+ */
 export function pad(
   str: string,
   length: number,
@@ -488,6 +497,7 @@ export function pad(
   const filler = char.repeat(length - str.length)
   return style === "leading" ? filler + str : str + filler
 }
+
 /** Returns an escaped string that can be inserted into HTML
  *
  * Example:
@@ -495,7 +505,6 @@ export function pad(
  * escapeString("Hello <there>, my 'friend'") //=> "Hello &lt;there&gt;, my &#x27;friend&#x27;"
  * ```
  */
-
 export function escapeString(str: string) {
   let result: string
   result = str.replace(/&/g, "&amp;")
