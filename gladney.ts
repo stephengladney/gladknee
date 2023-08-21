@@ -840,22 +840,12 @@ export function insertionSort(arr: StringOrNumberArray) {
  * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
-export function removeDuplicates(arr: (number | string)[]) {
-  return Array.from(new Set(arr))
-}
-
-/** Returns an array with any duplicate objects removed.
- *
- * Example:
- * ```typescript
- * const obj = { a: 1, b: 2, c: 3 }
- * removeDuplicates([obj, obj, obj]) //=> [{ a: 1, b: 2, c: 3 }]
- * ```
- **/
-export function removeDuplicateObjects(arr: object[]) {
-  const strings = arr.map((obj) => JSON.stringify(obj))
-  const uniques = new Set(strings)
-  return Array.from(uniques).map((str) => JSON.parse(str))
+export function removeDuplicates(arr: (number | string | object)[]) {
+  if (typeof arr[0] === "object") {
+    const strings = arr.map((obj) => JSON.stringify(obj))
+    const uniques = new Set(strings)
+    return Array.from(uniques).map((str) => JSON.parse(str))
+  } else return Array.from(new Set(arr))
 }
 
 /** Returns an array of the rolling sum of an array of numbers.
@@ -1165,6 +1155,14 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
  *       { a: 2, b: 2 },
  *       { a: 3, b: 2 },
  *     ]
+ *
+ * sortByKeyValue([obj1, obj2, obj3], "a", "desc")
+ * //=>
+ *     [
+ *       { a: 3, b: 2 },
+ *       { a: 2, b: 2 },
+ *       { a: 1, b: 2 },
+ *     ]
  * ```
  **/
 export function sortByKeyValue<T extends object, U extends keyof T>(
@@ -1213,20 +1211,20 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
 export function sortByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
   keys: U[],
-  orders?: ("asc" | "desc")[]
+  order?: ("asc" | "desc")[]
 ): T[] {
   if (keys.length === 1)
-    return sortByKeyValue(objs, keys[0], orders ? orders[0] : undefined)
+    return sortByKeyValue(objs, keys[0], order ? order[0] : undefined)
 
   const groupedByKey = groupByKeyValue(objs, keys[0])
   const sortedKeyValues = Object.keys(groupedByKey).sort()
 
-  if (orders && orders[0] === "desc") sortedKeyValues.reverse()
+  if (order && order[0] === "desc") sortedKeyValues.reverse()
 
   return sortedKeyValues.reduce(
     (acc: T[], keyVal) => [
       ...acc,
-      ...sortByKeyValues(groupedByKey[keyVal], keys.slice(1), orders?.slice(1)),
+      ...sortByKeyValues(groupedByKey[keyVal], keys.slice(1), order?.slice(1)),
     ],
     []
   )
