@@ -1021,6 +1021,25 @@ export function isEqual(
   } else return false
 }
 
+/** Returns a boolean indicating whether or not the array includes the object
+ *
+ * Example:
+ * ```typescript
+ * const arrayItems = [
+ *       { x: 1, y: 1 },
+ *       { x: 2, y: 2 },
+ *       { x: 3, y: 3 },
+ *     ]
+ *
+ * isArrayIncludesObject(arrayItems, { x: 2, y: 2 })) //=> true
+ * isArrayIncludesObject(arrayItems, { x: 1, y: 2 })) //=> false
+ * ```
+ *
+ **/
+export function isArrayIncludesObject(arr: Object[], obj: Object) {
+  return JSON.stringify(arr).includes(JSON.stringify(obj))
+}
+
 /** Returns an object with specific keys removed.
  *
  * Example:

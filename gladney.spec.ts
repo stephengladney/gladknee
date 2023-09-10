@@ -636,6 +636,26 @@ describe("objects", () => {
     })
   })
 
+  describe("isArrayIncludesObject", () => {
+    it("returns true if the object is present in the array", () => {
+      const arrayItems = [
+        { x: 1, y: 1 },
+        { x: 2, y: 2 },
+        { x: 3, y: 3 },
+      ]
+      expect(_.isArrayIncludesObject(arrayItems, { x: 2, y: 2 })).toBe(true)
+    })
+
+    it("returns false if the object is not present in the array", () => {
+      const arrayItems = [
+        { x: 1, y: 1 },
+        { x: 2, y: 2 },
+        { x: 3, y: 3 },
+      ]
+      expect(_.isArrayIncludesObject(arrayItems, { x: 1, y: 2 })).toBe(false)
+    })
+  })
+
   describe("groupByKeyValue", () => {
     it("returns an object with groups of objects aligned by key value", () => {
       const arr = [
