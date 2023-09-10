@@ -1,15 +1,16 @@
 import type { Router } from "express"
 
-/** Returns a number limited to a specific number of decimal places. 
-This is different from the native `toFixed()` method because it returns a number not a string. 
+/** Returns a number rounded to a specific level of precision. 
 *
 * _Example:_
 * ```typescript
-* float(4.24398, 3) //=> 4.244
+* round(4.24398, .001) //=> 4.244
+
+* round(528, 10) //=> 530
 * ```
  **/
-export function float(n: number, decimalPlaces?: number) {
-  return decimalPlaces ? Number(n.toFixed(decimalPlaces)) : n
+export function round(n: number, precision: number) {
+  return Math.round(n / precision) * precision
 }
 
 /** Returns the sum of given numbers.
@@ -476,6 +477,27 @@ export function mask(
   }
 }
 
+/** Adds a number of a specific character to a string to achieve a minimum length.
+ *
+ * Example:
+ * ```typescript
+ * pad("Hello", 10, ".") //=> "Hello....."
+ *
+ * pad("Hello", 10, ".", "leading") //=> ".....Hello"
+ * ```
+ */
+export function pad(
+  str: string,
+  length: number,
+  char: string,
+  style: "leading" | "trailing"
+) {
+  if (str.length >= length) return str
+
+  const filler = char.repeat(length - str.length)
+  return style === "leading" ? filler + str : str + filler
+}
+
 /** Returns an escaped string that can be inserted into HTML
  *
  * Example:
@@ -483,7 +505,6 @@ export function mask(
  * escapeString("Hello <there>, my 'friend'") //=> "Hello &lt;there&gt;, my &#x27;friend&#x27;"
  * ```
  */
-
 export function escapeString(str: string) {
   let result: string
   result = str.replace(/&/g, "&amp;")
@@ -751,7 +772,7 @@ type StringOrNumberArray = (string | number)[]
  */
 export function safeSort(arr: StringOrNumberArray) {
   const isNumberish = (str: string | number) => !isNaN(Number(str))
-  return arr.sort((a, b) => {
+  return [...arr].sort((a, b) => {
     if (isNumberish(a)) return Number(a) - Number(b)
     else return a < b ? -1 : 1
   })
@@ -761,52 +782,55 @@ export function safeSort(arr: StringOrNumberArray) {
  **/
 export function bubbleSort(arr: StringOrNumberArray) {
   let noSwaps
-  for (var i = arr.length; i > 0; i--) {
+  const _arr = [...arr]
+  for (var i = _arr.length; i > 0; i--) {
     noSwaps = true
     for (var j = 0; j < i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        const temp = arr[j]
-        arr[j] = arr[j + 1]
-        arr[j + 1] = temp
+      if (_arr[j] > _arr[j + 1]) {
+        const temp = _arr[j]
+        _arr[j] = _arr[j + 1]
+        _arr[j + 1] = temp
         noSwaps = false
       }
     }
     if (noSwaps) break
   }
-  return arr
+  return _arr
 }
 
 /** Returns an array sorted (ascending) via selection sort.
  **/
 export function selectionSort(arr: StringOrNumberArray) {
+  const _arr = [...arr]
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
     ([arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]])
 
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 0; i < _arr.length; i++) {
     let lowest = i
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[lowest] > arr[j]) {
+    for (let j = i + 1; j < _arr.length; j++) {
+      if (_arr[lowest] > _arr[j]) {
         lowest = j
       }
     }
-    if (i !== lowest) swap(arr, i, lowest)
+    if (i !== lowest) swap(_arr, i, lowest)
   }
 
-  return arr
+  return _arr
 }
 
 /** Returns an array sorted (ascending) via insertion sort.
  **/
 export function insertionSort(arr: StringOrNumberArray) {
   var currentVal
-  for (var i = 1; i < arr.length; i++) {
-    currentVal = arr[i]
-    for (var j = i - 1; j >= 0 && arr[j] > currentVal; j--) {
-      arr[j + 1] = arr[j]
+  const _arr = [...arr]
+  for (var i = 1; i < _arr.length; i++) {
+    currentVal = _arr[i]
+    for (var j = i - 1; j >= 0 && _arr[j] > currentVal; j--) {
+      _arr[j + 1] = _arr[j]
     }
-    arr[j + 1] = currentVal
+    _arr[j + 1] = currentVal
   }
-  return arr
+  return _arr
 }
 
 /** Returns an array with any duplicates removed.
@@ -816,17 +840,21 @@ export function insertionSort(arr: StringOrNumberArray) {
  * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
-export function removeDuplicates(arr: (number | string)[]) {
-  return Array.from(new Set(arr))
+export function removeDuplicates(arr: (number | string | object)[]) {
+  if (typeof arr[0] === "object") {
+    const strings = arr.map((obj) => JSON.stringify(obj))
+    const uniques = new Set(strings)
+    return Array.from(uniques).map((str) => JSON.parse(str))
+  } else return Array.from(new Set(arr))
 }
 
 /** Returns an array of the rolling sum of an array of numbers.
  **/
-export function getRollingSum(arr: number[], decimalPlaces?: number) {
+export function getRollingSum(arr: number[], precision?: number) {
   return arr.reduce(
     (acc, i, index) =>
       index > 0
-        ? [...acc, float(acc[acc.length - 1] + Number(i), decimalPlaces)]
+        ? [...acc, round(acc[acc.length - 1] + Number(i), precision ?? 1)]
         : [i],
     [] as number[]
   )
@@ -1130,7 +1158,8 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
   return arr.reduce((acc, i) => acc + i[key], 0)
 }
 
-/** Sorts an array of objects by a specific shared key's value.
+/** Return an array of objects sorted by a specific shared key's value. Optionally pass in "desc" as a
+ * third parameter to sort in descending order.
  *
  * Example:
  * ```typescript
@@ -1145,16 +1174,30 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
  *       { a: 2, b: 2 },
  *       { a: 3, b: 2 },
  *     ]
+ *
+ * sortByKeyValue([obj1, obj2, obj3], "a", "desc")
+ * //=>
+ *     [
+ *       { a: 3, b: 2 },
+ *       { a: 2, b: 2 },
+ *       { a: 1, b: 2 },
+ *     ]
  * ```
  **/
 export function sortByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
-  key: U
+  key: U,
+  order: "asc" | "desc" = "asc"
 ) {
-  return arr.sort((a, b) => (a[key] < b[key] ? -1 : 1))
+  const isAscending = order === "asc"
+  return [...arr].sort((a, b) =>
+    a[key] < b[key] ? (isAscending ? -1 : 1) : isAscending ? 1 : -1
+  )
 }
 
-/** Returns an array of objects with nested sorting based on a set of specific shared keys.
+/** Returns an array of objects with nested sorting based on a set of specific shared keys. Optionally
+ * pass in a third parameter which is an array of "asc" or "desc" values to specify the order
+ * of sorting for each key. The default is all ascending.
  *
  * Example:
  * ```typescript
@@ -1164,7 +1207,7 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
  * const obj4 = { a: 2, b: 4, c: 3 }
  * const obj5 = { a: 2, b: 5, c: 3 }
  *
- * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], "a","b", "c")
+ * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], ["a", "b", "c"])
  * //=>
  *      [
  *       { a: 1, b: 6, c: 3 }
@@ -1173,21 +1216,34 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
  *       { a: 3, b: 2, c: 3 }
  *       { a: 3, b: 2, c: 4 }
  *      ]
+ * sortByKeyValues([obj1, obj2, obj3, obj4, obj5], ["a", "b", "c"], ["asc", "desc", "asc"])
+ * //=>
+ *      [
+ *       { a: 1, b: 6, c: 3 }
+ *       { a: 2, b: 5, c: 3 }
+ *       { a: 2, b: 4, c: 3 }
+ *       { a: 3, b: 2, c: 3 }
+ *       { a: 3, b: 2, c: 4 }
+ *      ]
  * ```
  **/
 export function sortByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
-  ...keys: U[]
+  keys: U[],
+  order?: ("asc" | "desc")[]
 ): T[] {
-  if (keys.length === 1) return sortByKeyValue(objs, keys[0])
+  if (keys.length === 1)
+    return sortByKeyValue(objs, keys[0], order ? order[0] : undefined)
 
   const groupedByKey = groupByKeyValue(objs, keys[0])
   const sortedKeyValues = Object.keys(groupedByKey).sort()
 
+  if (order && order[0] === "desc") sortedKeyValues.reverse()
+
   return sortedKeyValues.reduce(
     (acc: T[], keyVal) => [
       ...acc,
-      ...sortByKeyValues(groupedByKey[keyVal], ...keys.slice(1)),
+      ...sortByKeyValues(groupedByKey[keyVal], keys.slice(1), order?.slice(1)),
     ],
     []
   )
