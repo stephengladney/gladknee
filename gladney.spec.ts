@@ -705,14 +705,14 @@ describe("objects", () => {
     })
   })
 
-  describe("isArrayIncludesObject", () => {
+  describe("isObjectInArray", () => {
     it("returns true if the object is present in the array", () => {
       const arrayItems = [
         { x: 1, y: 1 },
         { x: 2, y: 2 },
         { x: 3, y: 3 },
       ]
-      expect(_.isArrayIncludesObject(arrayItems, { x: 2, y: 2 })).toBe(true)
+      expect(_.isObjectInArray({ x: 2, y: 2 }, arrayItems)).toBe(true)
     })
 
     it("returns false if the object is not present in the array", () => {
@@ -721,7 +721,7 @@ describe("objects", () => {
         { x: 2, y: 2 },
         { x: 3, y: 3 },
       ]
-      expect(_.isArrayIncludesObject(arrayItems, { x: 1, y: 2 })).toBe(false)
+      expect(_.isObjectInArray({ x: 1, y: 2 }, arrayItems)).toBe(false)
     })
   })
 
