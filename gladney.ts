@@ -117,7 +117,8 @@ export function getRange(start: number, end: number, step = 1) {
  * ```
  **/
 export function ordinal(n: number) {
-  if (n >= 11 && n <= 13) return `${String(n)}th`
+  const lastTwoDigits = Number(String(n).slice(-2))
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 13) return `${String(n)}th`
   switch (String(n).slice(-1)) {
     case "1":
       return `${String(n)}st`
