@@ -678,8 +678,8 @@ export function getRandomItem<T>(arr: T[]) {
  * everyNth([1, 2, 3, 4, 5, 6, 7, 8, 9], 3) //=> [3, 6, 9]
  * ```
  **/
-export function everyNth(arr: any[], n: number) {
-  return arr.reduce((acc, item, index) => {
+export function everyNth<T>(arr: T[], n: number) {
+  return arr.reduce((acc: T[], item: T, index: number) => {
     if ((index + 1) % n === 0) return [...acc, item]
     else return acc
   }, [])
