@@ -996,7 +996,7 @@ export function getSharedItems<T>(...arrs: T[][]) {
  * ```
  */
 
-export function swapItems(arr: unknown[], index1: number, index2: number) {
+export function swapItems<T>(arr: T[], index1: number, index2: number) {
   return arr.map((item, i) => {
     if (i === index1) return arr[index2]
     if (i === index2) return arr[index1]
