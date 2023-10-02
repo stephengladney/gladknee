@@ -1078,11 +1078,15 @@ export function isObjectInArray(obj: Object, arr: Object[]) {
  * omitKeys(obj, "b") //=> { a: 1, c: 3 }
  * ```
  **/
-export function omitKeys(obj: { [key: string]: any }, ...keys: string[]) {
+export function omitKeys<T extends object, U extends keyof T>(
+  obj: T,
+  ...keys: U[]
+) {
   const result: { [key: string]: any } = {}
+  const keysAsStrings = keys.map((k) => k as string)
   Object.keys(obj).forEach((key: string) => {
-    if (!keys.includes(key)) {
-      result[key as string] = obj[key]
+    if (!keysAsStrings.includes(key)) {
+      result[key as string] = obj[key as U]
     }
   })
   return result
