@@ -1589,7 +1589,7 @@ export function addTimeoutToPromise<T>(
 /** Returns a promise that resolves after a given amount of time in milliseconds.
  **/
 export function pauseAsync(milliseconds: number) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(resolve, milliseconds)
   })
 }
