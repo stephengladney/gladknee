@@ -841,7 +841,7 @@ export function insertionSort(arr: StringOrNumberArray) {
  * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
-export function removeDuplicates(arr: (number | string | object)[]) {
+export function removeDuplicates<T>(arr: T[]): T[] {
   if (typeof arr[0] === "object") {
     const strings = arr.map((obj) => JSON.stringify(obj))
     const uniques = new Set(strings)
