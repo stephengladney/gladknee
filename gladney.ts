@@ -1569,8 +1569,8 @@ export function convertQueryParamOperators(params: {}) {
 /** Takes a promise and wraps it in another promise that rejects if the original promise takes longer to resolve than a
  * specific amount of time in milliseconds. If the original promise resolves before the timeout, that value is returned.
  **/
-export function addTimeoutToPromise(
-  asyncFunction: () => Promise<unknown>,
+export function addTimeoutToPromise<T>(
+  asyncFunction: () => Promise<T>,
   timeout: number
 ) {
   return () =>
@@ -1583,7 +1583,7 @@ export function addTimeoutToPromise(
       timer = setTimeout(() => {
         reject("TIMED_OUT")
       }, timeout)
-    }) as Promise<unknown>
+    }) as Promise<T>
 }
 
 /** Returns a promise that resolves after a given amount of time in milliseconds.
