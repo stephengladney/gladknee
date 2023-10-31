@@ -544,6 +544,14 @@ describe("arrays", () => {
   })
 })
 
+describe("swapItems", () => {
+  it("swaps the items at the indexes provided", () => {
+    const arr = [0, 1, 2, 3, 4]
+    expect(_.swapItems(arr, 2, 4)).toEqual([0, 1, 4, 3, 2])
+    expect(_.swapItems(arr, 0, 3)).toEqual([3, 1, 2, 0, 4])
+  })
+})
+
 describe("objects", () => {
   describe("omitKeys", () => {
     it("returns the object without keys provided", () => {
