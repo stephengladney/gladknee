@@ -1981,3 +1981,24 @@ export function loremIpsum(wordCount = 69) {
     return words.slice(0, wordCount).join(" ")
   } else return li
 }
+
+/**
+ * Removes any html tags from a provided string
+ *
+ * Example:
+ * ```typescript
+ * stripHTML("<html><p>Hello <b>world</b>!</p></html>") //=> "Hello world!"
+ *
+ * ```
+ */
+export function stripHTML(text: string) {
+  let isInsideBracket = false
+  let result = ""
+
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === "<") isInsideBracket = true
+    else if (!isInsideBracket) result += text[i]
+    else if (text[i] === ">") isInsideBracket = false
+  }
+  return result
+}

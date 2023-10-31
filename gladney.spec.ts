@@ -1037,3 +1037,11 @@ describe("misc", () => {
     })
   })
 })
+
+describe("stripHTML", () => {
+  it("removes any html tags from text", () => {
+    expect(_.stripHTML("<html><p>Hello <b>world</b>!</p></html>")).toBe(
+      "Hello world!"
+    )
+  })
+})
