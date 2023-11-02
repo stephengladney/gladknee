@@ -772,9 +772,8 @@ type StringOrNumberArray = (string | number)[]
  *
  */
 export function safeSort(arr: StringOrNumberArray) {
-  const isNumberish = (str: string | number) => !isNaN(Number(str))
   return [...arr].sort((a, b) => {
-    if (isNumberish(a)) return Number(a) - Number(b)
+    if (isNumeric(a)) return Number(a) - Number(b)
     else return a < b ? -1 : 1
   })
 }
