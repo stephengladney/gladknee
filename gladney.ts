@@ -1236,7 +1236,7 @@ export function sortByKeyValues<T extends object, U extends keyof T>(
     return sortByKeyValue(objs, keys[0], order ? order[0] : undefined)
 
   const groupedByKey = groupByKeyValue(objs, keys[0])
-  const sortedKeyValues = Object.keys(groupedByKey).sort()
+  const sortedKeyValues = safeSort(Object.keys(groupedByKey))
 
   if (order && order[0] === "desc") sortedKeyValues.reverse()
 
