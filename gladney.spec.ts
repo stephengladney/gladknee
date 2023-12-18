@@ -953,6 +953,14 @@ describe("misc", () => {
       expect(func).toHaveBeenCalledTimes(2)
     })
 
+    it("immediate = true. return object includes result", () => {
+      const func = jest.fn(() => 4)
+      const debouncedFunc = _.debounce(func, 500, true)
+      const { result } = debouncedFunc()
+      debouncedFunc()
+      expect(result).toBe(4)
+    })
+
     it("immediate = false. invokes the function after the delay but not before", async () => {
       const func = jest.fn()
       const debouncedFunc = _.debounce(func, 200, false)
@@ -980,6 +988,15 @@ describe("misc", () => {
       const { flush } = debouncedFunc()
       flush()
       expect(func).toHaveBeenCalledTimes(1)
+    })
+
+    it("immediate = false. result updates after pause", async () => {
+      const func = jest.fn(() => 4)
+      const debouncedFunc = _.debounce(func, 500, false)
+      const returnObject = debouncedFunc()
+      setTimeout(() => {
+        expect(returnObject.result).toBe(4)
+      }, 1000)
     })
   })
 
