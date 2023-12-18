@@ -772,9 +772,8 @@ type StringOrNumberArray = (string | number)[]
  *
  */
 export function safeSort(arr: StringOrNumberArray) {
-  const isNumberish = (str: string | number) => !isNaN(Number(str))
   return [...arr].sort((a, b) => {
-    if (isNumberish(a)) return Number(a) - Number(b)
+    if (isNumeric(a)) return Number(a) - Number(b)
     else return a < b ? -1 : 1
   })
 }
@@ -1241,7 +1240,7 @@ export function sortByKeyValues<T extends object, U extends keyof T>(
     return sortByKeyValue(objs, keys[0], order ? order[0] : undefined)
 
   const groupedByKey = groupByKeyValue(objs, keys[0])
-  const sortedKeyValues = Object.keys(groupedByKey).sort()
+  const sortedKeyValues = safeSort(Object.keys(groupedByKey))
 
   if (order && order[0] === "desc") sortedKeyValues.reverse()
 
