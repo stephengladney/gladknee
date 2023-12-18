@@ -1626,6 +1626,12 @@ export function pipe<T>(
   }
 }
 
+type DebounceReturnObject<T extends (...args: any[]) => any> = {
+  clear: Function
+  flush: Function
+  result?: ReturnType<T>
+}
+
 /** Returns a debounced version of the function passed. Accepts custom delay in
  * milliseconds and immediate boolean for leading/trailing.
  *
@@ -1641,30 +1647,35 @@ export function debounce<T extends (...args: any[]) => any>(
 ) {
   let wait: NodeJS.Timeout
   let isWaiting = false
+  let returnObject: DebounceReturnObject<T> = {
+    clear: () => {},
+    flush: () => {},
+  }
 
-  const getReturnObject = (args: Parameters<T>) => ({
-    clear: () => {
-      clearTimeout(wait)
-      isWaiting = false
-    },
-    flush: () => {
-      clearTimeout(wait)
-      isWaiting = false
+  const clear = () => {
+    clearTimeout(wait)
+    isWaiting = false
+  }
 
-      func(...args)
-    },
-  })
+  const getFlushFunction = (args: Parameters<T>) => () => {
+    clearTimeout(wait)
+    isWaiting = false
+    return func(...args)
+  }
+
   if (immediate) {
     return (...args: Parameters<T>) => {
-      if (isWaiting) return getReturnObject(args)
+      if (isWaiting) return { clear, flush: getFlushFunction(args) }
       else {
         isWaiting = true
         wait = setTimeout(() => (isWaiting = false), milliseconds)
 
-        func(...args)
+        return {
+          clear,
+          flush: getFlushFunction(args),
+          result: func(...args) as ReturnType<T>,
+        } as DebounceReturnObject<T>
       }
-
-      return getReturnObject(args)
     }
   } else {
     return (...args: Parameters<T>) => {
@@ -1673,10 +1684,12 @@ export function debounce<T extends (...args: any[]) => any>(
       wait = setTimeout(() => {
         isWaiting = false
 
-        func(...args)
+        returnObject.result = func(...args) as ReturnType<T>
       }, milliseconds)
 
-      return getReturnObject(args)
+      returnObject = { clear, flush: getFlushFunction(args) }
+
+      return returnObject
     }
   }
 }
@@ -1979,4 +1992,25 @@ export function loremIpsum(wordCount = 69) {
     const words = li.split(" ")
     return words.slice(0, wordCount).join(" ")
   } else return li
+}
+
+/**
+ * Removes any html tags from a provided string
+ *
+ * Example:
+ * ```typescript
+ * stripHTML("<html><p>Hello <b>world</b>!</p></html>") //=> "Hello world!"
+ *
+ * ```
+ */
+export function stripHTML(text: string) {
+  let isInsideBracket = false
+  let result = ""
+
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === "<") isInsideBracket = true
+    else if (!isInsideBracket) result += text[i]
+    else if (text[i] === ">") isInsideBracket = false
+  }
+  return result
 }
