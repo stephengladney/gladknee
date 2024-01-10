@@ -1391,6 +1391,56 @@ export function deepCopy<T extends object>(obj: T): T {
   return JSON.parse(JSON.stringify(obj))
 }
 
+/** Finds objects with matching criteria and updates specific key value(s) on those objects. 
+ * The function does not mutate the original object or array and instead returns a new array of objects.
+ *
+ * Example:
+ * ```typescript
+ * const objs = [
+        { id: 1, name: "Stephen", sex: "male", isGuy: false },
+        { id: 2, name: "Heather", sex: "female", isGuy: false },
+      ]
+
+ * updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }) 
+      // Find all objects where "sex" equals "male"
+      // and update "isGuy" to true
+      //=> 
+      [
+        { id: 1, name: "Stephen", sex: "male", isGuy: true },
+        { id: 2, name: "Heather", sex: "female", isGuy: false },
+      ]
+ * ```
+ */
+export function updateObjectsWhere<T extends object>(
+  objectArray: T[],
+  matchCriteria: Partial<T>,
+  newKeyValues: Partial<T>,
+  onlyUpdateFirstMatch = false
+) {
+  const indeces: number[] = []
+
+  for (let i = 0; i < objectArray.length; i++) {
+    const obj = objectArray[i]
+
+    const allKeyValuesMatch = Object.keys(matchCriteria).reduce(
+      (allMatch, key) => {
+        if (matchCriteria[key as keyof T] === obj[key as keyof T] && allMatch)
+          return true
+        else return false
+      },
+      true
+    )
+
+    if (allKeyValuesMatch) indeces.push(i)
+    if (indeces.length > 0 && onlyUpdateFirstMatch) break
+  }
+
+  return Array.from(objectArray).map((obj, i) => {
+    if (indeces.includes(i)) return { ...obj, ...newKeyValues }
+    else return obj
+  })
+}
+
 /** Returns an object with the keys and values reversed.
  *
  * NOTE: Values must be able to be converted to strings.
