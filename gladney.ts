@@ -537,7 +537,7 @@ export function unEscapeString(str: string) {
 
 /** Returns a random string of specified length. Can include letters and/or numbers.
  *
- * NOTE: `includeLetters` and `includeNumbers` both default to true.
+ * NOTE: `includeLetters` and `includeNumbers` both default to true. `includeSpecialChars` defaults to false.
  * 
  * Example:
  * ```typescript
@@ -546,17 +546,22 @@ export function unEscapeString(str: string) {
 getRandomString(5, true, false) //=> "GjOxa"
 
 getRandomString(5, false, true) //=> "39281"
+
+getRandomString(5, true, true, true) //=> "G2a$k!"
  * ```
  **/
 export function getRandomString(
   length: number,
   includeLetters = true,
-  includeNumbers = true
+  includeNumbers = true,
+  includeSpecialChars = false
 ): string {
   const chars =
     (includeLetters
       ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-      : "") + (includeNumbers ? "0123456789" : "")
+      : "") +
+    (includeNumbers ? "0123456789" : "") +
+    (includeSpecialChars ? "!@#$%^&*()" : "")
   let randomString = ""
   for (let i = 1; i <= length; i++) {
     randomString += chars[Math.floor(Math.random() * chars.length)]
