@@ -58,8 +58,8 @@ export function clampNumber(
   max?: number | false
 ) {
   let result = n
-  if (min) result = n > min ? n : min
-  if (max) result = result < max ? result : max
+  if (min !== false) result = n > min ? n : min
+  if (max !== false && max !== undefined) result = result < max ? result : max
   return result
 }
 
