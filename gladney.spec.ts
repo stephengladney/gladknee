@@ -250,8 +250,8 @@ describe("slugify", () => {
     expect(_.slugify(" this is some text ")).toBe("this-is-some-text")
   })
 
-  it("removes non-letter characters", () => {
-    expect(_.slugify("this is some text!")).toBe("this-is-some-text")
+  it("removes non-letter and non-number characters", () => {
+    expect(_.slugify("42 things you can do")).toBe("42-things-you-can-do")
   })
 
   it("can use a custom separator", () => {

@@ -601,11 +601,11 @@ export function capitalize(str: string, lowercaseOthers = false) {
 }
 
 /**
- * Returns a string lowercased with non letter characters removed and spaces and underscores replaced with a separator (- by default)
+ * Returns a string lowercased with non letter/number characters removed and spaces and underscores replaced with a separator (- by default)
  *
  * Example:
  * ```typescript
- * slugify("This is the blog post title!") //=> "this-is-the-blog-post-title"
+ * slugify("This is the 42nd blog post title!") //=> "this-is-the-42nd-blog-post-title"
  *
  * slugify("This is the blog post title!", "_") //=> "this_is_the_blog_post_title"
  * ```
