@@ -1406,7 +1406,7 @@ export function deepCopy<T extends object>(obj: T): T {
       //=> 
       [
         { id: 1, name: "Stephen", sex: "male", isGuy: true },
-        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+        { id: 2, name: "Heather", sex: "female", isGuy: false },
       ]
  * ```
  */
