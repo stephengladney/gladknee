@@ -1391,6 +1391,25 @@ export function deepCopy<T extends object>(obj: T): T {
   return JSON.parse(JSON.stringify(obj))
 }
 
+/** Finds objects with matching criteria and updates specific key value(s) on those objects. Returns a new array of objects.
+ *
+ * Example:
+ * ```typescript
+ * const objs = [
+        { id: 1, name: "Stephen", sex: "male", isGuy: false },
+        { id: 2, name: "Heather", sex: "female", isGuy: false },
+      ]
+
+ * updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }) 
+      // Find all objects where "sex" equals "male"
+      // and update "isGuy" to true
+      //=> 
+      [
+        { id: 1, name: "Stephen", sex: "male", isGuy: true },
+        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+      ]
+ * ```
+ */
 export function updateObjectsWhere<T extends object>(
   objectArray: T[],
   matchCriteria: Partial<T>,
