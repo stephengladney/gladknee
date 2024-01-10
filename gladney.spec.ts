@@ -818,6 +818,22 @@ describe("objects", () => {
         { id: 3, name: "Bob", sex: "male", age: 42, isGuy: true },
       ])
     })
+
+    it("only updates the first match if requested", () => {
+      const objs = [
+        { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: false },
+        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+        { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
+      ]
+
+      expect(
+        _.updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }, true)
+      ).toEqual([
+        { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: true },
+        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+        { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
+      ])
+    })
   })
 
   describe("invert", () => {

@@ -1391,7 +1391,8 @@ export function deepCopy<T extends object>(obj: T): T {
   return JSON.parse(JSON.stringify(obj))
 }
 
-/** Finds objects with matching criteria and updates specific key value(s) on those objects. Returns a new array of objects.
+/** Finds objects with matching criteria and updates specific key value(s) on those objects. 
+ * The function does not mutate the original object or array and instead returns a new array of objects.
  *
  * Example:
  * ```typescript
@@ -1413,7 +1414,8 @@ export function deepCopy<T extends object>(obj: T): T {
 export function updateObjectsWhere<T extends object>(
   objectArray: T[],
   matchCriteria: Partial<T>,
-  newKeyValues: Partial<T>
+  newKeyValues: Partial<T>,
+  onlyUpdateFirstMatch = false
 ) {
   const indeces: number[] = []
 
@@ -1430,6 +1432,7 @@ export function updateObjectsWhere<T extends object>(
     )
 
     if (allKeyValuesMatch) indeces.push(i)
+    if (indeces.length > 0 && onlyUpdateFirstMatch) break
   }
 
   return Array.from(objectArray).map((obj, i) => {
