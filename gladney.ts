@@ -445,6 +445,7 @@ export function mask(
       config.style === "leading" ? str : str.split("").reverse().join("")
 
     let maskedCount = 0
+
     const masked = _str.split("").reduce((acc, char) => {
       if (config?.ignore && config.ignore.includes(char)) {
         return acc + char
@@ -456,6 +457,7 @@ export function mask(
         return acc + (config?.maskWith || "*")
       } else return acc + char
     }, "")
+
     return config?.style === "leading"
       ? masked
       : masked.split("").reverse().join("")
@@ -464,10 +466,13 @@ export function mask(
       (str.length - (config.maskLength || str.length)) % 2 === 0
         ? (str.length - (config.maskLength || str.length)) / 2
         : Math.floor((str.length - (config.maskLength || str.length)) / 2)
+
     let maskedCount = 0
+
     return str.split("").reduce((acc, char, i) => {
       const shouldIgnoreCharacter =
         !!config?.ignore && config.ignore.includes(char)
+
       if (shouldIgnoreCharacter) return acc + char
       else if (i + 1 <= length1) return acc + char
       else if (config?.maskLength && maskedCount < config?.maskLength) {
