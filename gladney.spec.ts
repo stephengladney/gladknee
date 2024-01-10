@@ -430,6 +430,27 @@ describe("arrays", () => {
     })
   })
 
+  describe("getCallbackResultCounts", () => {
+    it("returns the counts of results", () => {
+      const objs = [
+        { a: 1, b: 1 },
+        { a: 1, b: 1 },
+        { a: 2, b: 1 },
+        { a: 1, b: 1 },
+        { a: 2, b: 2 },
+        { a: 3, b: 1 },
+      ]
+
+      const aPlusB = ({ a, b }: { a: number; b: number }) => a + b
+
+      expect(_.getCallbackResultCounts(objs, aPlusB)).toEqual({
+        "2": 3,
+        "3": 1,
+        "4": 2,
+      })
+    })
+  })
+
   describe("flatten", () => {
     it("returns a three dimensional array flattened to a one dimensional array", () => {
       expect(

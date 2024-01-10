@@ -757,9 +757,9 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
  *
  * Example:
  * ```typescript
- * flatten([1,[2,3,[4,5]],6]) //=> [1, 2, 3, 4, 5, 6]
+ * flatten([1, [2, 3, [4, 5]], 6])  //=> [1, 2, 3, 4, 5, 6]
  *
- * flatten([1,[2,3,[4,5]],6], 1) //=> [1, 2, 3, [4, 5], 6]
+ * flatten([1, [2, 3, [4, 5]], 6], 1)  //=> [1, 2, 3, [4, 5], 6]
  * ```
  **/
 export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
