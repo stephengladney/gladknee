@@ -75,7 +75,7 @@ export function doubleDigit(n: number) {
   else return String(`0${n}`).slice(-2)
 }
 
-/** Returns an array of numbers, starting from a start number and ending with an end number.
+/** Returns an array of numbers, starting from and ending at provided numbers.
  * You can optionally pass in a step number to increment by a number other than 1. You can also increment negatively.
  *
  * _Example:_
