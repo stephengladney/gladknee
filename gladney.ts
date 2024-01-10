@@ -565,11 +565,14 @@ export function getRandomString(
 }
 
 /**
- * Returns a string with the first letter capitalized. Optionally pass in boolean to convert following characters to lower case.
+ * Returns a string with the first letter of each word capitalized. Optionally pass in
+ * a boolean to convert following characters to lower case.
  *
  * Example:
  * ```typescript
  * capitalize("stephen") //=> "Stephen"
+ *
+ * capitalize("hello world") //=> "Hello World"
  *
  * capitalize("hELLO", true) //=> "Hello"
  *
@@ -577,10 +580,14 @@ export function getRandomString(
  * ```
  */
 export function capitalize(str: string, lowercaseOthers = false) {
-  return (
+  const capitalizeWord = (str: string) =>
     str[0].toUpperCase() +
     (lowercaseOthers ? str.slice(1).toLowerCase() : str.slice(1))
-  )
+
+  return str
+    .split(" ")
+    .map((word) => capitalizeWord(word))
+    .join(" ")
 }
 
 /**
