@@ -25,6 +25,16 @@ Gladknee is an open-source utility library written in TypeScript.<br><br>
 
 To add to your project, just run `npm install gladknee`
 
+#### Usage
+
+To use any functions from the library, simply import the specific function(s) you wish to use where needed.
+
+```typescript
+import { lowerCaseNoSpaces } from "gladknee"
+
+lowerCaseNoSpaces("Hello World!") //=> "helloworld"
+```
+
 ### Documentation
 
 You can read the full documentation at <a href="https://gladknee.readme.io/">https://gladknee.readme.io/</a>
