@@ -802,6 +802,24 @@ describe("objects", () => {
     })
   })
 
+  describe("updateObjectsWhere", () => {
+    it("updates all of the matching objects with new key values", () => {
+      const objs = [
+        { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: false },
+        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+        { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
+      ]
+
+      expect(
+        _.updateObjectsWhere(objs, { sex: "male" }, { isGuy: true })
+      ).toEqual([
+        { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: true },
+        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+        { id: 3, name: "Bob", sex: "male", age: 42, isGuy: true },
+      ])
+    })
+  })
+
   describe("invert", () => {
     it("swaps the keys and values", () => {
       expect(_.invert({ a: 1, b: 2, c: 3 })).toEqual({

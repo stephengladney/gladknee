@@ -1391,6 +1391,34 @@ export function deepCopy<T extends object>(obj: T): T {
   return JSON.parse(JSON.stringify(obj))
 }
 
+export function updateObjectsWhere<T extends object>(
+  objectArray: T[],
+  matchCriteria: Partial<T>,
+  newKeyValues: Partial<T>
+) {
+  const indeces: number[] = []
+
+  for (let i = 0; i < objectArray.length; i++) {
+    const obj = objectArray[i]
+
+    const allKeyValuesMatch = Object.keys(matchCriteria).reduce(
+      (allMatch, key) => {
+        if (matchCriteria[key as keyof T] === obj[key as keyof T] && allMatch)
+          return true
+        else return false
+      },
+      true
+    )
+
+    if (allKeyValuesMatch) indeces.push(i)
+  }
+
+  return Array.from(objectArray).map((obj, i) => {
+    if (indeces.includes(i)) return { ...obj, ...newKeyValues }
+    else return obj
+  })
+}
+
 /** Returns an object with the keys and values reversed.
  *
  * NOTE: Values must be able to be converted to strings.
