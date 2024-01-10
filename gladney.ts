@@ -496,7 +496,7 @@ export function pad(
   str: string,
   length: number,
   char: string,
-  style: "leading" | "trailing"
+  style: "leading" | "trailing" = "trailing"
 ) {
   if (str.length >= length) return str
 
