@@ -350,6 +350,40 @@ export function isPast(date: Date) {
   return new Date(date).getTime() < Date.now()
 }
 
+/** Returns the relative time difference of two dates
+ *
+ * Example:
+ *
+ * ```typescript
+ * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
+ *
+ * getRelativeTimeDiff(fiveMinutesAgo) //=> "5 minutes ago"
+ * ```
+ */
+export function getRelativeTimeDiff(toDate: Date, fromDate: Date = new Date()) {
+  const TIME_UNITS: { n: number; unit: Intl.RelativeTimeFormatUnit }[] = [
+    { n: 60, unit: "seconds" },
+    { n: 60, unit: "minutes" },
+    { n: 24, unit: "hours" },
+    { n: 7, unit: "days" },
+    { n: 4, unit: "weeks" },
+    { n: 12, unit: "months" },
+    { n: Number.POSITIVE_INFINITY, unit: "years" },
+  ]
+
+  let duration = (toDate.getTime() - fromDate.getTime()) / 1000
+
+  for (let i = 0; i < TIME_UNITS.length; i++) {
+    const currentUnit = TIME_UNITS[i]
+    if (Math.abs(duration) < currentUnit.n) {
+      return new Intl.RelativeTimeFormat(undefined, {
+        numeric: "auto",
+      }).format(Math.round(duration), currentUnit.unit)
+    }
+    duration /= currentUnit.n
+  }
+}
+
 // STRINGS
 
 /** Returns a string in lowercase form with spaces removed.
