@@ -1007,6 +1007,21 @@ export function getSharedItems<T>(...arrs: T[][]) {
   return result
 }
 
+/** Returns the provided array with two items' positions swapped
+ *
+ * Example:
+ * ```typescript
+ * swapItems([0, 1, 2, 3, 4], 1, 3) //=> [0, 3, 2, 1, 4]
+ * ```
+ */
+export function swapItems<T>(arr: T[], index1: number, index2: number) {
+  return arr.map((item, i) => {
+    if (i === index1) return arr[index2]
+    if (i === index2) return arr[index1]
+    return item
+  })
+}
+
 /** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
  optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
  apply case sensitivity (default: false).
@@ -1031,23 +1046,6 @@ export function getSharedItems<T>(...arrs: T[][]) {
  * 
  * NOTE: `orderMatters` is false by default.
  **/
-
-/** Returns the provided array with two items' positions swapped
- *
- * Example:
- * ```typescript
- * swapItems([0, 1, 2, 3, 4], 1, 3) //=> [0, 3, 2, 1, 4]
- * ```
- */
-
-export function swapItems<T>(arr: T[], index1: number, index2: number) {
-  return arr.map((item, i) => {
-    if (i === index1) return arr[index2]
-    if (i === index2) return arr[index1]
-    return item
-  })
-}
-
 export function isEqual(
   thing1: object | [],
   thing2: object | [],
@@ -1613,7 +1611,6 @@ sortByCallbackResult(socialStats, getPopularity)
 ]
  * ```
  */
-
 export function sortByCallbackResult<T>(things: T[], func: Function) {
   const groupedByResult = groupByCallbackResult(things, func)
   return safeSort(Object.keys(groupedByResult)).reduce(
