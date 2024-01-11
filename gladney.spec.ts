@@ -59,9 +59,6 @@ describe("time & dates", () => {
   describe("getAmountOfTimeFromSeconds", () => {
     it("returns the correct TimeOutput", () => {
       const timeObject = _.getAmountOfTimeFromSeconds(200000)
-      expect(timeObject.years).toEqual(0)
-      expect(timeObject.months).toEqual(0)
-      expect(timeObject.weeks).toEqual(0)
       expect(timeObject.days).toEqual(2)
       expect(timeObject.hours).toEqual(7)
       expect(timeObject.minutes).toEqual(33)
@@ -1139,12 +1136,12 @@ describe("misc", () => {
       expect(_.hexToRgb("#FF0000")).toEqual([255, 0, 0])
     })
   })
-})
 
-describe("stripHTML", () => {
-  it("removes any html tags from text", () => {
-    expect(_.stripHTML("<html><p>Hello <b>world</b>!</p></html>")).toBe(
-      "Hello world!"
-    )
+  describe("stripHTML", () => {
+    it("removes any html tags from text", () => {
+      expect(_.stripHTML("<html><p>Hello <b>world</b>!</p></html>")).toBe(
+        "Hello world!"
+      )
+    })
   })
 })

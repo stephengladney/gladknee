@@ -181,39 +181,22 @@ export function mode(...numbers: (number | number[])[]) {
 }
 
 export interface TimeObject {
-  years: number
-  months: number
-  weeks: number
   days: number
   hours: number
   minutes: number
   seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
 }
 
 const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
-const secondsInAWeek = 604800
-const secondsInAMonth = 2592000 // Assumes 30 day month
-const secondsInAYear = 31557600
 
-/** Returns a `TimeObject` with calculated years, months, weeks, days, hours, minutes and seconds from an amount of 
- * seconds. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `TimeObject` with calculated days, hours, minutes and seconds from an amount of seconds.
  *
  * _Example:_
  * ```typescript
  * getAmountOfTimeFromSeconds(2000000)
-//=> { years: 0, months: 0, weeks: 3, days: 2, hours: 3, minutes: 33, seconds: 20 }
-
-* getAmountOfTimeFromSeconds(2000000).inMinutes()
-//=> 33333.333333333336
+//=> { days: 23, hours: 3, minutes: 33, seconds: 20 }
 
 interface TimeObject {
   years: number
@@ -235,20 +218,10 @@ interface TimeObject {
  **/
 export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   return {
-    years: Math.floor(seconds / secondsInAYear),
-    months: Math.floor((seconds % secondsInAYear) / secondsInAMonth),
-    weeks: Math.floor((seconds % secondsInAMonth) / secondsInAWeek),
-    days: Math.floor((seconds % secondsInAWeek) / secondsInADay),
+    days: Math.floor(seconds / secondsInADay),
     hours: Math.floor((seconds % secondsInADay) / secondsInAnHour),
     minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
     seconds: seconds % secondsInAMinute,
-    inYears: () => seconds / secondsInAYear,
-    inMonths: () => seconds / secondsInAMonth,
-    inWeeks: () => seconds / secondsInAWeek,
-    inDays: () => seconds / secondsInADay,
-    inHours: () => seconds / secondsInAnHour,
-    inMinutes: () => seconds / secondsInAMinute,
-    inSeconds: () => seconds,
   }
 }
 
@@ -256,20 +229,10 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
  * a specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
 interface TimeObject {
-  years: number
-  months: number
-  weeks: number
   days: number
   hours: number
   minutes: number
   seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
 }
  * ```
  **/
@@ -284,20 +247,10 @@ export function timeUntil(date: Date): TimeObject {
  * specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
 interface TimeObject {
-  years: number
-  months: number
-  weeks: number
   days: number
   hours: number
   minutes: number
   seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
 }
  * ```
  **/
@@ -350,6 +303,11 @@ export function isPast(date: Date) {
   return new Date(date).getTime() < Date.now()
 }
 
+export function getTimeDiff(fromDate: Date, toDate: Date) {
+  const diff = (toDate.getTime() - fromDate.getTime()) / 1000
+  return getAmountOfTimeFromSeconds(diff)
+}
+
 /** Returns the relative time difference of two dates
  *
  * Example:
@@ -357,7 +315,7 @@ export function isPast(date: Date) {
  * ```typescript
  * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
  *
- * getRelativeTimeDiff(fiveMinutesAgo) //=> "5 minutes ago"
+ * getRelativeTime(fiveMinutesAgo) //=> "5 minutes ago"
  * ```
  */
 export function getRelativeTimeDiff(toDate: Date, fromDate: Date = new Date()) {
@@ -366,7 +324,7 @@ export function getRelativeTimeDiff(toDate: Date, fromDate: Date = new Date()) {
     { n: 60, unit: "minutes" },
     { n: 24, unit: "hours" },
     { n: 7, unit: "days" },
-    { n: 4, unit: "weeks" },
+    { n: 4.34524, unit: "weeks" },
     { n: 12, unit: "months" },
     { n: Number.POSITIVE_INFINITY, unit: "years" },
   ]
