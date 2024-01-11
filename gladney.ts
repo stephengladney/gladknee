@@ -1133,7 +1133,7 @@ export function omitKeys<T extends object, U extends keyof T>(
       result[key as string] = obj[key as U]
     }
   })
-  return result
+  return result as Partial<T>
 }
 
 /** Returns an object with only the specific keys included.
@@ -1156,7 +1156,7 @@ export function pickKeys<T extends object, U extends keyof T>(
       result[key] = obj[key as U]
     }
   })
-  return result
+  return result as Partial<T>
 }
 
 /** Returns a single object with all of the key value pairs from two or more objects.
