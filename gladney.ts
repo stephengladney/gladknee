@@ -303,8 +303,24 @@ export function isPast(date: Date) {
   return new Date(date).getTime() < Date.now()
 }
 
-export function getTimeDiff(fromDate: Date, toDate: Date) {
-  const diff = (toDate.getTime() - fromDate.getTime()) / 1000
+/** Returns a TimeObject representing the amount of time between two dates.
+ *
+ * Example:
+ *
+ * ```typescript
+ * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
+ *
+ * getTimeDiff(new Date(), fiveMinutesAgo) //=>
+ *  {
+ *    days: 0,
+ *    hours: 0,
+ *    minutes: 5,
+ *    seconds: 0
+ *  }
+ * ```
+ */
+export function getTimeDiff(dateA: Date, dateB: Date) {
+  const diff = Math.abs((dateA.getTime() - dateB.getTime()) / 1000)
   return getAmountOfTimeFromSeconds(diff)
 }
 
@@ -318,7 +334,7 @@ export function getTimeDiff(fromDate: Date, toDate: Date) {
  * getRelativeTime(fiveMinutesAgo) //=> "5 minutes ago"
  * ```
  */
-export function getRelativeTimeDiff(toDate: Date, fromDate: Date = new Date()) {
+export function getRelativeTimeDiff(to: Date, from: Date = new Date()) {
   const TIME_UNITS: { n: number; unit: Intl.RelativeTimeFormatUnit }[] = [
     { n: 60, unit: "seconds" },
     { n: 60, unit: "minutes" },
@@ -329,7 +345,7 @@ export function getRelativeTimeDiff(toDate: Date, fromDate: Date = new Date()) {
     { n: Number.POSITIVE_INFINITY, unit: "years" },
   ]
 
-  let duration = (toDate.getTime() - fromDate.getTime()) / 1000
+  let duration = (to.getTime() - from.getTime()) / 1000
 
   for (let i = 0; i < TIME_UNITS.length; i++) {
     const currentUnit = TIME_UNITS[i]

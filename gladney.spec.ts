@@ -133,40 +133,58 @@ describe("time & dates", () => {
       expect(testDate.getSeconds()).toBe(59)
     })
   })
-})
 
-describe("getRelativeTimeDiff", () => {
-  it("returns the correct durations", () => {
-    const secondsInAMinute = 60
-    const secondsInAnHour = 3600
-    const secondsInADay = 86400
-    const secondsInAWeek = 604800
-    const secondsInAMonth = 2592000 // Assumes 30 day month
-    const secondsInAYear = 31557600
+  describe("getTimeDiff", () => {
+    it("returns the correct duration", () => {
+      const start = new Date()
+      const end = new Date(start)
+      end.setDate(end.getDate() - 11)
+      end.setHours(end.getHours() - 2)
+      end.setMinutes(end.getMinutes() - 5)
+      end.setSeconds(end.getSeconds() - 43)
 
-    const oneDayAgo = new Date(Date.now() - secondsInADay * 1000)
-    const twoWeeksAgo = new Date(Date.now() - secondsInAWeek * 1000 * 2)
-    const threeMonthsAgo = new Date(Date.now() - secondsInAMonth * 1000 * 3)
-    const fourYearsAgo = new Date(Date.now() - secondsInAYear * 1000 * 4)
-    const fiveMinutesAgo = new Date(Date.now() - secondsInAMinute * 1000 * 5)
-    const sixHoursAgo = new Date(Date.now() - secondsInAnHour * 1000 * 6)
-
-    expect(_.getRelativeTimeDiff(oneDayAgo)).toBe("yesterday")
-    expect(_.getRelativeTimeDiff(twoWeeksAgo)).toBe("2 weeks ago")
-    expect(_.getRelativeTimeDiff(threeMonthsAgo)).toBe("3 months ago")
-    expect(_.getRelativeTimeDiff(fourYearsAgo)).toBe("4 years ago")
-    expect(_.getRelativeTimeDiff(fiveMinutesAgo)).toBe("5 minutes ago")
-    expect(_.getRelativeTimeDiff(sixHoursAgo)).toBe("6 hours ago")
-  })
-})
-
-describe("isPast", () => {
-  it("returns true if the date has passed", () => {
-    expect(_.isPast(new Date("01-01-1979"))).toBe(true)
+      expect(_.getTimeDiff(start, end)).toEqual({
+        days: 11,
+        hours: 2,
+        minutes: 5,
+        seconds: 43,
+      })
+    })
   })
 
-  it("returns false if the date has not passed", () => {
-    expect(_.isPast(new Date("01-01-3000"))).toBe(false)
+  describe("getRelativeTimeDiff", () => {
+    it("returns the correct relative duration", () => {
+      const secondsInAMinute = 60
+      const secondsInAnHour = 3600
+      const secondsInADay = 86400
+      const secondsInAWeek = 604800
+      const secondsInAMonth = 2592000 // Assumes 30 day month
+      const secondsInAYear = 31557600
+
+      const oneDayAgo = new Date(Date.now() - secondsInADay * 1000)
+      const twoWeeksAgo = new Date(Date.now() - secondsInAWeek * 1000 * 2)
+      const threeMonthsAgo = new Date(Date.now() - secondsInAMonth * 1000 * 3)
+      const fourYearsAgo = new Date(Date.now() - secondsInAYear * 1000 * 4)
+      const fiveMinutesAgo = new Date(Date.now() - secondsInAMinute * 1000 * 5)
+      const sixHoursAgo = new Date(Date.now() - secondsInAnHour * 1000 * 6)
+
+      expect(_.getRelativeTimeDiff(oneDayAgo)).toBe("yesterday")
+      expect(_.getRelativeTimeDiff(twoWeeksAgo)).toBe("2 weeks ago")
+      expect(_.getRelativeTimeDiff(threeMonthsAgo)).toBe("3 months ago")
+      expect(_.getRelativeTimeDiff(fourYearsAgo)).toBe("4 years ago")
+      expect(_.getRelativeTimeDiff(fiveMinutesAgo)).toBe("5 minutes ago")
+      expect(_.getRelativeTimeDiff(sixHoursAgo)).toBe("6 hours ago")
+    })
+  })
+
+  describe("isPast", () => {
+    it("returns true if the date has passed", () => {
+      expect(_.isPast(new Date("01-01-1979"))).toBe(true)
+    })
+
+    it("returns false if the date has not passed", () => {
+      expect(_.isPast(new Date("01-01-3000"))).toBe(false)
+    })
   })
 })
 
