@@ -1718,7 +1718,7 @@ const triple = (n: number) => n * 3
 const doubleThenTriple = pipe(double, triple)
 
 doubleThenTriple(6) //=> 36
-* ```
+```
  **/
 export function pipe<T>(
   ...funcs: [
@@ -1852,6 +1852,18 @@ export function memoize<T extends (...args: any[]) => any>(func: T): T {
 
 type Falsy = null | undefined | false
 
+/** Returns a function with arguments prepended to the arguments it receives.
+ * 
+ * Example:
+ * ```typescript
+const greet = (greeting: string, name: string) => greeting + " " + name;
+const sayHello = partial(greet, "Hello")
+
+sayHello("John") //=> "Hello John"
+}
+
+* ```
+ **/
 export function partial<T extends (...args: any[]) => any>(
   func: T,
   ...args: (Parameters<typeof func>[number] | Falsy)[]
