@@ -297,11 +297,17 @@ describe("arrays", () => {
     })
   })
 
-  describe("getRandomItem", () => {
+  describe("getRandomItems", () => {
     it("gets a random item from the array", () => {
       const arr = [1, 2, 3, 4, 5]
-      const randomItem = _.getRandomItem(arr)
+      const [randomItem] = _.getRandomItems(arr, 1)
       expect(arr.includes(randomItem)).toBe(true)
+    })
+
+    it("does not get the same item twice", () => {
+      const arr = [1, 2, 3, 4, 5]
+      const set = new Set(_.getRandomItems(arr, 5) as number[])
+      expect(_.isEqual(Array.from(set).sort(), arr)).toBe(true)
     })
   })
 

@@ -683,9 +683,29 @@ export function shuffle<T>(array: T[]) {
  * getRandomItem([1, 2, 3, 4, 5, 6]) //=> 3
  * ```
  **/
-export function getRandomItem<T>(arr: T[]) {
+export function getRandomItem<T>(arr: T[], n: number) {
   const randomIndex = Math.floor(Math.random() * arr.length)
   return arr[randomIndex]
+}
+
+/** Returns random elements from an array
+ *
+ * Example:
+ * ```typescript
+ * getRandomItems([1, 2, 3, 4, 5, 6], 1) //=> [3]
+ *
+ * getRandomItems([1, 2, 3, 4, 5, 6], 3) //=> [2, 5, 1]
+ * ```
+ **/
+export function getRandomItems<T>(arr: T[], n: number) {
+  let remainingItems = Array.from(arr)
+  const result = []
+  for (let i = 1; i <= n; i++) {
+    const randomIndex = Math.floor(Math.random() * remainingItems.length)
+    result.push(remainingItems[randomIndex])
+    remainingItems.splice(randomIndex, 1)
+  }
+  return result
 }
 
 /** Returns an array of every Nth item in an array
@@ -753,8 +773,6 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
 /** Returns a single dimensional array by default. If you pass a number for levels, the function will only reduce
  * that many dimensions of arrays.
  *
- * NOTE: You should never pass in a value for `currentLevel`. This is a helper param used for recursion.
- *
  * Example:
  * ```typescript
  * flatten([1, [2, 3, [4, 5]], 6])  //=> [1, 2, 3, 4, 5, 6]
@@ -762,12 +780,22 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
  * flatten([1, [2, 3, [4, 5]], 6], 1)  //=> [1, 2, 3, [4, 5], 6]
  * ```
  **/
-export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
-  return arr.reduce((acc, item) => {
-    if (Array.isArray(item) && (!levels || currentLevel < levels)) {
-      return [...acc, ...flatten(item, levels, currentLevel + 1)]
-    } else return [...acc, item]
-  }, [])
+export function flatten(arr: any[], levels = 0): any[] {
+  function flattenWithAccumulator(
+    arr: any[],
+    levels = 0,
+    currentLevel = 0
+  ): any[] {
+    return arr.reduce((acc, item) => {
+      if (Array.isArray(item) && (!levels || currentLevel < levels)) {
+        return [
+          ...acc,
+          ...flattenWithAccumulator(item, levels, currentLevel + 1),
+        ]
+      } else return [...acc, item]
+    }, [])
+  }
+  return flattenWithAccumulator(arr, levels)
 }
 
 type StringOrNumberArray = (string | number)[]
@@ -1514,16 +1542,27 @@ export function getKeyWithLargestValue<T extends object>(obj: T) {
  *
  * Example:
  * ```typescript
- * const ages = [{ age: 28 }, { age: 14 }, { age: 67 }, { age: 17 }, ]
- *
- * const canDrinkAlcohol = (obj:{ age: number }) => obj.age >= 21
- *
- * groupByCallbackResult(ages, canDrinkAlcohol)
- * //=>
- *      {
- *        "true": [{ age: 28 }, { age: 67 }]
- *        "false": [{ age: 14 }, { age: 17 }]
- *      }
+ const people = [
+                   { name: "John", age: 28 }, 
+                   { name: "Brittany", age: 14 }, 
+                   { name: "Susan", age: 67 }, 
+                   { name: "Jeff", age: 17 }
+                  ]
+ 
+const canDrinkAlcohol = (person: { age: number }) => person.age >= 21
+ 
+groupByCallbackResult(people, canDrinkAlcohol)
+ //=>
+      {
+       "true": [
+         { name: "John", age: 28 },
+         { name; "Susan", age: 67 }
+       ]
+       "false": [
+         { name: "Brittany", age: 14 },
+         { name: "Jeff", age: 17 }
+       ]
+      }
  * ```
  */
 export function groupByCallbackResult(things: any[], func: Function) {
