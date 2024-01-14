@@ -658,7 +658,9 @@ export function isNumeric(n: string | number) {
  * ```
  */
 export function shave<T>(iterable: T[], n: number): T[]
+
 export function shave(iterable: string, n: number): string
+
 export function shave<T>(iterable: string | T[], n: number) {
   return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
 }
