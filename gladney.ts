@@ -154,7 +154,7 @@ export function mean(...numbers: (number | number[])[]) {
  * ```
  **/
 export function median(...numbers: (number | number[])[]) {
-  const sorted = safeSort(flatten(numbers)) as number[]
+  const sorted = safeSort(flatten(numbers) as number[])
   if (sorted.length % 2 === 0) {
     return mean(sorted[sorted.length / 2], sorted[sorted.length / 2 - 1])
   } else {
@@ -790,7 +790,7 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
  * flatten([1, [2, 3, [4, 5]], 6], 1)  //=> [1, 2, 3, [4, 5], 6]
  * ```
  **/
-export function flatten(arr: any[], levels = 0): any[] {
+export function flatten(arr: any[], levels = 0): unknown[] {
   function flattenWithAccumulator(
     arr: any[],
     levels = 0,
@@ -826,6 +826,10 @@ type StringOrNumberArray = (string | number)[]
  * ```
  *
  */
+export function safeSort(arr: string[]): string[]
+
+export function safeSort(arr: number[]): number[]
+
 export function safeSort(arr: StringOrNumberArray) {
   return [...arr].sort((a, b) => {
     if (isNumeric(a)) return Number(a) - Number(b)
@@ -835,6 +839,10 @@ export function safeSort(arr: StringOrNumberArray) {
 
 /** Returns an array sorted (ascending) via bubble sort.
  **/
+export function bubbleSort(arr: string[]): string[]
+
+export function bubbleSort(arr: number[]): number[]
+
 export function bubbleSort(arr: StringOrNumberArray) {
   let noSwaps
   const _arr = [...arr]
@@ -855,6 +863,11 @@ export function bubbleSort(arr: StringOrNumberArray) {
 
 /** Returns an array sorted (ascending) via selection sort.
  **/
+
+export function selectionSort(arr: string[]): string[]
+
+export function selectionSort(arr: number[]): number[]
+
 export function selectionSort(arr: StringOrNumberArray) {
   const _arr = [...arr]
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
@@ -875,6 +888,10 @@ export function selectionSort(arr: StringOrNumberArray) {
 
 /** Returns an array sorted (ascending) via insertion sort.
  **/
+export function insertionSort(arr: string[]): string[]
+
+export function insertionSort(arr: number[]): number[]
+
 export function insertionSort(arr: StringOrNumberArray) {
   var currentVal
   const _arr = [...arr]
