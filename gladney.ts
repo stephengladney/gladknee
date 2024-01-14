@@ -1851,14 +1851,17 @@ export function debounce<T extends (...args: any[]) => any>(
  * or simply ignored (false). The default is true.
  *
  **/
-export function throttle<T extends (...args: any[]) => any>(
-  func: T,
+type Func<T, U> = (...args: T[]) => U
+type AsyncFunc<T, U> = (...args: T[]) => Promise<U>
+
+export function throttle<T, U>(
+  func: Func<T, U>,
   delay: number,
   enqueueEarlyCalls = true
-): T {
-  const { enqueue, executeAll, queue } = createAsyncQueue(func, delay)
+): Func<T, U> {
+  const { enqueue, executeAll, queue } = createAsyncQueue<T, U>(func, delay)
   let isWaiting = false
-  return ((...args: Parameters<T>) => {
+  return ((...args: T[]) => {
     if (isWaiting) {
       if (enqueueEarlyCalls) enqueue(...args)
       else return
@@ -1872,7 +1875,7 @@ export function throttle<T extends (...args: any[]) => any>(
       if (queue.length > 1) return
       else executeAll()
     }
-  }) as T
+  }) as Func<T, U>
 }
 
 /** Returns a memoized version of a function.
@@ -1980,19 +1983,20 @@ type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> = {
 
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createAsyncQueue<
-  T extends (...args: any[]) => Promise<unknown>
->(functionToExecute: T, delay?: number): AsyncQueueObject<T> {
+export function createAsyncQueue<T, U>(
+  functionToExecute: AsyncFunc<T, U> | Func<T, U>,
+  delay?: number
+): AsyncQueueObject<AsyncFunc<T, U>> {
   const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {
-    await functionToExecute(...queue[0])
+    await functionToExecute(...(queue[0] as T[]))
     queue.shift()
   }
   const executeAll = async (ignoreErrors = false) => {
     if (isBreakRequested) return
     try {
-      await functionToExecute(...queue[0])
+      await functionToExecute(...(queue[0] as T[]))
       queue.shift()
       if (delay) await pauseAsync(delay)
       if (queue.length > 0) executeAll(ignoreErrors)
@@ -2009,7 +2013,7 @@ export function createAsyncQueue<
       isBreakRequested = true
     },
     queue,
-    enqueue: (...args: Parameters<T>) => queue.push(args),
+    enqueue: (...args: T[]) => queue.push(args),
     executeOne,
     executeAll,
   }
