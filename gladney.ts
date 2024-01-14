@@ -657,7 +657,9 @@ export function isNumeric(n: string | number) {
  * shave("Hello", -2) //=> "llo"
  * ```
  */
-export function shave(iterable: string | unknown[], n: number) {
+export function shave<T>(iterable: T[], n: number): T[]
+export function shave(iterable: string, n: number): string
+export function shave<T>(iterable: string | T[], n: number) {
   return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
 }
 
@@ -1571,8 +1573,8 @@ groupByCallbackResult(people, canDrinkAlcohol)
       }
  * ```
  */
-export function groupByCallbackResult(things: any[], func: Function) {
-  const result: { [key: string]: any[] } = {}
+export function groupByCallbackResult<T>(things: T[], func: Function) {
+  const result: { [key: string]: T[] } = {}
   things.forEach((thing) => {
     const funcResult = String(func(thing))
     if (result[funcResult]) result[funcResult].push(thing)
@@ -1581,7 +1583,7 @@ export function groupByCallbackResult(things: any[], func: Function) {
   return result
 }
 
-export function getCallbackResultCounts(things: any[], func: Function) {
+export function getCallbackResultCounts<T>(things: T[], func: Function) {
   const result: { [key: string]: number } = {}
   const groupedByResult = groupByCallbackResult(things, func)
 
@@ -1712,7 +1714,25 @@ export function pauseSync(milliseconds: number) {
   while (Date.now() < end) {}
 }
 
-type GenericFunction<T> = (...args: T[]) => unknown
+type AnyFunc = (...arg: any) => any
+
+// Credit to @ecyrbedev on Twitter for this advanced typing mastery
+type PipeArgs<F extends AnyFunc[], Acc extends AnyFunc[] = []> = F extends [
+  (...args: infer A) => infer B
+]
+  ? [...Acc, (...args: A) => B]
+  : F extends [(...args: infer A) => any, ...infer Tail]
+  ? Tail extends [(arg: infer B) => any, ...any[]]
+    ? PipeArgs<Tail, [...Acc, (...args: A) => B]>
+    : Acc
+  : Acc
+
+type LastFnReturnType<F extends Array<AnyFunc>, Else = never> = F extends [
+  ...any[],
+  (...arg: any) => infer R
+]
+  ? R
+  : Else
 
 /** Returns a function that calls multiple given functions in a specific order.
  * 
@@ -1725,16 +1745,15 @@ const doubleThenTriple = pipe(double, triple)
 doubleThenTriple(6) //=> 36
 ```
  **/
-export function pipe<T>(
-  ...funcs: [
-    firstFunc: GenericFunction<T>,
-    secondFunc: GenericFunction<T>,
-    ...otherFuncs: GenericFunction<T>[]
-  ]
+export function pipe<FirstFn extends AnyFunc, F extends AnyFunc[]>(
+  firstFn: FirstFn,
+  ...fns: PipeArgs<F> extends F ? F : PipeArgs<F>
 ) {
-  return (...args: T[]) => {
-    return funcs.reduce((acc: any, current) => current(acc), args[0])
-  }
+  return (...args: Parameters<FirstFn>) =>
+    (fns as AnyFunc[]).reduce(
+      (acc, fn) => fn(acc),
+      firstFn(...(args as Array<Parameters<FirstFn>>))
+    ) as LastFnReturnType<F, ReturnType<FirstFn>>
 }
 
 type DebounceReturnObject<T extends (...args: any[]) => any> = {

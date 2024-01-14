@@ -975,6 +975,7 @@ describe("misc", () => {
       const double = (n: number) => n * 2
       const triple = (n: number) => n * 3
       const doubleThenTriple = _.pipe(double, triple)
+
       expect(doubleThenTriple(3)).toEqual(18)
     })
   })
