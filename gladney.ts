@@ -1912,7 +1912,7 @@ sayHello("John") //=> "Hello John"
  **/
 export function partial<T extends (...args: any[]) => any>(
   func: T,
-  ...args: (Parameters<typeof func>[number] | Falsy)[]
+  ...args: (Parameters<T>[number] | Falsy)[]
 ) {
   const newArgsToCall: (Parameters<typeof func>[number] | Falsy)[] = []
   let lastNewArgUsed = -1
@@ -1927,6 +1927,25 @@ export function partial<T extends (...args: any[]) => any>(
     })
     return func(...newArgsToCall, ...newArgs.slice(lastNewArgUsed))
   }
+}
+
+type CurryFunction<T> = T extends (...args: infer Args) => infer Result
+  ? Args extends []
+    ? () => Result
+    : Args extends [infer First, ...infer Rest]
+    ? (arg: First) => CurryFunction<(...rest: Rest) => Result>
+    : never
+  : never
+
+export function curry<T extends (...args: any[]) => any>(
+  func: T
+): CurryFunction<T> {
+  function rf(func: Function, i: number, args: any[]): Function {
+    return args.length < func.length
+      ? (arg: any) => rf(func, i - 1, [...args, arg])
+      : func(...args)
+  }
+  return rf(func, func.length, []) as CurryFunction<T>
 }
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.

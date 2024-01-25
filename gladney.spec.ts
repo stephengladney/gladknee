@@ -1029,6 +1029,15 @@ describe("misc", () => {
     })
   })
 
+  describe("curry", () => {
+    it("creates a curried version of a function", () => {
+      const addThreeNumbers = (n1: number, n2: number, n3: number) =>
+        n1 + n2 + n3
+      const curriedAdd3 = _.curry(addThreeNumbers)
+      expect(curriedAdd3(1)(2)(3)).toBe(6)
+    })
+  })
+
   describe("debounce", () => {
     it("immediate = true. invokes the function immediately on first call", () => {
       const func = jest.fn()
