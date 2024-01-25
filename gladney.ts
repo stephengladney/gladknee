@@ -261,6 +261,15 @@ export function timeSince(date: Date): TimeObject {
   return getAmountOfTimeFromSeconds(diffInSeconds)
 }
 
+type DayName =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
+
 /** Returns the corresponding human readable day name of an integer (0-6).
  *
  * Example:
@@ -269,7 +278,7 @@ export function timeSince(date: Date): TimeObject {
  * ```
  **/
 export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
-  const dayNames = [
+  const dayNames: DayName[] = [
     "Sunday",
     "Monday",
     "Tuesday",
