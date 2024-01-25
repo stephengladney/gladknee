@@ -1937,6 +1937,17 @@ type CurryFunction<T> = T extends (...args: infer Args) => infer Result
     : never
   : never
 
+/** Returns a curried version of a function.
+ *
+ * Example:
+ * ```typescript
+ * const addThreeNumbers = (n1: number, n2: number, n3: number) => n1 + n2 + n3
+ *
+ * const curriedAdd3 = curry(addThreeNumbers)
+ *
+ * curriedAdd3(1)(2)(3) //=> 6
+ * ```
+ **/
 export function curry<T extends (...args: any[]) => any>(
   func: T
 ): CurryFunction<T> {
