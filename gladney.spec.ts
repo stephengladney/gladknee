@@ -59,9 +59,6 @@ describe("time & dates", () => {
   describe("getAmountOfTimeFromSeconds", () => {
     it("returns the correct TimeOutput", () => {
       const timeObject = _.getAmountOfTimeFromSeconds(200000)
-      expect(timeObject.years).toEqual(0)
-      expect(timeObject.months).toEqual(0)
-      expect(timeObject.weeks).toEqual(0)
       expect(timeObject.days).toEqual(2)
       expect(timeObject.hours).toEqual(7)
       expect(timeObject.minutes).toEqual(33)
@@ -136,15 +133,58 @@ describe("time & dates", () => {
       expect(testDate.getSeconds()).toBe(59)
     })
   })
-})
 
-describe("isPast", () => {
-  it("returns true if the date has passed", () => {
-    expect(_.isPast(new Date("01-01-1979"))).toBe(true)
+  describe("getTimeDiff", () => {
+    it("returns the correct duration", () => {
+      const start = new Date()
+      const end = new Date(start)
+      end.setDate(end.getDate() - 11)
+      end.setHours(end.getHours() - 2)
+      end.setMinutes(end.getMinutes() - 5)
+      end.setSeconds(end.getSeconds() - 43)
+
+      expect(_.getTimeDiff(start, end)).toEqual({
+        days: 11,
+        hours: 2,
+        minutes: 5,
+        seconds: 43,
+      })
+    })
   })
 
-  it("returns false if the date has not passed", () => {
-    expect(_.isPast(new Date("01-01-3000"))).toBe(false)
+  describe("getRelativeTimeDiff", () => {
+    it("returns the correct relative duration", () => {
+      const secondsInAMinute = 60
+      const secondsInAnHour = 3600
+      const secondsInADay = 86400
+      const secondsInAWeek = 604800
+      const secondsInAMonth = 2592000 // Assumes 30 day month
+      const secondsInAYear = 31557600
+
+      const oneDayAgo = new Date(Date.now() - secondsInADay * 1000)
+      const twoWeeksAgo = new Date(Date.now() - secondsInAWeek * 1000 * 2)
+      const threeMonthsAgo = new Date(Date.now() - secondsInAMonth * 1000 * 3)
+      const fourYearsAgo = new Date(Date.now() - secondsInAYear * 1000 * 4)
+      const fiveMinutesAgo = new Date(Date.now() - secondsInAMinute * 1000 * 5)
+      const sixHoursAgo = new Date(Date.now() - secondsInAnHour * 1000 * 6)
+
+      expect(_.getRelativeTimeDiff(oneDayAgo)).toBe("yesterday")
+      expect(_.getRelativeTimeDiff(twoWeeksAgo)).toBe("2 weeks ago")
+      expect(_.getRelativeTimeDiff(threeMonthsAgo)).toBe("3 months ago")
+      expect(_.getRelativeTimeDiff(fourYearsAgo)).toBe("4 years ago")
+      expect(_.getRelativeTimeDiff(fiveMinutesAgo)).toBe("5 minutes ago")
+      expect(_.getRelativeTimeDiff(sixHoursAgo)).toBe("6 hours ago")
+    })
+  })
+
+  describe("isPast", () => {
+    it("returns true if the date has passed", () => {
+      expect(_.isPast(new Date("01-01-1979"))).toBe(true)
+    })
+
+    it("returns false if the date has not passed", () => {
+      expect(_.isPast(new Date("01-01-3000"))).toBe(false)
+    })
   })
 })
 
@@ -250,8 +290,8 @@ describe("slugify", () => {
     expect(_.slugify(" this is some text ")).toBe("this-is-some-text")
   })
 
-  it("removes non-letter characters", () => {
-    expect(_.slugify("this is some text!")).toBe("this-is-some-text")
+  it("removes non-letter and non-number characters", () => {
+    expect(_.slugify("42 things you can do")).toBe("42-things-you-can-do")
   })
 
   it("can use a custom separator", () => {
@@ -297,11 +337,17 @@ describe("arrays", () => {
     })
   })
 
-  describe("getRandomItem", () => {
+  describe("getRandomItems", () => {
     it("gets a random item from the array", () => {
       const arr = [1, 2, 3, 4, 5]
-      const randomItem = _.getRandomItem(arr)
+      const [randomItem] = _.getRandomItems(arr, 1)
       expect(arr.includes(randomItem)).toBe(true)
+    })
+
+    it("does not get the same item twice", () => {
+      const arr = [1, 2, 3, 4, 5]
+      const set = new Set(_.getRandomItems(arr, 5) as number[])
+      expect(_.isEqual(Array.from(set).sort(), arr)).toBe(true)
     })
   })
 
@@ -427,6 +473,27 @@ describe("arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
       expect(_.getCommonItems(arr, arr2)).toEqual([2, 3])
+    })
+  })
+
+  describe("getCallbackResultCounts", () => {
+    it("returns the counts of results", () => {
+      const objs = [
+        { a: 1, b: 1 },
+        { a: 1, b: 1 },
+        { a: 2, b: 1 },
+        { a: 1, b: 1 },
+        { a: 2, b: 2 },
+        { a: 3, b: 1 },
+      ]
+
+      const aPlusB = ({ a, b }: { a: number; b: number }) => a + b
+
+      expect(_.getCallbackResultCounts(objs, aPlusB)).toEqual({
+        "2": 3,
+        "3": 1,
+        "4": 2,
+      })
     })
   })
 
@@ -908,6 +975,7 @@ describe("misc", () => {
       const double = (n: number) => n * 2
       const triple = (n: number) => n * 3
       const doubleThenTriple = _.pipe(double, triple)
+
       expect(doubleThenTriple(3)).toEqual(18)
     })
   })
@@ -958,6 +1026,15 @@ describe("misc", () => {
       const subtract = (a: number, b: number) => a - b
       const subtractFrom5 = _.partial(subtract, 5, false)
       expect(subtractFrom5(1)).toEqual(4)
+    })
+  })
+
+  describe("curry", () => {
+    it("creates a curried version of a function", () => {
+      const addThreeNumbers = (n1: number, n2: number, n3: number) =>
+        n1 + n2 + n3
+      const curriedAdd3 = _.curry(addThreeNumbers)
+      expect(curriedAdd3(1)(2)(3)).toBe(6)
     })
   })
 
@@ -1087,12 +1164,12 @@ describe("misc", () => {
       expect(_.hexToRgb("#FF0000")).toEqual([255, 0, 0])
     })
   })
-})
 
-describe("stripHTML", () => {
-  it("removes any html tags from text", () => {
-    expect(_.stripHTML("<html><p>Hello <b>world</b>!</p></html>")).toBe(
-      "Hello world!"
-    )
+  describe("stripHTML", () => {
+    it("removes any html tags from text", () => {
+      expect(_.stripHTML("<html><p>Hello <b>world</b>!</p></html>")).toBe(
+        "Hello world!"
+      )
+    })
   })
 })

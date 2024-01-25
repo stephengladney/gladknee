@@ -58,8 +58,8 @@ export function clampNumber(
   max?: number | false
 ) {
   let result = n
-  if (min) result = n > min ? n : min
-  if (max) result = result < max ? result : max
+  if (min !== false) result = n > min ? n : min
+  if (max !== false && max !== undefined) result = result < max ? result : max
   return result
 }
 
@@ -75,7 +75,7 @@ export function doubleDigit(n: number) {
   else return String(`0${n}`).slice(-2)
 }
 
-/** Returns an array of numbers, starting from a start number and ending with an end number.
+/** Returns an array of numbers, starting from and ending at provided numbers.
  * You can optionally pass in a step number to increment by a number other than 1. You can also increment negatively.
  *
  * _Example:_
@@ -154,7 +154,7 @@ export function mean(...numbers: (number | number[])[]) {
  * ```
  **/
 export function median(...numbers: (number | number[])[]) {
-  const sorted = safeSort(flatten(numbers)) as number[]
+  const sorted = safeSort(flatten(numbers) as number[])
   if (sorted.length % 2 === 0) {
     return mean(sorted[sorted.length / 2], sorted[sorted.length / 2 - 1])
   } else {
@@ -181,39 +181,22 @@ export function mode(...numbers: (number | number[])[]) {
 }
 
 export interface TimeObject {
-  years: number
-  months: number
-  weeks: number
   days: number
   hours: number
   minutes: number
   seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
 }
 
 const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
-const secondsInAWeek = 604800
-const secondsInAMonth = 2592000 // Assumes 30 day month
-const secondsInAYear = 31557600
 
-/** Returns a `TimeObject` with calculated years, months, weeks, days, hours, minutes and seconds from an amount of 
- * seconds. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `TimeObject` with calculated days, hours, minutes and seconds from an amount of seconds.
  *
  * _Example:_
  * ```typescript
  * getAmountOfTimeFromSeconds(2000000)
-//=> { years: 0, months: 0, weeks: 3, days: 2, hours: 3, minutes: 33, seconds: 20 }
-
-* getAmountOfTimeFromSeconds(2000000).inMinutes()
-//=> 33333.333333333336
+//=> { days: 23, hours: 3, minutes: 33, seconds: 20 }
 
 interface TimeObject {
   years: number
@@ -235,20 +218,10 @@ interface TimeObject {
  **/
 export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   return {
-    years: Math.floor(seconds / secondsInAYear),
-    months: Math.floor((seconds % secondsInAYear) / secondsInAMonth),
-    weeks: Math.floor((seconds % secondsInAMonth) / secondsInAWeek),
-    days: Math.floor((seconds % secondsInAWeek) / secondsInADay),
+    days: Math.floor(seconds / secondsInADay),
     hours: Math.floor((seconds % secondsInADay) / secondsInAnHour),
     minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
     seconds: seconds % secondsInAMinute,
-    inYears: () => seconds / secondsInAYear,
-    inMonths: () => seconds / secondsInAMonth,
-    inWeeks: () => seconds / secondsInAWeek,
-    inDays: () => seconds / secondsInADay,
-    inHours: () => seconds / secondsInAnHour,
-    inMinutes: () => seconds / secondsInAMinute,
-    inSeconds: () => seconds,
   }
 }
 
@@ -256,20 +229,10 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
  * a specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
 interface TimeObject {
-  years: number
-  months: number
-  weeks: number
   days: number
   hours: number
   minutes: number
   seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
 }
  * ```
  **/
@@ -284,20 +247,10 @@ export function timeUntil(date: Date): TimeObject {
  * specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
 interface TimeObject {
-  years: number
-  months: number
-  weeks: number
   days: number
   hours: number
   minutes: number
   seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
 }
  * ```
  **/
@@ -348,6 +301,61 @@ export function todayEnd() {
  **/
 export function isPast(date: Date) {
   return new Date(date).getTime() < Date.now()
+}
+
+/** Returns a TimeObject representing the amount of time between two dates.
+ *
+ * Example:
+ *
+ * ```typescript
+ * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
+ *
+ * getTimeDiff(new Date(), fiveMinutesAgo) //=>
+ *  {
+ *    days: 0,
+ *    hours: 0,
+ *    minutes: 5,
+ *    seconds: 0
+ *  }
+ * ```
+ */
+export function getTimeDiff(dateA: Date, dateB: Date) {
+  const diff = Math.abs((dateA.getTime() - dateB.getTime()) / 1000)
+  return getAmountOfTimeFromSeconds(diff)
+}
+
+/** Returns the relative time difference of two dates
+ *
+ * Example:
+ *
+ * ```typescript
+ * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
+ *
+ * getRelativeTime(fiveMinutesAgo) //=> "5 minutes ago"
+ * ```
+ */
+export function getRelativeTimeDiff(to: Date, from: Date = new Date()) {
+  const TIME_UNITS: { n: number; unit: Intl.RelativeTimeFormatUnit }[] = [
+    { n: 60, unit: "seconds" },
+    { n: 60, unit: "minutes" },
+    { n: 24, unit: "hours" },
+    { n: 7, unit: "days" },
+    { n: 4.34524, unit: "weeks" },
+    { n: 12, unit: "months" },
+    { n: Number.POSITIVE_INFINITY, unit: "years" },
+  ]
+
+  let duration = (to.getTime() - from.getTime()) / 1000
+
+  for (let i = 0; i < TIME_UNITS.length; i++) {
+    const currentUnit = TIME_UNITS[i]
+    if (Math.abs(duration) < currentUnit.n) {
+      return new Intl.RelativeTimeFormat(undefined, {
+        numeric: "auto",
+      }).format(Math.round(duration), currentUnit.unit)
+    }
+    duration /= currentUnit.n
+  }
 }
 
 // STRINGS
@@ -445,6 +453,7 @@ export function mask(
       config.style === "leading" ? str : str.split("").reverse().join("")
 
     let maskedCount = 0
+
     const masked = _str.split("").reduce((acc, char) => {
       if (config?.ignore && config.ignore.includes(char)) {
         return acc + char
@@ -456,6 +465,7 @@ export function mask(
         return acc + (config?.maskWith || "*")
       } else return acc + char
     }, "")
+
     return config?.style === "leading"
       ? masked
       : masked.split("").reverse().join("")
@@ -464,10 +474,13 @@ export function mask(
       (str.length - (config.maskLength || str.length)) % 2 === 0
         ? (str.length - (config.maskLength || str.length)) / 2
         : Math.floor((str.length - (config.maskLength || str.length)) / 2)
+
     let maskedCount = 0
+
     return str.split("").reduce((acc, char, i) => {
       const shouldIgnoreCharacter =
         !!config?.ignore && config.ignore.includes(char)
+
       if (shouldIgnoreCharacter) return acc + char
       else if (i + 1 <= length1) return acc + char
       else if (config?.maskLength && maskedCount < config?.maskLength) {
@@ -491,7 +504,7 @@ export function pad(
   str: string,
   length: number,
   char: string,
-  style: "leading" | "trailing"
+  style: "leading" | "trailing" = "trailing"
 ) {
   if (str.length >= length) return str
 
@@ -537,7 +550,7 @@ export function unEscapeString(str: string) {
 
 /** Returns a random string of specified length. Can include letters and/or numbers.
  *
- * NOTE: `includeLetters` and `includeNumbers` both default to true.
+ * NOTE: `includeLetters` and `includeNumbers` both default to true. `includeSpecialChars` defaults to false.
  * 
  * Example:
  * ```typescript
@@ -546,17 +559,22 @@ export function unEscapeString(str: string) {
 getRandomString(5, true, false) //=> "GjOxa"
 
 getRandomString(5, false, true) //=> "39281"
+
+getRandomString(5, true, true, true) //=> "G2a$k!"
  * ```
  **/
 export function getRandomString(
   length: number,
   includeLetters = true,
-  includeNumbers = true
+  includeNumbers = true,
+  includeSpecialChars = false
 ): string {
   const chars =
     (includeLetters
       ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-      : "") + (includeNumbers ? "0123456789" : "")
+      : "") +
+    (includeNumbers ? "0123456789" : "") +
+    (includeSpecialChars ? "!@#$%^&*()" : "")
   let randomString = ""
   for (let i = 1; i <= length; i++) {
     randomString += chars[Math.floor(Math.random() * chars.length)]
@@ -565,11 +583,14 @@ export function getRandomString(
 }
 
 /**
- * Returns a string with the first letter capitalized. Optionally pass in boolean to convert following characters to lower case.
+ * Returns a string with the first letter of each word capitalized. Optionally pass in
+ * a boolean to convert following characters to lower case.
  *
  * Example:
  * ```typescript
  * capitalize("stephen") //=> "Stephen"
+ *
+ * capitalize("hello world") //=> "Hello World"
  *
  * capitalize("hELLO", true) //=> "Hello"
  *
@@ -577,18 +598,22 @@ export function getRandomString(
  * ```
  */
 export function capitalize(str: string, lowercaseOthers = false) {
-  return (
+  const capitalizeWord = (str: string) =>
     str[0].toUpperCase() +
     (lowercaseOthers ? str.slice(1).toLowerCase() : str.slice(1))
-  )
+
+  return str
+    .split(" ")
+    .map((word) => capitalizeWord(word))
+    .join(" ")
 }
 
 /**
- * Returns a string lowercased with non letter characters removed and spaces and underscores replaced with a separator (- by default)
+ * Returns a string lowercased with non letter/number characters removed and spaces and underscores replaced with a separator (- by default)
  *
  * Example:
  * ```typescript
- * slugify("This is the blog post title!") //=> "this-is-the-blog-post-title"
+ * slugify("This is the 42nd blog post title!") //=> "this-is-the-42nd-blog-post-title"
  *
  * slugify("This is the blog post title!", "_") //=> "this_is_the_blog_post_title"
  * ```
@@ -632,7 +657,11 @@ export function isNumeric(n: string | number) {
  * shave("Hello", -2) //=> "llo"
  * ```
  */
-export function shave(iterable: string | unknown[], n: number) {
+export function shave<T>(iterable: T[], n: number): T[]
+
+export function shave(iterable: string, n: number): string
+
+export function shave<T>(iterable: string | T[], n: number) {
   return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
 }
 
@@ -666,9 +695,29 @@ export function shuffle<T>(array: T[]) {
  * getRandomItem([1, 2, 3, 4, 5, 6]) //=> 3
  * ```
  **/
-export function getRandomItem<T>(arr: T[]) {
+export function getRandomItem<T>(arr: T[], n: number) {
   const randomIndex = Math.floor(Math.random() * arr.length)
   return arr[randomIndex]
+}
+
+/** Returns random elements from an array
+ *
+ * Example:
+ * ```typescript
+ * getRandomItems([1, 2, 3, 4, 5, 6], 1) //=> [3]
+ *
+ * getRandomItems([1, 2, 3, 4, 5, 6], 3) //=> [2, 5, 1]
+ * ```
+ **/
+export function getRandomItems<T>(arr: T[], n: number) {
+  let remainingItems = Array.from(arr)
+  const result = []
+  for (let i = 1; i <= n; i++) {
+    const randomIndex = Math.floor(Math.random() * remainingItems.length)
+    result.push(remainingItems[randomIndex])
+    remainingItems.splice(randomIndex, 1)
+  }
+  return result
 }
 
 /** Returns an array of every Nth item in an array
@@ -736,21 +785,29 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
 /** Returns a single dimensional array by default. If you pass a number for levels, the function will only reduce
  * that many dimensions of arrays.
  *
- * NOTE: You should never pass in a value for `currentLevel`. This is a helper param used for recursion.
- *
  * Example:
  * ```typescript
- * flatten([1,[2,3,[4,5]],6]) //=> [1, 2, 3, 4, 5, 6]
+ * flatten([1, [2, 3, [4, 5]], 6])  //=> [1, 2, 3, 4, 5, 6]
  *
- * flatten([1,[2,3,[4,5]],6], 1) //=> [1, 2, 3, [4, 5], 6]
+ * flatten([1, [2, 3, [4, 5]], 6], 1)  //=> [1, 2, 3, [4, 5], 6]
  * ```
  **/
-export function flatten(arr: any[], levels = 0, currentLevel = 0): any[] {
-  return arr.reduce((acc, item) => {
-    if (Array.isArray(item) && (!levels || currentLevel < levels)) {
-      return [...acc, ...flatten(item, levels, currentLevel + 1)]
-    } else return [...acc, item]
-  }, [])
+export function flatten(arr: any[], levels = 0): unknown[] {
+  function flattenWithAccumulator(
+    arr: any[],
+    levels = 0,
+    currentLevel = 0
+  ): any[] {
+    return arr.reduce((acc, item) => {
+      if (Array.isArray(item) && (!levels || currentLevel < levels)) {
+        return [
+          ...acc,
+          ...flattenWithAccumulator(item, levels, currentLevel + 1),
+        ]
+      } else return [...acc, item]
+    }, [])
+  }
+  return flattenWithAccumulator(arr, levels)
 }
 
 type StringOrNumberArray = (string | number)[]
@@ -771,6 +828,10 @@ type StringOrNumberArray = (string | number)[]
  * ```
  *
  */
+export function safeSort(arr: string[]): string[]
+
+export function safeSort(arr: number[]): number[]
+
 export function safeSort(arr: StringOrNumberArray) {
   return [...arr].sort((a, b) => {
     if (isNumeric(a)) return Number(a) - Number(b)
@@ -780,6 +841,10 @@ export function safeSort(arr: StringOrNumberArray) {
 
 /** Returns an array sorted (ascending) via bubble sort.
  **/
+export function bubbleSort(arr: string[]): string[]
+
+export function bubbleSort(arr: number[]): number[]
+
 export function bubbleSort(arr: StringOrNumberArray) {
   let noSwaps
   const _arr = [...arr]
@@ -800,6 +865,11 @@ export function bubbleSort(arr: StringOrNumberArray) {
 
 /** Returns an array sorted (ascending) via selection sort.
  **/
+
+export function selectionSort(arr: string[]): string[]
+
+export function selectionSort(arr: number[]): number[]
+
 export function selectionSort(arr: StringOrNumberArray) {
   const _arr = [...arr]
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
@@ -820,6 +890,10 @@ export function selectionSort(arr: StringOrNumberArray) {
 
 /** Returns an array sorted (ascending) via insertion sort.
  **/
+export function insertionSort(arr: string[]): string[]
+
+export function insertionSort(arr: number[]): number[]
+
 export function insertionSort(arr: StringOrNumberArray) {
   var currentVal
   const _arr = [...arr]
@@ -962,6 +1036,21 @@ export function getSharedItems<T>(...arrs: T[][]) {
   return result
 }
 
+/** Returns the provided array with two items' positions swapped
+ *
+ * Example:
+ * ```typescript
+ * swapItems([0, 1, 2, 3, 4], 1, 3) //=> [0, 3, 2, 1, 4]
+ * ```
+ */
+export function swapItems<T>(arr: T[], index1: number, index2: number) {
+  return arr.map((item, i) => {
+    if (i === index1) return arr[index2]
+    if (i === index2) return arr[index1]
+    return item
+  })
+}
+
 /** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
  optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
  apply case sensitivity (default: false).
@@ -986,23 +1075,6 @@ export function getSharedItems<T>(...arrs: T[][]) {
  * 
  * NOTE: `orderMatters` is false by default.
  **/
-
-/** Returns the provided array with two items' positions swapped
- *
- * Example:
- * ```typescript
- * swapItems([0, 1, 2, 3, 4], 1, 3) //=> [0, 3, 2, 1, 4]
- * ```
- */
-
-export function swapItems<T>(arr: T[], index1: number, index2: number) {
-  return arr.map((item, i) => {
-    if (i === index1) return arr[index2]
-    if (i === index2) return arr[index1]
-    return item
-  })
-}
-
 export function isEqual(
   thing1: object | [],
   thing2: object | [],
@@ -1088,7 +1160,7 @@ export function omitKeys<T extends object, U extends keyof T>(
       result[key as string] = obj[key as U]
     }
   })
-  return result
+  return result as Partial<T>
 }
 
 /** Returns an object with only the specific keys included.
@@ -1111,7 +1183,7 @@ export function pickKeys<T extends object, U extends keyof T>(
       result[key] = obj[key as U]
     }
   })
-  return result
+  return result as Partial<T>
 }
 
 /** Returns a single object with all of the key value pairs from two or more objects.
@@ -1497,20 +1569,31 @@ export function getKeyWithLargestValue<T extends object>(obj: T) {
  *
  * Example:
  * ```typescript
- * const ages = [{ age: 28 }, { age: 14 }, { age: 67 }, { age: 17 }, ]
- *
- * const canDrinkAlcohol = (obj:{ age: number }) => obj.age >= 21
- *
- * groupByCallbackResult(ages, canDrinkAlcohol)
- * //=>
- *      {
- *        "true": [{ age: 28 }, { age: 67 }]
- *        "false": [{ age: 14 }, { age: 17 }]
- *      }
+ const people = [
+                   { name: "John", age: 28 }, 
+                   { name: "Brittany", age: 14 }, 
+                   { name: "Susan", age: 67 }, 
+                   { name: "Jeff", age: 17 }
+                  ]
+ 
+const canDrinkAlcohol = (person: { age: number }) => person.age >= 21
+ 
+groupByCallbackResult(people, canDrinkAlcohol)
+ //=>
+      {
+       "true": [
+         { name: "John", age: 28 },
+         { name; "Susan", age: 67 }
+       ]
+       "false": [
+         { name: "Brittany", age: 14 },
+         { name: "Jeff", age: 17 }
+       ]
+      }
  * ```
  */
-export function groupByCallbackResult(things: any[], func: Function) {
-  const result: { [key: string]: any[] } = {}
+export function groupByCallbackResult<T>(things: T[], func: Function) {
+  const result: { [key: string]: T[] } = {}
   things.forEach((thing) => {
     const funcResult = String(func(thing))
     if (result[funcResult]) result[funcResult].push(thing)
@@ -1519,7 +1602,7 @@ export function groupByCallbackResult(things: any[], func: Function) {
   return result
 }
 
-export function getCallbackResultCounts(things: any[], func: Function) {
+export function getCallbackResultCounts<T>(things: T[], func: Function) {
   const result: { [key: string]: number } = {}
   const groupedByResult = groupByCallbackResult(things, func)
 
@@ -1557,7 +1640,6 @@ sortByCallbackResult(socialStats, getPopularity)
 ]
  * ```
  */
-
 export function sortByCallbackResult<T>(things: T[], func: Function) {
   const groupedByResult = groupByCallbackResult(things, func)
   return safeSort(Object.keys(groupedByResult)).reduce(
@@ -1651,7 +1733,25 @@ export function pauseSync(milliseconds: number) {
   while (Date.now() < end) {}
 }
 
-type GenericFunction<T> = (...args: T[]) => unknown
+type AnyFunc = (...arg: any) => any
+
+// Credit to @ecyrbedev on Twitter for this advanced typing mastery
+type PipeArgs<F extends AnyFunc[], Acc extends AnyFunc[] = []> = F extends [
+  (...args: infer A) => infer B
+]
+  ? [...Acc, (...args: A) => B]
+  : F extends [(...args: infer A) => any, ...infer Tail]
+  ? Tail extends [(arg: infer B) => any, ...any[]]
+    ? PipeArgs<Tail, [...Acc, (...args: A) => B]>
+    : Acc
+  : Acc
+
+type LastFnReturnType<F extends Array<AnyFunc>, Else = never> = F extends [
+  ...any[],
+  (...arg: any) => infer R
+]
+  ? R
+  : Else
 
 /** Returns a function that calls multiple given functions in a specific order.
  * 
@@ -1662,18 +1762,17 @@ const triple = (n: number) => n * 3
 const doubleThenTriple = pipe(double, triple)
 
 doubleThenTriple(6) //=> 36
-* ```
+```
  **/
-export function pipe<T>(
-  ...funcs: [
-    firstFunc: GenericFunction<T>,
-    secondFunc: GenericFunction<T>,
-    ...otherFuncs: GenericFunction<T>[]
-  ]
+export function pipe<FirstFn extends AnyFunc, F extends AnyFunc[]>(
+  firstFn: FirstFn,
+  ...fns: PipeArgs<F> extends F ? F : PipeArgs<F>
 ) {
-  return (...args: T[]) => {
-    return funcs.reduce((acc: any, current) => current(acc), args[0])
-  }
+  return (...args: Parameters<FirstFn>) =>
+    (fns as AnyFunc[]).reduce(
+      (acc, fn) => fn(acc),
+      firstFn(...(args as Array<Parameters<FirstFn>>))
+    ) as LastFnReturnType<F, ReturnType<FirstFn>>
 }
 
 type DebounceReturnObject<T extends (...args: any[]) => any> = {
@@ -1752,14 +1851,17 @@ export function debounce<T extends (...args: any[]) => any>(
  * or simply ignored (false). The default is true.
  *
  **/
-export function throttle<T extends (...args: any[]) => any>(
-  func: T,
+type Func<T, U> = (...args: T[]) => U
+type AsyncFunc<T, U> = (...args: T[]) => Promise<U>
+
+export function throttle<T, U>(
+  func: Func<T, U>,
   delay: number,
   enqueueEarlyCalls = true
-): T {
-  const { enqueue, executeAll, queue } = createAsyncQueue(func, delay)
+): Func<T, U> {
+  const { enqueue, executeAll, queue } = createAsyncQueue<T, U>(func, delay)
   let isWaiting = false
-  return ((...args: Parameters<T>) => {
+  return ((...args: T[]) => {
     if (isWaiting) {
       if (enqueueEarlyCalls) enqueue(...args)
       else return
@@ -1773,7 +1875,7 @@ export function throttle<T extends (...args: any[]) => any>(
       if (queue.length > 1) return
       else executeAll()
     }
-  }) as T
+  }) as Func<T, U>
 }
 
 /** Returns a memoized version of a function.
@@ -1796,9 +1898,21 @@ export function memoize<T extends (...args: any[]) => any>(func: T): T {
 
 type Falsy = null | undefined | false
 
+/** Returns a function with arguments prepended to the arguments it receives.
+ * 
+ * Example:
+ * ```typescript
+const greet = (greeting: string, name: string) => greeting + " " + name;
+const sayHello = partial(greet, "Hello")
+
+sayHello("John") //=> "Hello John"
+}
+
+* ```
+ **/
 export function partial<T extends (...args: any[]) => any>(
   func: T,
-  ...args: (Parameters<typeof func>[number] | Falsy)[]
+  ...args: (Parameters<T>[number] | Falsy)[]
 ) {
   const newArgsToCall: (Parameters<typeof func>[number] | Falsy)[] = []
   let lastNewArgUsed = -1
@@ -1813,6 +1927,36 @@ export function partial<T extends (...args: any[]) => any>(
     })
     return func(...newArgsToCall, ...newArgs.slice(lastNewArgUsed))
   }
+}
+
+type CurryFunction<T> = T extends (...args: infer Args) => infer Result
+  ? Args extends []
+    ? () => Result
+    : Args extends [infer First, ...infer Rest]
+    ? (arg: First) => CurryFunction<(...rest: Rest) => Result>
+    : never
+  : never
+
+/** Returns a curried version of a function.
+ *
+ * Example:
+ * ```typescript
+ * const addThreeNumbers = (n1: number, n2: number, n3: number) => n1 + n2 + n3
+ *
+ * const curriedAdd3 = curry(addThreeNumbers)
+ *
+ * curriedAdd3(1)(2)(3) //=> 6
+ * ```
+ **/
+export function curry<T extends (...args: any[]) => any>(
+  func: T
+): CurryFunction<T> {
+  function curried(func: Function, i: number, args: any[]): Function {
+    return args.length < func.length
+      ? (arg: any) => curried(func, i - 1, [...args, arg])
+      : func(...args)
+  }
+  return curried(func, func.length, []) as CurryFunction<T>
 }
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.
@@ -1869,19 +2013,20 @@ type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> = {
 
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createAsyncQueue<
-  T extends (...args: any[]) => Promise<unknown>
->(functionToExecute: T, delay?: number): AsyncQueueObject<T> {
+export function createAsyncQueue<T, U>(
+  functionToExecute: AsyncFunc<T, U> | Func<T, U>,
+  delay?: number
+): AsyncQueueObject<AsyncFunc<T, U>> {
   const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {
-    await functionToExecute(...queue[0])
+    await functionToExecute(...(queue[0] as T[]))
     queue.shift()
   }
   const executeAll = async (ignoreErrors = false) => {
     if (isBreakRequested) return
     try {
-      await functionToExecute(...queue[0])
+      await functionToExecute(...(queue[0] as T[]))
       queue.shift()
       if (delay) await pauseAsync(delay)
       if (queue.length > 0) executeAll(ignoreErrors)
@@ -1898,7 +2043,7 @@ export function createAsyncQueue<
       isBreakRequested = true
     },
     queue,
-    enqueue: (...args: Parameters<T>) => queue.push(args),
+    enqueue: (...args: T[]) => queue.push(args),
     executeOne,
     executeAll,
   }
