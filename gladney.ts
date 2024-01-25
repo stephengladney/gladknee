@@ -1323,8 +1323,8 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
 ) {
   return arr.reduce((result: { [key: string]: number }, obj) => {
     const value = isCaseSensitive
-      ? (obj[key] as string)
-      : (obj[key] as string).toLowerCase()
+      ? String(obj[key])
+      : String(obj[key]).toLowerCase()
     if (result[value] > 0) {
       result[value] = result[value] + 1
       return result
