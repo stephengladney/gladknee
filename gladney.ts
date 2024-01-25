@@ -229,20 +229,6 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
   }
 }
 
-/** Returns a `TimeObject` with calculated days, hours, minutes and seconds from an amount of seconds.
- *
- * _Example:_
- * ```typescript
- * getAmountOfTimeFromMilliseconds(65000) //=> { days: 0, hours: 0, minutes: 1, seconds: 5 }
- *
- * ```
- **/
-export function getAmountOfTimeFromMilliseconds(
-  milliseconds: number
-): TimeObject {
-  return getAmountOfTimeFromSeconds(Math.floor(milliseconds / 1000))
-}
-
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until 
  * a specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
