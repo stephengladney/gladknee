@@ -1199,37 +1199,6 @@ export function pickKeys<T extends object, U extends keyof T>(
   return result as Pick<T, U>
 }
 
-/** Returns a single object with all of the key value pairs from two or more objects.
- *
- * Example:
- * ```typescript
- * const obj1 = { a: 1, b: 2, c: 3 }
- * const obj2 = { d: 4, e: 5, f: 6 }
- *
- * combineObjects(obj1, obj2)
- * //=>
- *     {
- *      a: 1,
- *      b: 2,
- *      c: 3,
- *      d: 4,
- *      e: 5,
- *      f: 6
- *     }
- * ```
- *
- * NOTE: If two objects have the same key, the latter object's value will result.
- **/
-export function combineObjects(...objs: object[]): object {
-  const result: { [key: string]: any } = {}
-  objs.forEach((obj) => {
-    Object.keys(obj).forEach((key) => {
-      result[key] = obj[key as keyof object]
-    })
-  })
-  return result
-}
-
 /** Returns the sum of the values of a specific shared key in an array of objects.
  *
  * Example:
