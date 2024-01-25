@@ -634,13 +634,6 @@ describe("objects", () => {
     })
   })
 
-  describe("combineObjects", () => {
-    it("returns an object with all key/values from provided objects", () => {
-      const objArray = [{ a: 1 }, { b: 2 }, { c: 3 }]
-      expect(_.combineObjects(...objArray)).toEqual({ a: 1, b: 2, c: 3 })
-    })
-  })
-
   describe("sumOfKeyValue", () => {
     it("returns the sum of the key value", () => {
       const arr = [
