@@ -1951,12 +1951,12 @@ type CurryFunction<T> = T extends (...args: infer Args) => infer Result
 export function curry<T extends (...args: any[]) => any>(
   func: T
 ): CurryFunction<T> {
-  function rf(func: Function, i: number, args: any[]): Function {
+  function curried(func: Function, i: number, args: any[]): Function {
     return args.length < func.length
-      ? (arg: any) => rf(func, i - 1, [...args, arg])
+      ? (arg: any) => curried(func, i - 1, [...args, arg])
       : func(...args)
   }
-  return rf(func, func.length, []) as CurryFunction<T>
+  return curried(func, func.length, []) as CurryFunction<T>
 }
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.
