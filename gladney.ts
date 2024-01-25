@@ -190,6 +190,7 @@ export interface TimeObject {
   seconds: number
 }
 
+const millisecondsInASecond = 1000
 const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
@@ -226,6 +227,20 @@ export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
     minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
     seconds: seconds % secondsInAMinute,
   }
+}
+
+/** Returns a `TimeObject` with calculated days, hours, minutes and seconds from an amount of seconds.
+ *
+ * _Example:_
+ * ```typescript
+ * getAmountOfTimeFromMilliseconds(65000) //=> { days: 0, hours: 0, minutes: 1, seconds: 5 }
+ *
+ * ```
+ **/
+export function getAmountOfTimeFromMilliseconds(
+  milliseconds: number
+): TimeObject {
+  return getAmountOfTimeFromSeconds(Math.floor(milliseconds / 1000))
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until 
