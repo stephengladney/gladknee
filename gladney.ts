@@ -166,18 +166,21 @@ export function median(...numbers: (number | number[])[]) {
  *
  * _Example:_
  * ```typescript
-x * mode(1, 2, 3, 4, 5) //=> 2
+x * mode(1, 2, 3, 4, 5) //=> null
  *
- * mode([1, 2, 3, 4, 5]) //=> 2
+ * mode([1, 2, 2, 3, 4, 5]) //=> 2
  *
  * mode(1, 2, 2, 3, 4, 4, 5) //=> [2, 4]
  * ```
  **/
 export function mode(...numbers: (number | number[])[]) {
-  const counts = getCounts(flatten(numbers))
+  const flattened = flatten(numbers)
+  const counts = getCounts(flattened)
   const mostCommon = getKeyWithLargestValue(counts)
-  if (Array.isArray(mostCommon)) return mostCommon.map((key) => Number(key))
-  else return Number(mostCommon)
+  if (Array.isArray(mostCommon)) {
+    if (mostCommon.length === flattened.length) return null
+    else return mostCommon.map((key) => Number(key))
+  } else return Number(mostCommon)
 }
 
 export interface TimeObject {
