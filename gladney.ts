@@ -1076,8 +1076,8 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
  * NOTE: `orderMatters` is false by default.
  **/
 export function isEqual(
-  thing1: object | [],
-  thing2: object | [],
+  thing1: object | any[],
+  thing2: object | any[],
   orderMatters = false,
   isCaseSensitive = false
 ) {
