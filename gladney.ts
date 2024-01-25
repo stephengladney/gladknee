@@ -938,11 +938,11 @@ export function removeDuplicates<T>(arr: T[]): T[] {
  **/
 export function getRollingSum(arr: number[], precision?: number) {
   return arr.reduce(
-    (acc, i, index) =>
+    (acc: number[], i, index) =>
       index > 0
         ? [...acc, round(acc[acc.length - 1] + Number(i), precision ?? 1)]
         : [i],
-    [] as number[]
+    []
   )
 }
 
@@ -952,8 +952,9 @@ export function getRollingSum(arr: number[], precision?: number) {
 export function getCounts<T>(arr: T[]): { [key: string]: number } {
   const result: { [key: string]: number } = {}
   arr.forEach((item) => {
-    if (result[item as string]) result[item as string]++
-    else result[item as string] = 1
+    const itemAsString = String(item)
+    if (result[itemAsString]) result[itemAsString]++
+    else result[itemAsString] = 1
   })
   return result
 }
@@ -967,7 +968,7 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
  * ```
  **/
 export function getCountOf<T>(arr: T[], target: T) {
-  return getCounts(arr)[target as string] || 0
+  return getCounts(arr)[String(target)] || 0
 }
 
 /** Returns an array of items that only appear in one of the given arrays.
@@ -1103,8 +1104,8 @@ export function isEqual(
       )
     }
   } else if (Array.isArray(thing1) && Array.isArray(thing2)) {
-    const _thing1 = [...(thing1 as [])].sort()
-    const _thing2 = [...(thing2 as [])].sort()
+    const _thing1 = [...thing1].sort()
+    const _thing2 = [...thing2].sort()
     for (let i = 0; i < thing1.length; i++) {
       const thing1value = isCaseSensitive
         ? _thing1[i]
@@ -1166,13 +1167,13 @@ export function omitKeys<T extends object, U extends keyof T>(
   ...keys: U[]
 ) {
   const result: { [key: string]: any } = {}
-  const keysAsStrings = keys.map((k) => k as string)
-  Object.keys(obj).forEach((key: string) => {
+  const keysAsStrings = keys.map((k) => String(k))
+  Object.keys(obj).forEach((key) => {
     if (!keysAsStrings.includes(key)) {
-      result[key as string] = obj[key as U]
+      result[key] = obj[key as U]
     }
   })
-  return result as Partial<T>
+  return result as Omit<T, U>
 }
 
 /** Returns an object with only the specific keys included.
@@ -1195,7 +1196,7 @@ export function pickKeys<T extends object, U extends keyof T>(
       result[key] = obj[key as U]
     }
   })
-  return result as Partial<T>
+  return result as Pick<T, U>
 }
 
 /** Returns a single object with all of the key value pairs from two or more objects.
