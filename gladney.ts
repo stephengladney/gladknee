@@ -1402,9 +1402,9 @@ export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
   isCaseSensitive = false
 ) {
   const groupedByKey = groupByKeyValue(arr, key, isCaseSensitive)
-  return Object.keys(groupedByKey).reduce((acc, _key) => {
-    return [...acc, groupedByKey[_key][0]]
-  }, [] as T[])
+  return Object.keys(groupedByKey).reduce((acc: T[], k) => {
+    return [...acc, groupedByKey[k][0]]
+  }, [])
 }
 
 /** Returns a string of an object's key and value pairs as a query parameter string. Supports one level of nesting.
@@ -1625,8 +1625,8 @@ sortByCallbackResult(socialStats, getPopularity)
 export function sortByCallbackResult<T>(things: T[], func: Function) {
   const groupedByResult = groupByCallbackResult(things, func)
   return safeSort(Object.keys(groupedByResult)).reduce(
-    (acc, key) => [...acc, ...groupedByResult[key]],
-    [] as T[]
+    (acc: T[], key) => [...acc, ...groupedByResult[key]],
+    []
   )
 }
 
