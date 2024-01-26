@@ -80,17 +80,17 @@ export function doubleDigit(n: number) {
  *
  * _Example:_
  * ```typescript
- * createRange(5, 10)
+ * range(5, 10)
  * //=> [5, 6, 7, 8, 9, 10]
  *
- * createRange(0, 10, 2)
+ * range(0, 10, 2)
  * //=> [0, 2, 4, 6, 8, 10]
  *
- * createRange(10, 0, -2)
+ * range(10, 0, -2)
  * //=> [10, 8, 6, 4, 2, 0]
  * ```
  **/
-export function createRange(start: number, end: number, step = 1) {
+export function range(start: number, end: number, step = 1) {
   const result: number[] = []
   if (start < end) {
     if (step <= 0) return
@@ -288,7 +288,7 @@ interface TimeObject {
  **/
 
 export function timeUntil(date: Date): TimeObject {
-  return getDurationBetweenDates(new Date(), new Date(date))
+  return getDurationFromDates(new Date(), new Date(date))
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
@@ -303,7 +303,7 @@ interface TimeObject {
  * ```
  **/
 export function timeSince(date: Date): TimeObject {
-  return getDurationBetweenDates(new Date(), new Date(date))
+  return getDurationFromDates(new Date(), new Date(date))
 }
 
 type DayName =
@@ -364,7 +364,7 @@ export function isPast(date: Date) {
  * ```typescript
  * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
  *
- * getDurationBetweenDates(new Date(), fiveMinutesAgo) //=>
+ * getDurationFromDates(new Date(), fiveMinutesAgo) //=>
  *  {
  *    days: 0,
  *    hours: 0,
@@ -373,7 +373,7 @@ export function isPast(date: Date) {
  *  }
  * ```
  */
-export function getDurationBetweenDates(dateA: Date, dateB: Date) {
+export function getDurationFromDates(dateA: Date, dateB: Date) {
   const diff = Math.abs(dateA.getTime() - dateB.getTime())
   return getDurationFromMilliseconds(diff)
 }

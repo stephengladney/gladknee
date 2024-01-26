@@ -32,15 +32,15 @@ describe("numbers", () => {
     })
   })
 
-  describe("createRange", () => {
+  describe("range", () => {
     it("returns a range of numbers", () => {
-      expect(_.createRange(1, 5)).toEqual([1, 2, 3, 4, 5])
+      expect(_.range(1, 5)).toEqual([1, 2, 3, 4, 5])
     })
     it("uses the step parameter", () => {
-      expect(_.createRange(2, 10, 2)).toEqual([2, 4, 6, 8, 10])
+      expect(_.range(2, 10, 2)).toEqual([2, 4, 6, 8, 10])
     })
     it("can create a decreasing sequence", () => {
-      expect(_.createRange(-2, -10, -2)).toEqual([-2, -4, -6, -8, -10])
+      expect(_.range(-2, -10, -2)).toEqual([-2, -4, -6, -8, -10])
     })
   })
   describe("ordinal", () => {
@@ -201,7 +201,7 @@ describe("time & dates", () => {
       end.setMinutes(end.getMinutes() - 5)
       end.setSeconds(end.getSeconds() - 43)
 
-      expect(_.getDurationBetweenDates(start, end)).toEqual({
+      expect(_.getDurationFromDates(start, end)).toEqual({
         days: 11,
         hours: 2,
         minutes: 5,
