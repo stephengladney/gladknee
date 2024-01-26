@@ -198,8 +198,8 @@ const secondsInADay = 86400
  *
  * _Example:_
  * ```typescript
- * getAmountOfTimeFromSeconds(2000000)
-//=> { days: 23, hours: 3, minutes: 33, seconds: 20 }
+ * getDurationFromMilliseconds(200000000)
+//=> { days: 2, hours: 7, minutes: 33, seconds: 20 }
 
 interface TimeObject {
   years: number
@@ -219,7 +219,7 @@ interface TimeObject {
 }
  * ```
  **/
-function getDurationFromMilliseconds(milliseconds: number): TimeObject {
+export function getDurationFromMilliseconds(milliseconds: number): TimeObject {
   const seconds = Math.floor(milliseconds / 1000)
 
   return {
@@ -228,6 +228,51 @@ function getDurationFromMilliseconds(milliseconds: number): TimeObject {
     minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
     seconds: seconds % secondsInAMinute,
   }
+}
+
+/** Returns the number of milliseconds from an amount of time
+ *
+ * Example:
+ *
+ * ```typescript
+ * const amountOfTime = {days: 1, hours: 3, minutes: 24, seconds: 11}
+ *
+ * getMillisecondsFromDuration(amountOfTime) //=> 98651000
+ * ```
+ */
+export function getMillisecondsFromDuration(duration: Partial<TimeObject>) {
+  let result = 0
+  if (duration.days) result += duration.days * secondsInADay * 1000
+  if (duration.hours) result += duration.hours * secondsInAnHour * 1000
+  if (duration.minutes) result += duration.minutes * secondsInAMinute * 1000
+  if (duration.seconds) result += duration.seconds * 1000
+  return result
+}
+
+/** Returns a date in the future or past based on a duration from now
+ *
+ * Example:
+ *
+ * ```typescript
+ * const fromDate = new Date("Jan 1, 2024 12:00:00AM")
+ * //=> Date: "2024-01-01T05:00:00.000Z"
+ *
+ * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, "future", fromDate)
+ * //=> Date: "2024-01-02T07:03:04.000Z"
+ *
+ * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, "past", fromDate)
+ * //=> Date: "2023-12-31T02:56:56.000Z"
+ * ```
+ */
+export function getDateFromDuration(
+  duration: Partial<TimeObject>,
+  inThe: "past" | "future",
+  startDate: Date = new Date()
+) {
+  const ms = getMillisecondsFromDuration(duration)
+  return inThe === "future"
+    ? new Date(startDate.getTime() + ms)
+    : new Date(startDate.getTime() - ms)
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until 
@@ -241,8 +286,9 @@ interface TimeObject {
 }
  * ```
  **/
+
 export function timeUntil(date: Date): TimeObject {
-  return getTimeDiff(new Date(), new Date(date))
+  return getDurationBetweenDates(new Date(), new Date(date))
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
@@ -257,7 +303,7 @@ interface TimeObject {
  * ```
  **/
 export function timeSince(date: Date): TimeObject {
-  return getTimeDiff(new Date(), new Date(date))
+  return getDurationBetweenDates(new Date(), new Date(date))
 }
 
 type DayName =
@@ -327,7 +373,7 @@ export function isPast(date: Date) {
  *  }
  * ```
  */
-export function getTimeDiff(dateA: Date, dateB: Date) {
+export function getDurationBetweenDates(dateA: Date, dateB: Date) {
   const diff = Math.abs(dateA.getTime() - dateB.getTime())
   return getDurationFromMilliseconds(diff)
 }
@@ -562,16 +608,16 @@ export function unEscapeString(str: string) {
  * 
  * Example:
  * ```typescript
- getRandomString(10) //=> "N3xO1pDs2f"
+ randomString(10) //=> "N3xO1pDs2f"
 
-getRandomString(5, true, false) //=> "GjOxa"
+randomString(5, true, false) //=> "GjOxa"
 
-getRandomString(5, false, true) //=> "39281"
+randomString(5, false, true) //=> "39281"
 
-getRandomString(5, true, true, true) //=> "G2a$k!"
+randomString(5, true, true, true) //=> "G2a$k!"
  * ```
  **/
-export function getRandomString(
+export function randomString(
   length: number,
   includeLetters = true,
   includeNumbers = true,

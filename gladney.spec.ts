@@ -56,15 +56,73 @@ describe("numbers", () => {
 })
 
 describe("time & dates", () => {
-  // describe("getAmountOfTimeFromSeconds", () => {
+  // describe("getDurationFromMilliseconds", () => {
   //   it("returns the correct TimeOutput", () => {
-  //     const timeObject = _.getAmountOfTimeFromSeconds(200000)
+  //     const timeObject = _.getDurationFromMilliseconds(200000000)
   //     expect(timeObject.days).toEqual(2)
   //     expect(timeObject.hours).toEqual(7)
   //     expect(timeObject.minutes).toEqual(33)
   //     expect(timeObject.seconds).toEqual(20)
   //   })
   // })
+
+  // describe("getMillisecondsFromDuration", () => {
+  //   it("returns the correct number of ms", () => {
+  //     const amountOfTime = { days: 1, hours: 3, minutes: 24, seconds: 11 }
+  //     expect(_.getMillisecondsFromDuration(amountOfTime)).toBe(98651000)
+  //   })
+  // })
+
+  // describe("duration functions", () => {
+  //   it("handles the same amount of time correctly", () => {
+  //     const amountOfTime = { days: 1, hours: 3, minutes: 24, seconds: 11 }
+  //     const toMs = _.getMillisecondsFromDuration(amountOfTime)
+  //     const backToTime = _.getDurationFromMilliseconds(toMs)
+  //     expect(backToTime).toEqual(amountOfTime)
+  //   })
+  // })
+
+  describe("getDateFromDuration", () => {
+    const now = new Date()
+
+    it("returns the correct date in the past", () => {
+      const then = new Date(now)
+
+      then.setDate(then.getDate() - 1)
+      then.setHours(then.getHours() - 2)
+      then.setMinutes(then.getMinutes() - 3)
+      then.setSeconds(then.getSeconds() - 4)
+
+      const fnResult = _.getDateFromDuration(
+        { days: 1, hours: 2, minutes: 3, seconds: 4 },
+        "past"
+      )
+
+      expect(fnResult.getDate()).toBe(then.getDate())
+      expect(fnResult.getHours()).toBe(then.getHours())
+      expect(fnResult.getMinutes()).toBe(then.getMinutes())
+      expect(fnResult.getSeconds()).toBe(then.getSeconds())
+    })
+
+    it("returns the correct date in the future", () => {
+      const then = new Date(now)
+
+      then.setDate(then.getDate() + 1)
+      then.setHours(then.getHours() + 2)
+      then.setMinutes(then.getMinutes() + 3)
+      then.setSeconds(then.getSeconds() + 4)
+
+      const fnResult = _.getDateFromDuration(
+        { days: 1, hours: 2, minutes: 3, seconds: 4 },
+        "future"
+      )
+
+      expect(fnResult.getDate()).toBe(then.getDate())
+      expect(fnResult.getHours()).toBe(then.getHours())
+      expect(fnResult.getMinutes()).toBe(then.getMinutes())
+      expect(fnResult.getSeconds()).toBe(then.getSeconds())
+    })
+  })
 
   describe("timeUntil", () => {
     it("returns the correct number of seconds until the provided time", () => {
@@ -134,7 +192,7 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getTimeDiff", () => {
+  describe("getDurationBetweenDates", () => {
     it("returns the correct duration", () => {
       const start = new Date()
       const end = new Date(start)
@@ -143,7 +201,7 @@ describe("time & dates", () => {
       end.setMinutes(end.getMinutes() - 5)
       end.setSeconds(end.getSeconds() - 43)
 
-      expect(_.getTimeDiff(start, end)).toEqual({
+      expect(_.getDurationBetweenDates(start, end)).toEqual({
         days: 11,
         hours: 2,
         minutes: 5,
