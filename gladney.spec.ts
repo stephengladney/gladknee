@@ -201,7 +201,7 @@ describe("time & dates", () => {
       end.setMinutes(end.getMinutes() - 5)
       end.setSeconds(end.getSeconds() - 43)
 
-      expect(_.getDurationFromDates(start, end)).toEqual({
+      expect(_.getDuration(start, end)).toEqual({
         days: 11,
         hours: 2,
         minutes: 5,

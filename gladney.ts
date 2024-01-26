@@ -288,7 +288,7 @@ interface TimeObject {
  **/
 
 export function timeUntil(date: Date): TimeObject {
-  return getDurationFromDates(new Date(), new Date(date))
+  return getDuration(new Date(), new Date(date))
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
@@ -303,7 +303,7 @@ interface TimeObject {
  * ```
  **/
 export function timeSince(date: Date): TimeObject {
-  return getDurationFromDates(new Date(), new Date(date))
+  return getDuration(new Date(), new Date(date))
 }
 
 type DayName =
@@ -364,7 +364,7 @@ export function isPast(date: Date) {
  * ```typescript
  * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
  *
- * getDurationFromDates(new Date(), fiveMinutesAgo) //=>
+ * getDuration(new Date(), fiveMinutesAgo) //=>
  *  {
  *    days: 0,
  *    hours: 0,
@@ -373,7 +373,7 @@ export function isPast(date: Date) {
  *  }
  * ```
  */
-export function getDurationFromDates(dateA: Date, dateB: Date) {
+export function getDuration(dateA: Date, dateB: Date) {
   const diff = Math.abs(dateA.getTime() - dateB.getTime())
   return getDurationFromMilliseconds(diff)
 }
