@@ -1587,6 +1587,26 @@ export function getKeyWithLargestValue<T extends object>(obj: T) {
   } else return result[0].key
 }
 
+/** Returns the first key in an object with a particular value (or null if none is found)
+ *
+ *
+ * Example:
+ * ```typescript
+ * const obj = {a: 1, b: 2, c: 3}
+ *
+ * getKeyWhereValueIs(obj, 3) //=> "c"
+ * ```
+ */
+export function getKeyWhereValueIs<T extends object>(
+  obj: T,
+  value: any
+): string | null {
+  for (let key in obj) {
+    if (obj[key] === value) return key
+  }
+  return null
+}
+
 /**
  * Runs a callback function on array of items and returns a single object with keys that match the return values.
  * Each key's value is an array of items that provide the same result when having the callback function run on them.

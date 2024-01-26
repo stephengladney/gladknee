@@ -963,6 +963,13 @@ describe("objects", () => {
       })
     })
   })
+
+  describe("getKeyWhereValueIs", () => {
+    it("returns the correct key", () => {
+      const obj = { a: 1, b: 2, c: 3 }
+      expect(_.getKeyWhereValueIs(obj, 3)).toBe("c")
+    })
+  })
 })
 
 describe("misc", () => {
