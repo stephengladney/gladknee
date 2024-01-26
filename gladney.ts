@@ -242,8 +242,7 @@ interface TimeObject {
  * ```
  **/
 export function timeUntil(date: Date): TimeObject {
-  const diff = new Date(date).getTime() - Date.now()
-  return getDurationFromMilliseconds(diff)
+  return getTimeDiff(new Date(), new Date(date))
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
@@ -258,8 +257,7 @@ interface TimeObject {
  * ```
  **/
 export function timeSince(date: Date): TimeObject {
-  const diff = Date.now() - new Date(date).getTime()
-  return getDurationFromMilliseconds(diff)
+  return getTimeDiff(new Date(), new Date(date))
 }
 
 type DayName =
