@@ -23,7 +23,8 @@
     "debounce",
     "queue",
     "pause",
-    "pipe"
+    "pipe",
+    "zero dependencies"
   ],
   "author": "Stephen Gladney",
   "license": "ISC",
