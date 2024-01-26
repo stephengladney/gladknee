@@ -190,7 +190,6 @@ export interface TimeObject {
   seconds: number
 }
 
-const millisecondsInASecond = 1000
 const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
@@ -220,7 +219,9 @@ interface TimeObject {
 }
  * ```
  **/
-export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
+function getDurationFromMilliseconds(milliseconds: number): TimeObject {
+  const seconds = Math.floor(milliseconds / 1000)
+
   return {
     days: Math.floor(seconds / secondsInADay),
     hours: Math.floor((seconds % secondsInADay) / secondsInAnHour),
@@ -241,10 +242,8 @@ interface TimeObject {
  * ```
  **/
 export function timeUntil(date: Date): TimeObject {
-  const diffInSeconds = Math.floor(
-    (new Date(date).getTime() - Date.now()) / 1000
-  )
-  return getAmountOfTimeFromSeconds(diffInSeconds)
+  const diff = new Date(date).getTime() - Date.now()
+  return getDurationFromMilliseconds(diff)
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
@@ -259,10 +258,8 @@ interface TimeObject {
  * ```
  **/
 export function timeSince(date: Date): TimeObject {
-  const diffInSeconds = Math.floor(
-    (Date.now() - new Date(date).getTime()) / 1000
-  )
-  return getAmountOfTimeFromSeconds(diffInSeconds)
+  const diff = Date.now() - new Date(date).getTime()
+  return getDurationFromMilliseconds(diff)
 }
 
 type DayName =
@@ -333,8 +330,8 @@ export function isPast(date: Date) {
  * ```
  */
 export function getTimeDiff(dateA: Date, dateB: Date) {
-  const diff = Math.abs((dateA.getTime() - dateB.getTime()) / 1000)
-  return getAmountOfTimeFromSeconds(diff)
+  const diff = Math.abs(dateA.getTime() - dateB.getTime())
+  return getDurationFromMilliseconds(diff)
 }
 
 /** Returns the relative time difference of two dates

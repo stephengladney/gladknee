@@ -56,15 +56,15 @@ describe("numbers", () => {
 })
 
 describe("time & dates", () => {
-  describe("getAmountOfTimeFromSeconds", () => {
-    it("returns the correct TimeOutput", () => {
-      const timeObject = _.getAmountOfTimeFromSeconds(200000)
-      expect(timeObject.days).toEqual(2)
-      expect(timeObject.hours).toEqual(7)
-      expect(timeObject.minutes).toEqual(33)
-      expect(timeObject.seconds).toEqual(20)
-    })
-  })
+  // describe("getAmountOfTimeFromSeconds", () => {
+  //   it("returns the correct TimeOutput", () => {
+  //     const timeObject = _.getAmountOfTimeFromSeconds(200000)
+  //     expect(timeObject.days).toEqual(2)
+  //     expect(timeObject.hours).toEqual(7)
+  //     expect(timeObject.minutes).toEqual(33)
+  //     expect(timeObject.seconds).toEqual(20)
+  //   })
+  // })
 
   describe("timeUntil", () => {
     it("returns the correct number of seconds until the provided time", () => {
