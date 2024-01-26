@@ -969,6 +969,11 @@ describe("objects", () => {
       const obj = { a: 1, b: 2, c: 3 }
       expect(_.getKeyWhereValueIs(obj, 3)).toBe("c")
     })
+
+    it("returns null if no key/value found", () => {
+      const obj = { a: 1, b: 2, c: 3 }
+      expect(_.getKeyWhereValueIs(obj, 4)).toBe(null)
+    })
   })
 })
 
