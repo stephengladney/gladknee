@@ -1009,7 +1009,7 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
  getCount(arr, 4) //=> 3
  * ```
  **/
-export function getCountOf<T>(arr: T[], target: T) {
+export function getCount<T>(arr: T[], target: T) {
   return getCounts(arr)[String(target)] || 0
 }
 
