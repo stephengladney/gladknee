@@ -385,10 +385,10 @@ export function getDuration(dateA: Date, dateB: Date) {
  * ```typescript
  * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
  *
- * getRelativeTime(fiveMinutesAgo) //=> "5 minutes ago"
+ * relativeTimeDiff(fiveMinutesAgo) //=> "5 minutes ago"
  * ```
  */
-export function getRelativeTimeDiff(to: Date, from: Date = new Date()) {
+export function relativeTimeDiff(to: Date, from: Date = new Date()) {
   const TIME_UNITS: { n: number; unit: Intl.RelativeTimeFormatUnit }[] = [
     { n: 60, unit: "seconds" },
     { n: 60, unit: "minutes" },

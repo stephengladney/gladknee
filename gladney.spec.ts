@@ -210,7 +210,7 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getRelativeTimeDiff", () => {
+  describe("relativeTimeDiff", () => {
     it("returns the correct relative duration", () => {
       const secondsInAMinute = 60
       const secondsInAnHour = 3600
@@ -226,12 +226,12 @@ describe("time & dates", () => {
       const fiveMinutesAgo = new Date(Date.now() - secondsInAMinute * 1000 * 5)
       const sixHoursAgo = new Date(Date.now() - secondsInAnHour * 1000 * 6)
 
-      expect(_.getRelativeTimeDiff(oneDayAgo)).toBe("yesterday")
-      expect(_.getRelativeTimeDiff(twoWeeksAgo)).toBe("2 weeks ago")
-      expect(_.getRelativeTimeDiff(threeMonthsAgo)).toBe("3 months ago")
-      expect(_.getRelativeTimeDiff(fourYearsAgo)).toBe("4 years ago")
-      expect(_.getRelativeTimeDiff(fiveMinutesAgo)).toBe("5 minutes ago")
-      expect(_.getRelativeTimeDiff(sixHoursAgo)).toBe("6 hours ago")
+      expect(_.relativeTimeDiff(oneDayAgo)).toBe("yesterday")
+      expect(_.relativeTimeDiff(twoWeeksAgo)).toBe("2 weeks ago")
+      expect(_.relativeTimeDiff(threeMonthsAgo)).toBe("3 months ago")
+      expect(_.relativeTimeDiff(fourYearsAgo)).toBe("4 years ago")
+      expect(_.relativeTimeDiff(fiveMinutesAgo)).toBe("5 minutes ago")
+      expect(_.relativeTimeDiff(sixHoursAgo)).toBe("6 hours ago")
     })
   })
 
