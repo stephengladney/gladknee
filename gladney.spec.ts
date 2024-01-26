@@ -32,15 +32,15 @@ describe("numbers", () => {
     })
   })
 
-  describe("getRange", () => {
+  describe("createRange", () => {
     it("returns a range of numbers", () => {
-      expect(_.getRange(1, 5)).toEqual([1, 2, 3, 4, 5])
+      expect(_.createRange(1, 5)).toEqual([1, 2, 3, 4, 5])
     })
     it("uses the step parameter", () => {
-      expect(_.getRange(2, 10, 2)).toEqual([2, 4, 6, 8, 10])
+      expect(_.createRange(2, 10, 2)).toEqual([2, 4, 6, 8, 10])
     })
     it("can create a decreasing sequence", () => {
-      expect(_.getRange(-2, -10, -2)).toEqual([-2, -4, -6, -8, -10])
+      expect(_.createRange(-2, -10, -2)).toEqual([-2, -4, -6, -8, -10])
     })
   })
   describe("ordinal", () => {
@@ -156,15 +156,15 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getDayName", () => {
+  describe("dayName", () => {
     it("returns the correct day name", () => {
-      expect(_.getDayName(0)).toBe("Sunday")
-      expect(_.getDayName(1)).toBe("Monday")
-      expect(_.getDayName(2)).toBe("Tuesday")
-      expect(_.getDayName(3)).toBe("Wednesday")
-      expect(_.getDayName(4)).toBe("Thursday")
-      expect(_.getDayName(5)).toBe("Friday")
-      expect(_.getDayName(6)).toBe("Saturday")
+      expect(_.dayName(0)).toBe("Sunday")
+      expect(_.dayName(1)).toBe("Monday")
+      expect(_.dayName(2)).toBe("Tuesday")
+      expect(_.dayName(3)).toBe("Wednesday")
+      expect(_.dayName(4)).toBe("Thursday")
+      expect(_.dayName(5)).toBe("Friday")
+      expect(_.dayName(6)).toBe("Saturday")
     })
   })
 
@@ -511,10 +511,10 @@ describe("arrays", () => {
     })
   })
 
-  describe("getRollingSum", () => {
+  describe("rollingSum", () => {
     it("returns the rolling sum of an array of numbers", () => {
       const arr = [1, 2, 3, 4]
-      expect(_.getRollingSum(arr)).toEqual([1, 3, 6, 10])
+      expect(_.rollingSum(arr)).toEqual([1, 3, 6, 10])
     })
   })
 

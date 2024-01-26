@@ -80,17 +80,17 @@ export function doubleDigit(n: number) {
  *
  * _Example:_
  * ```typescript
- * getRange(5, 10)
+ * createRange(5, 10)
  * //=> [5, 6, 7, 8, 9, 10]
  *
- * getRange(0, 10, 2)
+ * createRange(0, 10, 2)
  * //=> [0, 2, 4, 6, 8, 10]
  *
- * getRange(10, 0, -2)
+ * createRange(10, 0, -2)
  * //=> [10, 8, 6, 4, 2, 0]
  * ```
  **/
-export function getRange(start: number, end: number, step = 1) {
+export function createRange(start: number, end: number, step = 1) {
   const result: number[] = []
   if (start < end) {
     if (step <= 0) return
@@ -219,7 +219,7 @@ interface TimeObject {
 }
  * ```
  **/
-export function getDurationFromMilliseconds(milliseconds: number): TimeObject {
+function getDurationFromMilliseconds(milliseconds: number): TimeObject {
   const seconds = Math.floor(milliseconds / 1000)
 
   return {
@@ -240,7 +240,7 @@ export function getDurationFromMilliseconds(milliseconds: number): TimeObject {
  * getMillisecondsFromDuration(amountOfTime) //=> 98651000
  * ```
  */
-export function getMillisecondsFromDuration(duration: Partial<TimeObject>) {
+function getMillisecondsFromDuration(duration: Partial<TimeObject>) {
   let result = 0
   if (duration.days) result += duration.days * secondsInADay * 1000
   if (duration.hours) result += duration.hours * secondsInAnHour * 1000
@@ -319,10 +319,10 @@ type DayName =
  *
  * Example:
  * ```typescript
- * getDayName(3) //=> "Wednesday"
+ * dayName(3) //=> "Wednesday"
  * ```
  **/
-export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
+export function dayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
   const dayNames: DayName[] = [
     "Sunday",
     "Monday",
@@ -364,7 +364,7 @@ export function isPast(date: Date) {
  * ```typescript
  * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
  *
- * getTimeDiff(new Date(), fiveMinutesAgo) //=>
+ * getDurationBetweenDates(new Date(), fiveMinutesAgo) //=>
  *  {
  *    days: 0,
  *    hours: 0,
@@ -978,7 +978,7 @@ export function removeDuplicates<T>(arr: T[]): T[] {
 
 /** Returns an array of the rolling sum of an array of numbers.
  **/
-export function getRollingSum(arr: number[], precision?: number) {
+export function rollingSum(arr: number[], precision?: number) {
   return arr.reduce(
     (acc: number[], i, index) =>
       index > 0
