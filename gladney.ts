@@ -2048,8 +2048,8 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
       browserLocation.latitude = coords.latitude
       browserLocation.longitude = coords.longitude
     },
-    () => {
-      err = "Unable to get location"
+    (error) => {
+      err = String(error)
     }
   )
   while (browserLocation.latitude === null && err === null) {
@@ -2075,6 +2075,15 @@ export function getURLQueryParams() {
       }
     } else return { ...acc, [key]: value }
   }, {})
+}
+
+/** Returns the browser's display mode (light of dark)
+ **/
+export function getBrowserDisplayMode(): "light" | "dark" {
+  return window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light"
 }
 
 /** A function that does nothing and returns nothing. Useful for linters that require a callback. */
