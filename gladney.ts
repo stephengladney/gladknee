@@ -80,17 +80,17 @@ export function doubleDigit(n: number) {
  *
  * _Example:_
  * ```typescript
- * getRange(5, 10)
+ * range(5, 10)
  * //=> [5, 6, 7, 8, 9, 10]
  *
- * getRange(0, 10, 2)
+ * range(0, 10, 2)
  * //=> [0, 2, 4, 6, 8, 10]
  *
- * getRange(10, 0, -2)
+ * range(10, 0, -2)
  * //=> [10, 8, 6, 4, 2, 0]
  * ```
  **/
-export function getRange(start: number, end: number, step = 1) {
+export function range(start: number, end: number, step = 1) {
   const result: number[] = []
   if (start < end) {
     if (step <= 0) return
@@ -166,18 +166,21 @@ export function median(...numbers: (number | number[])[]) {
  *
  * _Example:_
  * ```typescript
-x * mode(1, 2, 3, 4, 5) //=> 2
+x * mode(1, 2, 3, 4, 5) //=> null
  *
- * mode([1, 2, 3, 4, 5]) //=> 2
+ * mode([1, 2, 2, 3, 4, 5]) //=> 2
  *
  * mode(1, 2, 2, 3, 4, 4, 5) //=> [2, 4]
  * ```
  **/
 export function mode(...numbers: (number | number[])[]) {
-  const counts = getCounts(flatten(numbers))
+  const flattened = flatten(numbers)
+  const counts = getCounts(flattened)
   const mostCommon = getKeyWithLargestValue(counts)
-  if (Array.isArray(mostCommon)) return mostCommon.map((key) => Number(key))
-  else return Number(mostCommon)
+  if (Array.isArray(mostCommon)) {
+    if (mostCommon.length === flattened.length) return null
+    else return mostCommon.map((key) => Number(key))
+  } else return Number(mostCommon)
 }
 
 export interface TimeObject {
@@ -195,8 +198,8 @@ const secondsInADay = 86400
  *
  * _Example:_
  * ```typescript
- * getAmountOfTimeFromSeconds(2000000)
-//=> { days: 23, hours: 3, minutes: 33, seconds: 20 }
+ * getDurationFromMilliseconds(200000000)
+//=> { days: 2, hours: 7, minutes: 33, seconds: 20 }
 
 interface TimeObject {
   years: number
@@ -216,13 +219,60 @@ interface TimeObject {
 }
  * ```
  **/
-export function getAmountOfTimeFromSeconds(seconds: number): TimeObject {
+function getDurationFromMilliseconds(milliseconds: number): TimeObject {
+  const seconds = Math.floor(milliseconds / 1000)
+
   return {
     days: Math.floor(seconds / secondsInADay),
     hours: Math.floor((seconds % secondsInADay) / secondsInAnHour),
     minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
     seconds: seconds % secondsInAMinute,
   }
+}
+
+/** Returns the number of milliseconds from an amount of time
+ *
+ * Example:
+ *
+ * ```typescript
+ * const amountOfTime = {days: 1, hours: 3, minutes: 24, seconds: 11}
+ *
+ * getMillisecondsFromDuration(amountOfTime) //=> 98651000
+ * ```
+ */
+function getMillisecondsFromDuration(duration: Partial<TimeObject>) {
+  let result = 0
+  if (duration.days) result += duration.days * secondsInADay * 1000
+  if (duration.hours) result += duration.hours * secondsInAnHour * 1000
+  if (duration.minutes) result += duration.minutes * secondsInAMinute * 1000
+  if (duration.seconds) result += duration.seconds * 1000
+  return result
+}
+
+/** Returns a date in the future or past based on a duration from now
+ *
+ * Example:
+ *
+ * ```typescript
+ * const fromDate = new Date("Jan 1, 2024 12:00:00AM")
+ * //=> Date: "2024-01-01T05:00:00.000Z"
+ *
+ * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, "future", fromDate)
+ * //=> Date: "2024-01-02T07:03:04.000Z"
+ *
+ * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, "past", fromDate)
+ * //=> Date: "2023-12-31T02:56:56.000Z"
+ * ```
+ */
+export function getDateFromDuration(
+  duration: Partial<TimeObject>,
+  inThe: "past" | "future",
+  startDate: Date = new Date()
+) {
+  const ms = getMillisecondsFromDuration(duration)
+  return inThe === "future"
+    ? new Date(startDate.getTime() + ms)
+    : new Date(startDate.getTime() - ms)
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until 
@@ -236,11 +286,9 @@ interface TimeObject {
 }
  * ```
  **/
+
 export function timeUntil(date: Date): TimeObject {
-  const diffInSeconds = Math.floor(
-    (new Date(date).getTime() - Date.now()) / 1000
-  )
-  return getAmountOfTimeFromSeconds(diffInSeconds)
+  return getDuration(new Date(), new Date(date))
 }
 
 /** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
@@ -255,21 +303,27 @@ interface TimeObject {
  * ```
  **/
 export function timeSince(date: Date): TimeObject {
-  const diffInSeconds = Math.floor(
-    (Date.now() - new Date(date).getTime()) / 1000
-  )
-  return getAmountOfTimeFromSeconds(diffInSeconds)
+  return getDuration(new Date(), new Date(date))
 }
+
+type DayName =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
 
 /** Returns the corresponding human readable day name of an integer (0-6).
  *
  * Example:
  * ```typescript
- * getDayName(3) //=> "Wednesday"
+ * dayName(3) //=> "Wednesday"
  * ```
  **/
-export function getDayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
-  const dayNames = [
+export function dayName(day: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
+  const dayNames: DayName[] = [
     "Sunday",
     "Monday",
     "Tuesday",
@@ -310,7 +364,7 @@ export function isPast(date: Date) {
  * ```typescript
  * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
  *
- * getTimeDiff(new Date(), fiveMinutesAgo) //=>
+ * getDuration(new Date(), fiveMinutesAgo) //=>
  *  {
  *    days: 0,
  *    hours: 0,
@@ -319,9 +373,9 @@ export function isPast(date: Date) {
  *  }
  * ```
  */
-export function getTimeDiff(dateA: Date, dateB: Date) {
-  const diff = Math.abs((dateA.getTime() - dateB.getTime()) / 1000)
-  return getAmountOfTimeFromSeconds(diff)
+export function getDuration(dateA: Date, dateB: Date) {
+  const diff = Math.abs(dateA.getTime() - dateB.getTime())
+  return getDurationFromMilliseconds(diff)
 }
 
 /** Returns the relative time difference of two dates
@@ -331,10 +385,10 @@ export function getTimeDiff(dateA: Date, dateB: Date) {
  * ```typescript
  * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
  *
- * getRelativeTime(fiveMinutesAgo) //=> "5 minutes ago"
+ * relativeTimeDiff(fiveMinutesAgo) //=> "5 minutes ago"
  * ```
  */
-export function getRelativeTimeDiff(to: Date, from: Date = new Date()) {
+export function relativeTimeDiff(to: Date, from: Date = new Date()) {
   const TIME_UNITS: { n: number; unit: Intl.RelativeTimeFormatUnit }[] = [
     { n: 60, unit: "seconds" },
     { n: 60, unit: "minutes" },
@@ -554,16 +608,16 @@ export function unEscapeString(str: string) {
  * 
  * Example:
  * ```typescript
- getRandomString(10) //=> "N3xO1pDs2f"
+ randomString(10) //=> "N3xO1pDs2f"
 
-getRandomString(5, true, false) //=> "GjOxa"
+randomString(5, true, false) //=> "GjOxa"
 
-getRandomString(5, false, true) //=> "39281"
+randomString(5, false, true) //=> "39281"
 
-getRandomString(5, true, true, true) //=> "G2a$k!"
+randomString(5, true, true, true) //=> "G2a$k!"
  * ```
  **/
-export function getRandomString(
+export function randomString(
   length: number,
   includeLetters = true,
   includeNumbers = true,
@@ -924,13 +978,13 @@ export function removeDuplicates<T>(arr: T[]): T[] {
 
 /** Returns an array of the rolling sum of an array of numbers.
  **/
-export function getRollingSum(arr: number[], precision?: number) {
+export function rollingSum(arr: number[], precision?: number) {
   return arr.reduce(
-    (acc, i, index) =>
+    (acc: number[], i, index) =>
       index > 0
         ? [...acc, round(acc[acc.length - 1] + Number(i), precision ?? 1)]
         : [i],
-    [] as number[]
+    []
   )
 }
 
@@ -940,8 +994,9 @@ export function getRollingSum(arr: number[], precision?: number) {
 export function getCounts<T>(arr: T[]): { [key: string]: number } {
   const result: { [key: string]: number } = {}
   arr.forEach((item) => {
-    if (result[item as string]) result[item as string]++
-    else result[item as string] = 1
+    const itemAsString = String(item)
+    if (result[itemAsString]) result[itemAsString]++
+    else result[itemAsString] = 1
   })
   return result
 }
@@ -954,8 +1009,8 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
  getCount(arr, 4) //=> 3
  * ```
  **/
-export function getCountOf<T>(arr: T[], target: T) {
-  return getCounts(arr)[target as string] || 0
+export function getCount<T>(arr: T[], target: T) {
+  return getCounts(arr)[String(target)] || 0
 }
 
 /** Returns an array of items that only appear in one of the given arrays.
@@ -1076,8 +1131,8 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
  * NOTE: `orderMatters` is false by default.
  **/
 export function isEqual(
-  thing1: object | [],
-  thing2: object | [],
+  thing1: object | any[],
+  thing2: object | any[],
   orderMatters = false,
   isCaseSensitive = false
 ) {
@@ -1091,8 +1146,8 @@ export function isEqual(
       )
     }
   } else if (Array.isArray(thing1) && Array.isArray(thing2)) {
-    const _thing1 = [...(thing1 as [])].sort()
-    const _thing2 = [...(thing2 as [])].sort()
+    const _thing1 = [...thing1].sort()
+    const _thing2 = [...thing2].sort()
     for (let i = 0; i < thing1.length; i++) {
       const thing1value = isCaseSensitive
         ? _thing1[i]
@@ -1154,13 +1209,13 @@ export function omitKeys<T extends object, U extends keyof T>(
   ...keys: U[]
 ) {
   const result: { [key: string]: any } = {}
-  const keysAsStrings = keys.map((k) => k as string)
-  Object.keys(obj).forEach((key: string) => {
+  const keysAsStrings = keys.map((k) => String(k))
+  Object.keys(obj).forEach((key) => {
     if (!keysAsStrings.includes(key)) {
-      result[key as string] = obj[key as U]
+      result[key] = obj[key as U]
     }
   })
-  return result as Partial<T>
+  return result as Omit<T, U>
 }
 
 /** Returns an object with only the specific keys included.
@@ -1183,38 +1238,7 @@ export function pickKeys<T extends object, U extends keyof T>(
       result[key] = obj[key as U]
     }
   })
-  return result as Partial<T>
-}
-
-/** Returns a single object with all of the key value pairs from two or more objects.
- *
- * Example:
- * ```typescript
- * const obj1 = { a: 1, b: 2, c: 3 }
- * const obj2 = { d: 4, e: 5, f: 6 }
- *
- * combineObjects(obj1, obj2)
- * //=>
- *     {
- *      a: 1,
- *      b: 2,
- *      c: 3,
- *      d: 4,
- *      e: 5,
- *      f: 6
- *     }
- * ```
- *
- * NOTE: If two objects have the same key, the latter object's value will result.
- **/
-export function combineObjects(...objs: object[]): object {
-  const result: { [key: string]: any } = {}
-  objs.forEach((obj) => {
-    Object.keys(obj).forEach((key) => {
-      result[key] = obj[key as keyof object]
-    })
-  })
-  return result
+  return result as Pick<T, U>
 }
 
 /** Returns the sum of the values of a specific shared key in an array of objects.
@@ -1341,8 +1365,8 @@ export function getKeyValueCounts<T extends object, U extends keyof T>(
 ) {
   return arr.reduce((result: { [key: string]: number }, obj) => {
     const value = isCaseSensitive
-      ? (obj[key] as string)
-      : (obj[key] as string).toLowerCase()
+      ? String(obj[key])
+      : String(obj[key]).toLowerCase()
     if (result[value] > 0) {
       result[value] = result[value] + 1
       return result
@@ -1420,9 +1444,9 @@ export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
   isCaseSensitive = false
 ) {
   const groupedByKey = groupByKeyValue(arr, key, isCaseSensitive)
-  return Object.keys(groupedByKey).reduce((acc, _key) => {
-    return [...acc, groupedByKey[_key][0]]
-  }, [] as T[])
+  return Object.keys(groupedByKey).reduce((acc: T[], k) => {
+    return [...acc, groupedByKey[k][0]]
+  }, [])
 }
 
 /** Returns a string of an object's key and value pairs as a query parameter string. Supports one level of nesting.
@@ -1563,6 +1587,26 @@ export function getKeyWithLargestValue<T extends object>(obj: T) {
   } else return result[0].key
 }
 
+/** Returns the first key in an object with a particular value (or null if none is found)
+ *
+ *
+ * Example:
+ * ```typescript
+ * const obj = {a: 1, b: 2, c: 3}
+ *
+ * getKeyWhereValueIs(obj, 3) //=> "c"
+ * ```
+ */
+export function getKeyWhereValueIs<T extends object>(
+  obj: T,
+  value: any
+): string | null {
+  for (let key in obj) {
+    if (obj[key] === value) return key
+  }
+  return null
+}
+
 /**
  * Runs a callback function on array of items and returns a single object with keys that match the return values.
  * Each key's value is an array of items that provide the same result when having the callback function run on them.
@@ -1643,8 +1687,8 @@ sortByCallbackResult(socialStats, getPopularity)
 export function sortByCallbackResult<T>(things: T[], func: Function) {
   const groupedByResult = groupByCallbackResult(things, func)
   return safeSort(Object.keys(groupedByResult)).reduce(
-    (acc, key) => [...acc, ...groupedByResult[key]],
-    [] as T[]
+    (acc: T[], key) => [...acc, ...groupedByResult[key]],
+    []
   )
 }
 
@@ -2070,8 +2114,8 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
       browserLocation.latitude = coords.latitude
       browserLocation.longitude = coords.longitude
     },
-    () => {
-      err = "Unable to get location"
+    (error) => {
+      err = String(error)
     }
   )
   while (browserLocation.latitude === null && err === null) {
@@ -2097,6 +2141,15 @@ export function getURLQueryParams() {
       }
     } else return { ...acc, [key]: value }
   }, {})
+}
+
+/** Returns the browser's display mode (light of dark)
+ **/
+export function getBrowserDisplayMode(): "light" | "dark" {
+  return window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light"
 }
 
 /** A function that does nothing and returns nothing. Useful for linters that require a callback. */

@@ -32,15 +32,15 @@ describe("numbers", () => {
     })
   })
 
-  describe("getRange", () => {
+  describe("range", () => {
     it("returns a range of numbers", () => {
-      expect(_.getRange(1, 5)).toEqual([1, 2, 3, 4, 5])
+      expect(_.range(1, 5)).toEqual([1, 2, 3, 4, 5])
     })
     it("uses the step parameter", () => {
-      expect(_.getRange(2, 10, 2)).toEqual([2, 4, 6, 8, 10])
+      expect(_.range(2, 10, 2)).toEqual([2, 4, 6, 8, 10])
     })
     it("can create a decreasing sequence", () => {
-      expect(_.getRange(-2, -10, -2)).toEqual([-2, -4, -6, -8, -10])
+      expect(_.range(-2, -10, -2)).toEqual([-2, -4, -6, -8, -10])
     })
   })
   describe("ordinal", () => {
@@ -56,13 +56,71 @@ describe("numbers", () => {
 })
 
 describe("time & dates", () => {
-  describe("getAmountOfTimeFromSeconds", () => {
-    it("returns the correct TimeOutput", () => {
-      const timeObject = _.getAmountOfTimeFromSeconds(200000)
-      expect(timeObject.days).toEqual(2)
-      expect(timeObject.hours).toEqual(7)
-      expect(timeObject.minutes).toEqual(33)
-      expect(timeObject.seconds).toEqual(20)
+  // describe("getDurationFromMilliseconds", () => {
+  //   it("returns the correct TimeOutput", () => {
+  //     const timeObject = _.getDurationFromMilliseconds(200000000)
+  //     expect(timeObject.days).toEqual(2)
+  //     expect(timeObject.hours).toEqual(7)
+  //     expect(timeObject.minutes).toEqual(33)
+  //     expect(timeObject.seconds).toEqual(20)
+  //   })
+  // })
+
+  // describe("getMillisecondsFromDuration", () => {
+  //   it("returns the correct number of ms", () => {
+  //     const amountOfTime = { days: 1, hours: 3, minutes: 24, seconds: 11 }
+  //     expect(_.getMillisecondsFromDuration(amountOfTime)).toBe(98651000)
+  //   })
+  // })
+
+  // describe("duration functions", () => {
+  //   it("handles the same amount of time correctly", () => {
+  //     const amountOfTime = { days: 1, hours: 3, minutes: 24, seconds: 11 }
+  //     const toMs = _.getMillisecondsFromDuration(amountOfTime)
+  //     const backToTime = _.getDurationFromMilliseconds(toMs)
+  //     expect(backToTime).toEqual(amountOfTime)
+  //   })
+  // })
+
+  describe("getDateFromDuration", () => {
+    const now = new Date()
+
+    it("returns the correct date in the past", () => {
+      const then = new Date(now)
+
+      then.setDate(then.getDate() - 1)
+      then.setHours(then.getHours() - 2)
+      then.setMinutes(then.getMinutes() - 3)
+      then.setSeconds(then.getSeconds() - 4)
+
+      const fnResult = _.getDateFromDuration(
+        { days: 1, hours: 2, minutes: 3, seconds: 4 },
+        "past"
+      )
+
+      expect(fnResult.getDate()).toBe(then.getDate())
+      expect(fnResult.getHours()).toBe(then.getHours())
+      expect(fnResult.getMinutes()).toBe(then.getMinutes())
+      expect(fnResult.getSeconds()).toBe(then.getSeconds())
+    })
+
+    it("returns the correct date in the future", () => {
+      const then = new Date(now)
+
+      then.setDate(then.getDate() + 1)
+      then.setHours(then.getHours() + 2)
+      then.setMinutes(then.getMinutes() + 3)
+      then.setSeconds(then.getSeconds() + 4)
+
+      const fnResult = _.getDateFromDuration(
+        { days: 1, hours: 2, minutes: 3, seconds: 4 },
+        "future"
+      )
+
+      expect(fnResult.getDate()).toBe(then.getDate())
+      expect(fnResult.getHours()).toBe(then.getHours())
+      expect(fnResult.getMinutes()).toBe(then.getMinutes())
+      expect(fnResult.getSeconds()).toBe(then.getSeconds())
     })
   })
 
@@ -98,15 +156,15 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getDayName", () => {
+  describe("dayName", () => {
     it("returns the correct day name", () => {
-      expect(_.getDayName(0)).toBe("Sunday")
-      expect(_.getDayName(1)).toBe("Monday")
-      expect(_.getDayName(2)).toBe("Tuesday")
-      expect(_.getDayName(3)).toBe("Wednesday")
-      expect(_.getDayName(4)).toBe("Thursday")
-      expect(_.getDayName(5)).toBe("Friday")
-      expect(_.getDayName(6)).toBe("Saturday")
+      expect(_.dayName(0)).toBe("Sunday")
+      expect(_.dayName(1)).toBe("Monday")
+      expect(_.dayName(2)).toBe("Tuesday")
+      expect(_.dayName(3)).toBe("Wednesday")
+      expect(_.dayName(4)).toBe("Thursday")
+      expect(_.dayName(5)).toBe("Friday")
+      expect(_.dayName(6)).toBe("Saturday")
     })
   })
 
@@ -134,7 +192,7 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getTimeDiff", () => {
+  describe("getDurationBetweenDates", () => {
     it("returns the correct duration", () => {
       const start = new Date()
       const end = new Date(start)
@@ -143,7 +201,7 @@ describe("time & dates", () => {
       end.setMinutes(end.getMinutes() - 5)
       end.setSeconds(end.getSeconds() - 43)
 
-      expect(_.getTimeDiff(start, end)).toEqual({
+      expect(_.getDuration(start, end)).toEqual({
         days: 11,
         hours: 2,
         minutes: 5,
@@ -152,7 +210,7 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getRelativeTimeDiff", () => {
+  describe("relativeTimeDiff", () => {
     it("returns the correct relative duration", () => {
       const secondsInAMinute = 60
       const secondsInAnHour = 3600
@@ -168,12 +226,12 @@ describe("time & dates", () => {
       const fiveMinutesAgo = new Date(Date.now() - secondsInAMinute * 1000 * 5)
       const sixHoursAgo = new Date(Date.now() - secondsInAnHour * 1000 * 6)
 
-      expect(_.getRelativeTimeDiff(oneDayAgo)).toBe("yesterday")
-      expect(_.getRelativeTimeDiff(twoWeeksAgo)).toBe("2 weeks ago")
-      expect(_.getRelativeTimeDiff(threeMonthsAgo)).toBe("3 months ago")
-      expect(_.getRelativeTimeDiff(fourYearsAgo)).toBe("4 years ago")
-      expect(_.getRelativeTimeDiff(fiveMinutesAgo)).toBe("5 minutes ago")
-      expect(_.getRelativeTimeDiff(sixHoursAgo)).toBe("6 hours ago")
+      expect(_.relativeTimeDiff(oneDayAgo)).toBe("yesterday")
+      expect(_.relativeTimeDiff(twoWeeksAgo)).toBe("2 weeks ago")
+      expect(_.relativeTimeDiff(threeMonthsAgo)).toBe("3 months ago")
+      expect(_.relativeTimeDiff(fourYearsAgo)).toBe("4 years ago")
+      expect(_.relativeTimeDiff(fiveMinutesAgo)).toBe("5 minutes ago")
+      expect(_.relativeTimeDiff(sixHoursAgo)).toBe("6 hours ago")
     })
   })
 
@@ -453,10 +511,10 @@ describe("arrays", () => {
     })
   })
 
-  describe("getRollingSum", () => {
+  describe("rollingSum", () => {
     it("returns the rolling sum of an array of numbers", () => {
       const arr = [1, 2, 3, 4]
-      expect(_.getRollingSum(arr)).toEqual([1, 3, 6, 10])
+      expect(_.rollingSum(arr)).toEqual([1, 3, 6, 10])
     })
   })
 
@@ -631,13 +689,6 @@ describe("objects", () => {
     it("returns the object with only the keys provided", () => {
       const obj = { a: 1, b: 2, c: 3 }
       expect(_.pickKeys(obj, "b", "c")).toEqual({ b: 2, c: 3 })
-    })
-  })
-
-  describe("combineObjects", () => {
-    it("returns an object with all key/values from provided objects", () => {
-      const objArray = [{ a: 1 }, { b: 2 }, { c: 3 }]
-      expect(_.combineObjects(...objArray)).toEqual({ a: 1, b: 2, c: 3 })
     })
   })
 
@@ -910,6 +961,18 @@ describe("objects", () => {
         "2": "b",
         "3": "c",
       })
+    })
+  })
+
+  describe("getKeyWhereValueIs", () => {
+    it("returns the correct key", () => {
+      const obj = { a: 1, b: 2, c: 3 }
+      expect(_.getKeyWhereValueIs(obj, 3)).toBe("c")
+    })
+
+    it("returns null if no key/value found", () => {
+      const obj = { a: 1, b: 2, c: 3 }
+      expect(_.getKeyWhereValueIs(obj, 4)).toBe(null)
     })
   })
 })
