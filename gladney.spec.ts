@@ -978,7 +978,7 @@ describe("objects", () => {
 })
 
 describe("misc", () => {
-  describe("addTimeoutToPromise", () => {
+  describe("withTimeout", () => {
     it("throws an error if timeout happens first", async () => {
       let err = ""
       let timer
@@ -986,7 +986,7 @@ describe("misc", () => {
         new Promise((resolve, reject) => {
           timer = setTimeout(resolve, 500)
         })
-      const slowThingWithTimeout = _.addTimeoutToPromise(slowThing, 200)
+      const slowThingWithTimeout = _.withTimeout(slowThing, 200)
       try {
         await slowThingWithTimeout()
       } catch (e) {
@@ -1004,7 +1004,7 @@ describe("misc", () => {
         new Promise((resolve, reject) => {
           timer = setTimeout(() => resolve("DONE"), 200)
         })
-      const slowThingWithTimeout = _.addTimeoutToPromise(fastThing, 500)
+      const slowThingWithTimeout = _.withTimeout(fastThing, 500)
       try {
         result = await slowThingWithTimeout()
       } catch (e) {

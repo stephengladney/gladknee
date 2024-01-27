@@ -1744,7 +1744,7 @@ export function convertQueryParamOperators(params: {}) {
 /** Takes a promise and wraps it in another promise that rejects if the original promise takes longer to resolve than a
  * specific amount of time in milliseconds. If the original promise resolves before the timeout, that value is returned.
  **/
-export function addTimeoutToPromise<T>(
+export function withTimeout<T>(
   asyncFunction: () => Promise<T>,
   timeout: number
 ) {
@@ -1904,7 +1904,7 @@ export function throttle<T extends Func | AsyncFunc>(
   delay: number,
   enqueueEarlyCalls = true
 ): T {
-  const { enqueue, executeAll, queue } = createAsyncQueue<T>(func, delay)
+  const { enqueue, executeAll, queue } = createQueue<T>(func, delay)
   let isWaiting = false
   return ((...args: Parameters<T>) => {
     if (isWaiting) {
@@ -2048,7 +2048,7 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-type AsyncQueueObject<T extends Func | AsyncFunc> = {
+type Queue<T extends Func | AsyncFunc> = {
   queue: unknown[]
   enqueue: (...args: Parameters<T>) => void
   executeOne: Function
@@ -2056,12 +2056,21 @@ type AsyncQueueObject<T extends Func | AsyncFunc> = {
   breakOut: Function
 }
 
-/** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
+/**
+ * Returns an async function that utilizes a `Queue` when called so that subsequent
+ * requests are not initiated until prior requests have completed.
+ *
+ */
+export function withQueue(fn: AsyncFunc): AsyncFunc {
+  return throttle(fn, 0)
+}
+
+/** Returns an `Queue` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createAsyncQueue<T extends Func | AsyncFunc>(
+export function createQueue<T extends AsyncFunc>(
   functionToExecute: T,
   delay?: number
-): AsyncQueueObject<T> {
+): Queue<T> {
   const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {
