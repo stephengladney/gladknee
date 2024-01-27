@@ -2048,7 +2048,7 @@ export function setCookie(
 }
 
 type Queue<T extends Func> = {
-  queue: unknown[]
+  queue: Parameters<T>[]
   enqueue: (...args: Parameters<T>) => void
   executeOne: Function
   executeAll: (ignoreErrors?: boolean) => unknown
@@ -2070,7 +2070,7 @@ export function createQueue<T extends Func>(
   functionToExecute: T,
   delay?: number
 ): Queue<T> {
-  const queue: unknown[][] = []
+  const queue: Parameters<T>[] = []
   let isBreakRequested = false
   const executeOne = async () => {
     await functionToExecute(...(queue[0] as T[]))
@@ -2096,7 +2096,7 @@ export function createQueue<T extends Func>(
       isBreakRequested = true
     },
     queue,
-    enqueue: (...args: T[]) => queue.push(args),
+    enqueue: (...args: Parameters<T>) => queue.push(args),
     executeOne,
     executeAll,
   }
