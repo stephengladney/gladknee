@@ -1895,17 +1895,18 @@ export function debounce<T extends (...args: any[]) => any>(
  * or simply ignored (false). The default is true.
  *
  **/
-type Func<T, U> = (...args: T[]) => U
-type AsyncFunc<T, U> = (...args: T[]) => Promise<U>
 
-export function throttle<T, U>(
-  func: Func<T, U>,
+type Func = (...args: any[]) => any
+type AsyncFunc = (...args: any[]) => Promise<any>
+
+export function throttle<T extends Func | AsyncFunc>(
+  func: T,
   delay: number,
   enqueueEarlyCalls = true
-): Func<T, U> {
-  const { enqueue, executeAll, queue } = createAsyncQueue<T, U>(func, delay)
+): T {
+  const { enqueue, executeAll, queue } = createAsyncQueue<T>(func, delay)
   let isWaiting = false
-  return ((...args: T[]) => {
+  return ((...args: Parameters<T>) => {
     if (isWaiting) {
       if (enqueueEarlyCalls) enqueue(...args)
       else return
@@ -1919,7 +1920,7 @@ export function throttle<T, U>(
       if (queue.length > 1) return
       else executeAll()
     }
-  }) as Func<T, U>
+  }) as T
 }
 
 /** Returns a memoized version of a function.
@@ -1928,7 +1929,7 @@ export function throttle<T, U>(
  * with same parameters, the result can be retrieved from cache, rather than
  * executing the function again._
  */
-export function memoize<T extends (...args: any[]) => any>(func: T): T {
+export function memoize<T extends Func>(func: T): T {
   const results: { [key: string]: ReturnType<T> } = {}
   return ((...args: Parameters<T>): ReturnType<T> => {
     const argsAsString = args.join(",")
@@ -2047,7 +2048,7 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> = {
+type AsyncQueueObject<T extends Func | AsyncFunc> = {
   queue: unknown[]
   enqueue: (...args: Parameters<T>) => void
   executeOne: Function
@@ -2057,10 +2058,10 @@ type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> = {
 
 /** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createAsyncQueue<T, U>(
-  functionToExecute: AsyncFunc<T, U> | Func<T, U>,
+export function createAsyncQueue<T extends Func | AsyncFunc>(
+  functionToExecute: T,
   delay?: number
-): AsyncQueueObject<AsyncFunc<T, U>> {
+): AsyncQueueObject<T> {
   const queue: unknown[][] = []
   let isBreakRequested = false
   const executeOne = async () => {
