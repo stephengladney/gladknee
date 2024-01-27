@@ -1597,9 +1597,9 @@ export function getKeyWithLargestValue<T extends object>(obj: T) {
  * getKeyWhereValueIs(obj, 3) //=> "c"
  * ```
  */
-export function getKeyWhereValueIs<T extends object>(
+export function getKeyWhereValueIs<T extends object, U extends T[keyof T]>(
   obj: T,
-  value: any
+  value: U
 ): string | null {
   for (let key in obj) {
     if (obj[key] === value) return key
