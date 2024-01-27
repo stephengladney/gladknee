@@ -1897,9 +1897,8 @@ export function debounce<T extends (...args: any[]) => any>(
  **/
 
 type Func = (...args: any[]) => any
-type AsyncFunc = (...args: any[]) => Promise<any>
 
-export function throttle<T extends Func | AsyncFunc>(
+export function throttle<T extends Func>(
   func: T,
   delay: number,
   enqueueEarlyCalls = true
@@ -2048,7 +2047,7 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-type Queue<T extends Func | AsyncFunc> = {
+type Queue<T extends Func> = {
   queue: unknown[]
   enqueue: (...args: Parameters<T>) => void
   executeOne: Function
@@ -2061,13 +2060,13 @@ type Queue<T extends Func | AsyncFunc> = {
  * requests are not initiated until prior requests have completed.
  *
  */
-export function withQueue(fn: AsyncFunc): AsyncFunc {
+export function withQueue<T extends Func>(fn: T): T {
   return throttle(fn, 0)
 }
 
 /** Returns an `Queue` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createQueue<T extends AsyncFunc>(
+export function createQueue<T extends Func>(
   functionToExecute: T,
   delay?: number
 ): Queue<T> {
