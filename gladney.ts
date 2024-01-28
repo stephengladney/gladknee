@@ -1733,24 +1733,27 @@ export function convertQueryParamOperators(params: {}) {
   return output
 }
 
-/** Takes a promise and wraps it in another promise that rejects if the original promise takes longer to resolve than a
- * specific amount of time in milliseconds. If the original promise resolves before the timeout, that value is returned.
+/** Takes an async function and wraps it in promise that rejects if the original function takes
+ * longer to resolve than a specific amount of time in milliseconds. If the original function resolves
+ * before the timeout, that value is returned.
  **/
-export function withTimeout<T extends Func, U extends ReturnType<T>>(
+export function withTimeout<T extends AsyncFunc>(
   asyncFunction: T,
   timeout: number
 ) {
   return (...args: Parameters<T>) =>
     new Promise((resolve, reject) => {
-      let timer: NodeJS.Timeout
-      asyncFunction(...args).then((result: U) => {
-        clearTimeout(timer)
-        resolve(result)
-      })
+      let timer: any
+      asyncFunction(...(args as Array<Parameters<T>>)).then(
+        (result: ReturnType<T>) => {
+          clearTimeout(timer)
+          resolve(result)
+        }
+      )
       timer = setTimeout(() => {
         reject("TIMED_OUT")
       }, timeout)
-    }) as U
+    }) as Promise<UnwrapPromiseOrResult<T>>
 }
 
 /** Returns a promise that resolves after a given amount of time in milliseconds.
@@ -1825,7 +1828,7 @@ type DebounceReturnObject<T extends (...args: any[]) => any> = {
  * * If `immediate` is `false`, the function when called will not execute until the provided number of milliseconds have passed.
  *  If the function is called again before the time has passed, the timer starts over.
  **/
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends Func>(
   func: T,
   milliseconds: number,
   immediate: boolean
@@ -1845,7 +1848,7 @@ export function debounce<T extends (...args: any[]) => any>(
   const getFlushFunction = (args: Parameters<T>) => () => {
     clearTimeout(wait)
     isWaiting = false
-    return func(...args)
+    return func(...(args as Array<Parameters<T>>))
   }
 
   if (immediate) {
@@ -1858,7 +1861,7 @@ export function debounce<T extends (...args: any[]) => any>(
         return {
           clear,
           flush: getFlushFunction(args),
-          result: func(...args) as ReturnType<T>,
+          result: func(...(args as Array<Parameters<T>>)) as ReturnType<T>,
         } as DebounceReturnObject<T>
       }
     }
@@ -1869,7 +1872,9 @@ export function debounce<T extends (...args: any[]) => any>(
       wait = setTimeout(() => {
         isWaiting = false
 
-        returnObject.result = func(...args) as ReturnType<T>
+        returnObject.result = func(
+          ...(args as Array<Parameters<T>>)
+        ) as ReturnType<T>
       }, milliseconds)
 
       returnObject = { clear, flush: getFlushFunction(args) }
@@ -1879,8 +1884,8 @@ export function debounce<T extends (...args: any[]) => any>(
   }
 }
 
-type Func = (...args: any[]) => any
-type AsyncFunc<T extends any[], U> = (...args: T) => Promise<U>
+type Func = (...args: any) => any
+type AsyncFunc = (...args: any) => Promise<any>
 type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
   ? U
   : T extends (...args: any[]) => infer R
@@ -1896,8 +1901,8 @@ type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
  *
  **/
 export function throttle<
-  T extends Func | AsyncFunc<U, R>,
-  U extends T extends AsyncFunc<U, R> ? any[] : Parameters<T>,
+  T extends Func | AsyncFunc,
+  U extends Parameters<T>,
   R extends UnwrapPromiseOrResult<T>
 >(func: T, delay = 0) {
   let index = 0
@@ -1909,7 +1914,7 @@ export function throttle<
     while (lastCompleted < index - 1) {
       await pauseAsync(250)
     }
-    const result = await func(...args)
+    const result = await func(...(args as Array<U>))
     if (delay) {
       setTimeout(() => {
         lastCompleted++
@@ -1925,13 +1930,13 @@ export function throttle<
  * with same parameters, the result can be retrieved from cache, rather than
  * executing the function again._
  */
-export function memoize<T extends Func>(func: T): T {
+export function memoize<T extends Func | AsyncFunc>(func: T): T {
   const results: { [key: string]: ReturnType<T> } = {}
   return ((...args: Parameters<T>): ReturnType<T> => {
     const argsAsString = args.join(",")
     if (results[argsAsString]) return results[argsAsString]
     else {
-      results[argsAsString] = func(...args)
+      results[argsAsString] = func(...(args as Array<Parameters<T>>))
       return results[argsAsString]
     }
   }) as T
@@ -2055,21 +2060,21 @@ type Queue<Params extends any[], Result> = {
 /** Returns an `Queue` which includes a queue, enqueue function, and two execute methods.
  **/
 export function createQueue<
-  T extends Func | AsyncFunc<U, V>,
-  U extends T extends AsyncFunc<U, V> ? any[] : Parameters<T>,
-  V extends UnwrapPromiseOrResult<T>
->(functionToExecute: T, delay?: number): Queue<U, V> {
+  T extends Func | AsyncFunc,
+  U extends Parameters<T>,
+  R extends UnwrapPromiseOrResult<T>
+>(functionToExecute: T, delay?: number): Queue<U, R> {
   const queue: U[] = []
   let isBreakRequested = false
 
   const executeOne = async () => {
-    const returnValue = await functionToExecute(...(queue[0] as U))
+    const returnValue = await functionToExecute(...(queue[0] as Array<U>))
     queue.shift()
-    return returnValue as V
+    return returnValue as R
   }
 
   const executeAll = async (ignoreErrors = false): Promise<any> => {
-    type ResultType = V | "error"
+    type ResultType = R | "error"
 
     const recursiveExecuteAll = async (
       results: ResultType[] = []
@@ -2079,7 +2084,7 @@ export function createQueue<
       try {
         const newResults: ResultType[] = [
           ...results,
-          await functionToExecute(...(queue[0] as U)),
+          await functionToExecute(...(queue[0] as Array<U>)),
         ]
         queue.shift()
         if (delay) await pauseAsync(delay)
