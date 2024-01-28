@@ -1015,10 +1015,10 @@ describe("misc", () => {
     })
   })
 
-  describe("pauseAsync", () => {
+  describe("pause", () => {
     it("pauses for the provided milliseconds", async () => {
       const start = Date.now()
-      await _.pauseAsync(200)
+      await _.pause(200)
       const end = Date.now()
       expect(end - start).toBeGreaterThanOrEqual(199)
     })
@@ -1146,7 +1146,7 @@ describe("misc", () => {
       const debouncedFunc = _.debounce(func, 100, false)
       debouncedFunc()
       expect(func).toHaveBeenCalledTimes(0)
-      await _.pauseAsync(200)
+      await _.pause(200)
       expect(func).toHaveBeenCalledTimes(1)
     })
 
@@ -1156,9 +1156,9 @@ describe("misc", () => {
       debouncedFunc()
       debouncedFunc()
       expect(func).toHaveBeenCalledTimes(0)
-      await _.pauseAsync(100)
+      await _.pause(100)
       expect(func).toHaveBeenCalledTimes(0)
-      await _.pauseAsync(300)
+      await _.pause(300)
       expect(func).toHaveBeenCalledTimes(1)
     })
 
@@ -1184,7 +1184,7 @@ describe("misc", () => {
       const debouncedFunc = _.debounce(func, 100, false)
 
       debouncedFunc()
-      await _.pauseAsync(200)
+      await _.pause(200)
       debouncedFunc.flush()
       expect(func).toHaveBeenCalledTimes(1)
     })
@@ -1210,7 +1210,7 @@ describe("misc", () => {
       const func = jest.fn()
       const throttledFunc = _.throttle(func, 100)
       throttledFunc()
-      await _.pauseAsync(200)
+      await _.pause(200)
       throttledFunc()
       expect(func).toHaveBeenCalledTimes(2)
     })
@@ -1220,7 +1220,7 @@ describe("misc", () => {
       const throttledFunc = _.throttle(func, 100)
       throttledFunc()
       throttledFunc()
-      await _.pauseAsync(300)
+      await _.pause(300)
       expect(func).toHaveBeenCalledTimes(2)
     })
   })

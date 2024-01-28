@@ -183,13 +183,6 @@ export function mode(...numbers: (number | number[])[]) {
   } else return Number(mostCommon)
 }
 
-export interface TimeObject {
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-}
-
 const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
@@ -305,15 +298,6 @@ interface TimeObject {
 export function timeSince(date: Date): TimeObject {
   return getDuration(new Date(), new Date(date))
 }
-
-type DayName =
-  | "Sunday"
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday"
-  | "Saturday"
 
 /** Returns the corresponding human readable day name of an integer (0-6).
  *
@@ -712,10 +696,6 @@ export function isNumeric(n: string | number) {
  * ```
  */
 
-type StringOrArray<T extends string | any[]> = T extends (infer U)[]
-  ? U[]
-  : string
-
 export function shave<T extends string | U[], U>(
   iterable: T,
   n: number
@@ -869,10 +849,6 @@ export function flatten(arr: any[], levels = 0): unknown[] {
   }
   return flattenWithAccumulator(arr, levels)
 }
-
-type StringOrNumberArray<T extends string[] | number[]> = T extends string[]
-  ? string[]
-  : number[]
 
 /** Returns an array of numbers (or strings of numbers) sorted. This is safer than the default sort() method because it converts
  strings of numbers to actual numbers and it compares each value for greater than less than, which helps
@@ -1684,7 +1660,6 @@ export function sortByCallbackResult<T>(things: T[], func: Function) {
   )
 }
 
-export type Handler = (req: Request, res: Response) => void
 type Handlers = {
   index?: Handler
   show?: Handler
@@ -1758,7 +1733,7 @@ export function withTimeout<T extends AsyncFunc>(
 
 /** Returns a promise that resolves after a given amount of time in milliseconds.
  **/
-export function pauseAsync(milliseconds: number) {
+export function pause(milliseconds: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, milliseconds)
   })
@@ -1766,31 +1741,11 @@ export function pauseAsync(milliseconds: number) {
 
 /** Delays future code from executing until a specific number of milliseconds has passed.
  **/
-export function pauseSync(milliseconds: number) {
-  const start = Date.now()
-  const end = start + milliseconds
-  while (Date.now() < end) {}
-}
-
-type AnyFunc = (...arg: any) => any
-
-// Credit to @ecyrbedev on Twitter for this advanced typing mastery
-type PipeArgs<F extends AnyFunc[], Acc extends AnyFunc[] = []> = F extends [
-  (...args: infer A) => infer B
-]
-  ? [...Acc, (...args: A) => B]
-  : F extends [(...args: infer A) => any, ...infer Tail]
-  ? Tail extends [(arg: infer B) => any, ...any[]]
-    ? PipeArgs<Tail, [...Acc, (...args: A) => B]>
-    : Acc
-  : Acc
-
-type LastFnReturnType<F extends Array<AnyFunc>, Else = never> = F extends [
-  ...any[],
-  (...arg: any) => infer R
-]
-  ? R
-  : Else
+// export function pauseSync(milliseconds: number) {
+//   const start = Date.now()
+//   const end = start + milliseconds
+//   while (Date.now() < end) {}
+// }
 
 /** Returns a function that calls multiple given functions in a specific order.
  * 
@@ -1803,21 +1758,15 @@ const doubleThenTriple = pipe(double, triple)
 doubleThenTriple(6) //=> 36
 ```
  **/
-export function pipe<FirstFn extends AnyFunc, F extends AnyFunc[]>(
+export function pipe<FirstFn extends Func, F extends Func[]>(
   firstFn: FirstFn,
   ...fns: PipeArgs<F> extends F ? F : PipeArgs<F>
 ) {
   return (...args: Parameters<FirstFn>) =>
-    (fns as AnyFunc[]).reduce(
+    (fns as Func[]).reduce(
       (acc, fn) => fn(acc),
       firstFn(...(args as Array<Parameters<FirstFn>>))
     ) as LastFnReturnType<F, ReturnType<FirstFn>>
-}
-
-type DebouncedFunction<T extends Func> = {
-  (...args: Parameters<T>): void
-  clear: () => void
-  flush: () => Promise<ReturnType<T> | undefined>
 }
 
 /** Returns a debounced version of the function passed. Accepts custom delay in
@@ -1897,14 +1846,6 @@ export function debounce<T extends (...args: any[]) => any>(
   return debouncedFunction
 }
 
-type Func = (...args: any) => any
-type AsyncFunc = (...args: any) => Promise<any>
-type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
-  ? U
-  : T extends (...args: any[]) => infer R
-  ? R
-  : never
-
 /** Returns a throttled version of a function. The throttled version can only execute once every N milliseconds,
  * where N is the delay passed in to the throttle function.
  *
@@ -1925,7 +1866,7 @@ export function throttle<
     index++
     queue.push(index)
     while (lastCompleted < index - 1) {
-      await pauseAsync(250)
+      await pause(250)
     }
     const result = await func(...(args as Array<U>))
     if (delay) {
@@ -1954,8 +1895,6 @@ export function memoize<T extends Func | AsyncFunc>(func: T): T {
     }
   }) as T
 }
-
-type Falsy = null | undefined | false
 
 /** Returns a function with arguments prepended to the arguments it receives.
  * 
@@ -1987,14 +1926,6 @@ export function partial<T extends Func>(
     return func(...newArgsToCall, ...newArgs.slice(lastNewArgUsed))
   }
 }
-
-type CurryFunction<T> = T extends (...args: infer Args) => infer Result
-  ? Args extends []
-    ? () => Result
-    : Args extends [infer First, ...infer Rest]
-    ? (arg: First) => CurryFunction<(...rest: Rest) => Result>
-    : never
-  : never
 
 /** Returns a curried version of a function.
  *
@@ -2062,14 +1993,6 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-type Queue<Params extends any[], Result> = {
-  queue: Params[]
-  enqueue: (...args: Params) => void
-  executeOne: () => Promise<Result>
-  executeAll: (ignoreErrors?: boolean) => Promise<(Result | "error")[]>
-  breakOut: Function
-}
-
 /** Returns an `Queue` which includes a queue, enqueue function, and two execute methods.
  **/
 export function createQueue<
@@ -2100,13 +2023,13 @@ export function createQueue<
           await functionToExecute(...(queue[0] as Array<U>)),
         ]
         queue.shift()
-        if (delay) await pauseAsync(delay)
+        if (delay) await pause(delay)
         if (queue.length > 0) return recursiveExecuteAll(newResults)
         else return newResults
       } catch {
         if (ignoreErrors) {
           queue.shift()
-          if (delay) await pauseAsync(delay)
+          if (delay) await pause(delay)
           if (queue.length > 0) recursiveExecuteAll([...results, "error"])
           else return results
         }
@@ -2124,11 +2047,6 @@ export function createQueue<
     executeOne,
     executeAll,
   }
-}
-
-type GeoCoords = {
-  latitude: number | null
-  longitude: number | null
 }
 
 /** Returns the user's latitude and longitude or an error.
@@ -2152,7 +2070,7 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
     }
   )
   while (browserLocation.latitude === null && err === null) {
-    await pauseAsync(500)
+    await pause(500)
     pauseCount++
     if (pauseCount === timeoutInSeconds * 2) err = "TIMED_OUT"
   }
@@ -2295,3 +2213,88 @@ export function stripHTML(text: string) {
   }
   return result
 }
+
+// TYPES
+
+export interface TimeObject {
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+}
+
+type DayName =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
+
+type StringOrArray<T extends string | any[]> = T extends (infer U)[]
+  ? U[]
+  : string
+
+type Func = (...args: any) => any
+
+type AsyncFunc = (...args: any) => Promise<any>
+
+type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
+  ? U
+  : T extends (...args: any[]) => any
+  ? ReturnType<T>
+  : never
+
+type DebouncedFunction<T extends Func> = {
+  (...args: Parameters<T>): Promise<ReturnType<T> | undefined>
+  clear: () => void
+  flush: () => Promise<ReturnType<T> | undefined>
+}
+
+type CurryFunction<T> = T extends (...args: infer Args) => infer Result
+  ? Args extends []
+    ? () => Result
+    : Args extends [infer First, ...infer Rest]
+    ? (arg: First) => CurryFunction<(...rest: Rest) => Result>
+    : never
+  : never
+
+type Queue<Params extends any[], Result> = {
+  queue: Params[]
+  enqueue: (...args: Params) => void
+  executeOne: () => Promise<Result>
+  executeAll: (ignoreErrors?: boolean) => Promise<(Result | "error")[]>
+  breakOut: Function
+}
+
+// Credit to @ecyrbedev on Twitter for this advanced typing mastery
+type PipeArgs<F extends Func[], Acc extends Func[] = []> = F extends [
+  (...args: infer A) => infer B
+]
+  ? [...Acc, (...args: A) => B]
+  : F extends [(...args: infer A) => any, ...infer Tail]
+  ? Tail extends [(arg: infer B) => any, ...any[]]
+    ? PipeArgs<Tail, [...Acc, (...args: A) => B]>
+    : Acc
+  : Acc
+
+type LastFnReturnType<F extends Array<Func>, Else = never> = F extends [
+  ...any[],
+  (...arg: any) => infer R
+]
+  ? R
+  : Else
+
+type GeoCoords = {
+  latitude: number | null
+  longitude: number | null
+}
+
+type StringOrNumberArray<T extends string[] | number[]> = T extends string[]
+  ? string[]
+  : number[]
+
+type Falsy = null | undefined | false
+
+export type Handler = (req: Request, res: Response) => void
