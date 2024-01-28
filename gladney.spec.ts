@@ -1185,29 +1185,20 @@ describe("misc", () => {
 
     it("executes a function again after the alloted time", async () => {
       const func = jest.fn()
-      const throttledFunc = _.throttle(func, 100, false)
+      const throttledFunc = _.throttle(func, 100)
       throttledFunc()
       await _.pauseAsync(200)
       throttledFunc()
       expect(func).toHaveBeenCalledTimes(2)
     })
 
-    it("enqueues early requests by default", async () => {
+    it("enqueues early requests", async () => {
       const func = jest.fn()
       const throttledFunc = _.throttle(func, 100)
       throttledFunc()
       throttledFunc()
       await _.pauseAsync(300)
       expect(func).toHaveBeenCalledTimes(2)
-    })
-
-    it("ignores early requests if enqueueEarlyCalls is false", async () => {
-      const func = jest.fn()
-      const throttledFunc = _.throttle(func, 100, false)
-      throttledFunc()
-      throttledFunc()
-      await _.pauseAsync(300)
-      expect(func).toHaveBeenCalledTimes(1)
     })
   })
 

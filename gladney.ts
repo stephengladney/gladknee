@@ -711,12 +711,18 @@ export function isNumeric(n: string | number) {
  * shave("Hello", -2) //=> "llo"
  * ```
  */
-export function shave<T>(iterable: T[], n: number): T[]
 
-export function shave(iterable: string, n: number): string
+type StringOrArray<T extends string | any[]> = T extends (infer U)[]
+  ? U[]
+  : string
 
-export function shave<T>(iterable: string | T[], n: number) {
-  return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
+export function shave<T extends string | U[], U>(
+  iterable: T,
+  n: number
+): StringOrArray<T> {
+  return (
+    n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
+  ) as StringOrArray<T>
 }
 
 /** Returns an array with the items randomly ordered.
@@ -864,7 +870,9 @@ export function flatten(arr: any[], levels = 0): unknown[] {
   return flattenWithAccumulator(arr, levels)
 }
 
-type StringOrNumberArray = (string | number)[]
+type StringOrNumberArray<T extends string[] | number[]> = T extends string[]
+  ? string[]
+  : number[]
 
 /** Returns an array of numbers (or strings of numbers) sorted. This is safer than the default sort() method because it converts
  strings of numbers to actual numbers and it compares each value for greater than less than, which helps
@@ -882,24 +890,16 @@ type StringOrNumberArray = (string | number)[]
  * ```
  *
  */
-export function safeSort(arr: string[]): string[]
-
-export function safeSort(arr: number[]): number[]
-
-export function safeSort(arr: StringOrNumberArray) {
+export function safeSort<T extends string[] | number[]>(arr: T) {
   return [...arr].sort((a, b) => {
     if (isNumeric(a)) return Number(a) - Number(b)
     else return a < b ? -1 : 1
-  })
+  }) as StringOrNumberArray<T>
 }
 
 /** Returns an array sorted (ascending) via bubble sort.
  **/
-export function bubbleSort(arr: string[]): string[]
-
-export function bubbleSort(arr: number[]): number[]
-
-export function bubbleSort(arr: StringOrNumberArray) {
+export function bubbleSort<T extends string[] | number[]>(arr: T) {
   let noSwaps
   const _arr = [...arr]
   for (var i = _arr.length; i > 0; i--) {
@@ -914,17 +914,13 @@ export function bubbleSort(arr: StringOrNumberArray) {
     }
     if (noSwaps) break
   }
-  return _arr
+  return _arr as StringOrNumberArray<T>
 }
 
 /** Returns an array sorted (ascending) via selection sort.
  **/
 
-export function selectionSort(arr: string[]): string[]
-
-export function selectionSort(arr: number[]): number[]
-
-export function selectionSort(arr: StringOrNumberArray) {
+export function selectionSort<T extends string[] | number[]>(arr: T) {
   const _arr = [...arr]
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
     ([arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]])
@@ -939,16 +935,12 @@ export function selectionSort(arr: StringOrNumberArray) {
     if (i !== lowest) swap(_arr, i, lowest)
   }
 
-  return _arr
+  return _arr as StringOrNumberArray<T>
 }
 
 /** Returns an array sorted (ascending) via insertion sort.
  **/
-export function insertionSort(arr: string[]): string[]
-
-export function insertionSort(arr: number[]): number[]
-
-export function insertionSort(arr: StringOrNumberArray) {
+export function insertionSort<T extends string[] | number[]>(arr: T) {
   var currentVal
   const _arr = [...arr]
   for (var i = 1; i < _arr.length; i++) {
@@ -958,7 +950,7 @@ export function insertionSort(arr: StringOrNumberArray) {
     }
     _arr[j + 1] = currentVal
   }
-  return _arr
+  return _arr as StringOrNumberArray<T>
 }
 
 /** Returns an array with any duplicates removed.
@@ -1744,22 +1736,21 @@ export function convertQueryParamOperators(params: {}) {
 /** Takes a promise and wraps it in another promise that rejects if the original promise takes longer to resolve than a
  * specific amount of time in milliseconds. If the original promise resolves before the timeout, that value is returned.
  **/
-export function withTimeout<
-  T extends Func,
-  U extends Parameters<T>,
-  V extends ReturnType<T>
->(asyncFunction: T, timeout: number) {
-  return (...args: U) =>
+export function withTimeout<T extends Func, U extends ReturnType<T>>(
+  asyncFunction: T,
+  timeout: number
+) {
+  return (...args: Parameters<T>) =>
     new Promise((resolve, reject) => {
       let timer: NodeJS.Timeout
-      asyncFunction().then((result: V) => {
+      asyncFunction(...args).then((result: U) => {
         clearTimeout(timer)
         resolve(result)
       })
       timer = setTimeout(() => {
         reject("TIMED_OUT")
       }, timeout)
-    }) as V
+    }) as U
 }
 
 /** Returns a promise that resolves after a given amount of time in milliseconds.
@@ -1888,6 +1879,14 @@ export function debounce<T extends (...args: any[]) => any>(
   }
 }
 
+type Func = (...args: any[]) => any
+type AsyncFunc<T extends any[], U> = (...args: T) => Promise<U>
+type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
+  ? U
+  : T extends (...args: any[]) => infer R
+  ? R
+  : never
+
 /** Returns a throttled version of a function. The throttled version can only execute once every N milliseconds,
  * where N is the delay passed in to the throttle function.
  *
@@ -1896,31 +1895,28 @@ export function debounce<T extends (...args: any[]) => any>(
  * or simply ignored (false). The default is true.
  *
  **/
-
-type Func = (...args: any[]) => any
-
-export function throttle<T extends Func>(
-  func: T,
-  delay: number,
-  enqueueEarlyCalls = true
-): T {
-  const { enqueue, executeAll, queue } = createQueue<T>(func, delay)
-  let isWaiting = false
-  return ((...args: Parameters<T>) => {
-    if (isWaiting) {
-      if (enqueueEarlyCalls) enqueue(...args)
-      else return
-    } else {
-      isWaiting = true
-      setTimeout(() => {
-        isWaiting = false
-      }, delay)
-
-      enqueue(...args)
-      if (queue.length > 1) return
-      else executeAll()
+export function throttle<
+  T extends Func | AsyncFunc<U, R>,
+  U extends T extends AsyncFunc<U, R> ? any[] : Parameters<T>,
+  R extends UnwrapPromiseOrResult<T>
+>(func: T, delay = 0) {
+  let index = 0
+  let lastCompleted = 0
+  let queue: number[] = []
+  return async (...args: U) => {
+    index++
+    queue.push(index)
+    while (lastCompleted < index - 1) {
+      await pauseAsync(250)
     }
-  }) as T
+    const result = await func(...args)
+    if (delay) {
+      setTimeout(() => {
+        lastCompleted++
+      }, delay)
+    }
+    return result as R
+  }
 }
 
 /** Returns a memoized version of a function.
@@ -1955,7 +1951,7 @@ sayHello("John") //=> "Hello John"
 
 * ```
  **/
-export function partial<T extends (...args: any[]) => any>(
+export function partial<T extends Func>(
   func: T,
   ...args: (Parameters<T>[number] | Falsy)[]
 ) {
@@ -2048,56 +2044,65 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-type Queue<T extends Func> = {
-  queue: Parameters<T>[]
-  enqueue: (...args: Parameters<T>) => void
-  executeOne: Function
-  executeAll: (ignoreErrors?: boolean) => unknown
+type Queue<Params extends any[], Result> = {
+  queue: Params[]
+  enqueue: (...args: Params) => void
+  executeOne: () => Promise<Result>
+  executeAll: (ignoreErrors?: boolean) => Promise<(Result | "error")[]>
   breakOut: Function
-}
-
-/**
- * Returns an async function that utilizes a `Queue` when called so that subsequent
- * requests are not initiated until prior requests have completed.
- *
- */
-export function withQueue<T extends Func>(fn: T): T {
-  return throttle(fn, 0)
 }
 
 /** Returns an `Queue` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createQueue<T extends Func>(
-  functionToExecute: T,
-  delay?: number
-): Queue<T> {
-  const queue: Parameters<T>[] = []
+export function createQueue<
+  T extends Func | AsyncFunc<U, V>,
+  U extends T extends AsyncFunc<U, V> ? any[] : Parameters<T>,
+  V extends UnwrapPromiseOrResult<T>
+>(functionToExecute: T, delay?: number): Queue<U, V> {
+  const queue: U[] = []
   let isBreakRequested = false
+
   const executeOne = async () => {
-    await functionToExecute(...(queue[0] as T[]))
+    const returnValue = await functionToExecute(...(queue[0] as U))
     queue.shift()
+    return returnValue as V
   }
-  const executeAll = async (ignoreErrors = false) => {
-    if (isBreakRequested) return
-    try {
-      await functionToExecute(...(queue[0] as T[]))
-      queue.shift()
-      if (delay) await pauseAsync(delay)
-      if (queue.length > 0) executeAll(ignoreErrors)
-    } catch {
-      if (ignoreErrors) {
+
+  const executeAll = async (ignoreErrors = false): Promise<any> => {
+    type ResultType = V | "error"
+
+    const recursiveExecuteAll = async (
+      results: ResultType[] = []
+    ): Promise<any> => {
+      if (isBreakRequested) return results
+
+      try {
+        const newResults: ResultType[] = [
+          ...results,
+          await functionToExecute(...(queue[0] as U)),
+        ]
         queue.shift()
         if (delay) await pauseAsync(delay)
-        if (queue.length > 0) executeAll(true)
+        if (queue.length > 0) return recursiveExecuteAll(newResults)
+        else return newResults
+      } catch {
+        if (ignoreErrors) {
+          queue.shift()
+          if (delay) await pauseAsync(delay)
+          if (queue.length > 0) recursiveExecuteAll([...results, "error"])
+          else return results
+        }
       }
     }
+
+    return recursiveExecuteAll()
   }
   return {
     breakOut: () => {
       isBreakRequested = true
     },
     queue,
-    enqueue: (...args: Parameters<T>) => queue.push(args),
+    enqueue: (...args: U) => queue.push(args),
     executeOne,
     executeAll,
   }
