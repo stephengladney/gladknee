@@ -1814,16 +1814,10 @@ export function pipe<FirstFn extends AnyFunc, F extends AnyFunc[]>(
     ) as LastFnReturnType<F, ReturnType<FirstFn>>
 }
 
-type DebounceReturnObject<T extends (...args: any[]) => any> = {
-  clear: Function
-  flush: Function
-  result?: ReturnType<T>
-}
-
 type DebouncedFunction<T extends Func> = {
   (...args: Parameters<T>): void
   clear: () => void
-  flush: () => Promise<ReturnType<T>>
+  flush: () => Promise<ReturnType<T> | undefined>
 }
 
 /** Returns a debounced version of the function passed. Accepts custom delay in
@@ -1870,9 +1864,11 @@ export function debounce<T extends (...args: any[]) => any>(
         })
       }
     } else {
+      isWaiting = true
       return new Promise((resolve) => {
         timeoutId = setTimeout(() => {
           resolve(func(...lastArgs) as ReturnType<T>)
+          isWaiting = false
         }, delay)
       })
     }
@@ -1880,14 +1876,22 @@ export function debounce<T extends (...args: any[]) => any>(
 
   debouncedFunction.clear = clear
 
-  debouncedFunction.flush = () => {
-    clearTimeout(timeoutId)
-    if (lastArgs)
-      return new Promise((resolve) => resolve(func(...lastArgs))) as Promise<
-        ReturnType<T>
-      >
-    else
-      return new Promise((resolve) => resolve(func())) as Promise<ReturnType<T>>
+  debouncedFunction.flush = (): Promise<ReturnType<T> | undefined> => {
+    if (!immediate && isWaiting) {
+      isWaiting = false
+      clearTimeout(timeoutId)
+      if (lastArgs) {
+        return new Promise((resolve) => resolve(func(...lastArgs))) as Promise<
+          ReturnType<T>
+        >
+      } else {
+        return new Promise((resolve) => resolve(func())) as Promise<
+          ReturnType<T>
+        >
+      }
+    } else {
+      return new Promise((resolve) => resolve(undefined))
+    }
   }
 
   return debouncedFunction
