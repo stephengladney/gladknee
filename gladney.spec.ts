@@ -1112,26 +1112,24 @@ describe("misc", () => {
     it("immediate = true. does not invoke the function again before time has passed", () => {
       const func = jest.fn()
       const debouncedFunc = _.debounce(func, 500, true)
-      const { clear } = debouncedFunc()
       debouncedFunc()
-      clear()
+      debouncedFunc()
       expect(func).toHaveBeenCalledTimes(1)
     })
 
     it("immediate = true. does invoke the function again before time has passed if cleared", () => {
       const func = jest.fn()
       const debouncedFunc = _.debounce(func, 500, true)
-      const { clear } = debouncedFunc()
-      clear()
+      debouncedFunc()
+      debouncedFunc.clear()
       debouncedFunc()
       expect(func).toHaveBeenCalledTimes(2)
     })
 
-    it("immediate = true. return object includes result", () => {
+    it("immediate = true. returns a promise that resolves to result", async () => {
       const func = jest.fn(() => 4)
       const debouncedFunc = _.debounce(func, 500, true)
-      const { result } = debouncedFunc()
-      debouncedFunc()
+      const result = await debouncedFunc()
       expect(result).toBe(4)
     })
 
@@ -1159,18 +1157,16 @@ describe("misc", () => {
     it("immediate = false. flush executes the function immediately", async () => {
       const func = jest.fn()
       const debouncedFunc = _.debounce(func, 500, false)
-      const { flush } = debouncedFunc()
-      flush()
+      debouncedFunc()
+      debouncedFunc.flush()
       expect(func).toHaveBeenCalledTimes(1)
     })
 
-    it("immediate = false. result updates after pause", async () => {
+    it("immediate = false. returns a promise that resolves after delay", async () => {
       const func = jest.fn(() => 4)
       const debouncedFunc = _.debounce(func, 500, false)
-      const returnObject = debouncedFunc()
-      setTimeout(() => {
-        expect(returnObject.result).toBe(4)
-      }, 1000)
+      const result = await debouncedFunc()
+      expect(result).toBe(4)
     })
   })
 

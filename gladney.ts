@@ -1820,6 +1820,12 @@ type DebounceReturnObject<T extends (...args: any[]) => any> = {
   result?: ReturnType<T>
 }
 
+type DebouncedFunction<T extends Func> = {
+  (...args: Parameters<T>): void
+  clear: () => void
+  flush: () => Promise<ReturnType<T>>
+}
+
 /** Returns a debounced version of the function passed. Accepts custom delay in
  * milliseconds and immediate boolean for leading/trailing.
  *
@@ -1828,60 +1834,63 @@ type DebounceReturnObject<T extends (...args: any[]) => any> = {
  * * If `immediate` is `false`, the function when called will not execute until the provided number of milliseconds have passed.
  *  If the function is called again before the time has passed, the timer starts over.
  **/
-export function debounce<T extends Func>(
+export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  milliseconds: number,
-  immediate: boolean
-) {
-  let wait: NodeJS.Timeout
+  delay: number,
+  immediate: boolean = false
+): DebouncedFunction<T> {
+  let timeoutId: ReturnType<typeof setTimeout>
+  let lastArgs: Parameters<T>
   let isWaiting = false
-  let returnObject: DebounceReturnObject<T> = {
-    clear: () => {},
-    flush: () => {},
-  }
 
   const clear = () => {
-    clearTimeout(wait)
+    clearTimeout(timeoutId)
     isWaiting = false
   }
 
-  const getFlushFunction = (args: Parameters<T>) => () => {
-    clearTimeout(wait)
-    isWaiting = false
-    return func(...(args as Array<Parameters<T>>))
-  }
+  function debouncedFunction(
+    ...args: Parameters<T>
+  ): Promise<ReturnType<T> | undefined> {
+    lastArgs = args
+    clearTimeout(timeoutId)
 
-  if (immediate) {
-    return (...args: Parameters<T>) => {
-      if (isWaiting) return { clear, flush: getFlushFunction(args) }
-      else {
+    if (immediate) {
+      if (!isWaiting) {
+        const result = func(...lastArgs)
         isWaiting = true
-        wait = setTimeout(() => (isWaiting = false), milliseconds)
-
-        return {
-          clear,
-          flush: getFlushFunction(args),
-          result: func(...(args as Array<Parameters<T>>)) as ReturnType<T>,
-        } as DebounceReturnObject<T>
+        timeoutId = setTimeout(() => {
+          isWaiting = false
+        }, delay)
+        return new Promise((resolve) => {
+          resolve(result as ReturnType<T>)
+        })
+      } else {
+        return new Promise((resolve) => {
+          resolve(undefined)
+        })
       }
-    }
-  } else {
-    return (...args: Parameters<T>) => {
-      if (isWaiting) clearTimeout(wait)
-      isWaiting = true
-      wait = setTimeout(() => {
-        isWaiting = false
-
-        returnObject.result = func(
-          ...(args as Array<Parameters<T>>)
-        ) as ReturnType<T>
-      }, milliseconds)
-
-      returnObject = { clear, flush: getFlushFunction(args) }
-
-      return returnObject
+    } else {
+      return new Promise((resolve) => {
+        timeoutId = setTimeout(() => {
+          resolve(func(...lastArgs) as ReturnType<T>)
+        }, delay)
+      })
     }
   }
+
+  debouncedFunction.clear = clear
+
+  debouncedFunction.flush = () => {
+    clearTimeout(timeoutId)
+    if (lastArgs)
+      return new Promise((resolve) => resolve(func(...lastArgs))) as Promise<
+        ReturnType<T>
+      >
+    else
+      return new Promise((resolve) => resolve(func())) as Promise<ReturnType<T>>
+  }
+
+  return debouncedFunction
 }
 
 type Func = (...args: any) => any
