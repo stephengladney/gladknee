@@ -1826,12 +1826,9 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 /** Returns a throttled version of a function. The throttled version can only execute once every N milliseconds,
- * where N is the delay passed in to the throttle function.
- *
- * An optional third parameter indicates whether subsequent calls of the function before the
- * delay period has passed should be enqueued and run once the delay passes (true)
- * or simply ignored (false). The default is true.
- *
+ * where N is the delay passed in to the throttle function. If the function is called again before the necessary
+ * time has passed since last calling the function, the subsequent execution is queued and will occur
+ * once the time has passed.
  **/
 export function throttle<
   T extends Func | AsyncFunc,
