@@ -93,13 +93,13 @@ export function doubleDigit(n: number) {
 export function range(start: number, end: number, step = 1) {
   const result: number[] = []
   if (start < end) {
-    if (step <= 0) return
+    if (step <= 0) return result
     for (let i = start; i <= end; i += step) {
       result.push(i)
     }
   } else {
     if (step === 1) step = -1
-    else if (step >= 0) return
+    else if (step >= 0) return result
     else {
       for (let i = start; i >= end; i += step) {
         result.push(i)
@@ -183,43 +183,19 @@ export function mode(...numbers: (number | number[])[]) {
   } else return Number(mostCommon)
 }
 
-export interface TimeObject {
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-}
-
 const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
 
-/** Returns a `TimeObject` with calculated days, hours, minutes and seconds from an amount of seconds.
+/** Returns a `Duration` with calculated days, hours, minutes and seconds from an amount of seconds.
  *
  * _Example:_
  * ```typescript
  * getDurationFromMilliseconds(200000000)
 //=> { days: 2, hours: 7, minutes: 33, seconds: 20 }
-
-interface TimeObject {
-  years: number
-  months: number
-  weeks: number
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
-}
  * ```
  **/
-function getDurationFromMilliseconds(milliseconds: number): TimeObject {
+function getDurationFromMilliseconds(milliseconds: number): Duration {
   const seconds = Math.floor(milliseconds / 1000)
 
   return {
@@ -240,7 +216,7 @@ function getDurationFromMilliseconds(milliseconds: number): TimeObject {
  * getMillisecondsFromDuration(amountOfTime) //=> 98651000
  * ```
  */
-function getMillisecondsFromDuration(duration: Partial<TimeObject>) {
+function getMillisecondsFromDuration(duration: Partial<Duration>) {
   let result = 0
   if (duration.days) result += duration.days * secondsInADay * 1000
   if (duration.hours) result += duration.hours * secondsInAnHour * 1000
@@ -265,20 +241,16 @@ function getMillisecondsFromDuration(duration: Partial<TimeObject>) {
  * ```
  */
 export function getDateFromDuration(
-  duration: Partial<TimeObject>,
-  inThe: "past" | "future",
+  duration: Partial<Duration>,
   startDate: Date = new Date()
 ) {
-  const ms = getMillisecondsFromDuration(duration)
-  return inThe === "future"
-    ? new Date(startDate.getTime() + ms)
-    : new Date(startDate.getTime() - ms)
+  return new Date(startDate.getTime() + getMillisecondsFromDuration(duration))
 }
 
-/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until 
- * a specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds until 
+ * a specific date. A `Duration` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
-interface TimeObject {
+interface Duration {
   days: number
   hours: number
   minutes: number
@@ -287,14 +259,14 @@ interface TimeObject {
  * ```
  **/
 
-export function timeUntil(date: Date): TimeObject {
+export function timeUntil(date: Date): Duration {
   return getDuration(new Date(), new Date(date))
 }
 
-/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
- * specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds since a
+ * specific date. A `Duration` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
-interface TimeObject {
+interface Duration {
   days: number
   hours: number
   minutes: number
@@ -302,18 +274,9 @@ interface TimeObject {
 }
  * ```
  **/
-export function timeSince(date: Date): TimeObject {
+export function timeSince(date: Date): Duration {
   return getDuration(new Date(), new Date(date))
 }
-
-type DayName =
-  | "Sunday"
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday"
-  | "Saturday"
 
 /** Returns the corresponding human readable day name of an integer (0-6).
  *
@@ -357,7 +320,7 @@ export function isPast(date: Date) {
   return new Date(date).getTime() < Date.now()
 }
 
-/** Returns a TimeObject representing the amount of time between two dates.
+/** Returns a Duration representing the amount of time between two dates.
  *
  * Example:
  *
@@ -711,12 +674,14 @@ export function isNumeric(n: string | number) {
  * shave("Hello", -2) //=> "llo"
  * ```
  */
-export function shave<T>(iterable: T[], n: number): T[]
 
-export function shave(iterable: string, n: number): string
-
-export function shave<T>(iterable: string | T[], n: number) {
-  return n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
+export function shave<T extends string | any[]>(
+  iterable: T,
+  n: number
+): StringOrArray<T> {
+  return (
+    n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
+  ) as StringOrArray<T>
 }
 
 /** Returns an array with the items randomly ordered.
@@ -864,8 +829,6 @@ export function flatten(arr: any[], levels = 0): unknown[] {
   return flattenWithAccumulator(arr, levels)
 }
 
-type StringOrNumberArray = (string | number)[]
-
 /** Returns an array of numbers (or strings of numbers) sorted. This is safer than the default sort() method because it converts
  strings of numbers to actual numbers and it compares each value for greater than less than, which helps
  when sorting negative numbers.
@@ -882,24 +845,16 @@ type StringOrNumberArray = (string | number)[]
  * ```
  *
  */
-export function safeSort(arr: string[]): string[]
-
-export function safeSort(arr: number[]): number[]
-
-export function safeSort(arr: StringOrNumberArray) {
+export function safeSort<T extends string[] | number[]>(arr: T) {
   return [...arr].sort((a, b) => {
     if (isNumeric(a)) return Number(a) - Number(b)
     else return a < b ? -1 : 1
-  })
+  }) as StringOrNumberArray<T>
 }
 
 /** Returns an array sorted (ascending) via bubble sort.
  **/
-export function bubbleSort(arr: string[]): string[]
-
-export function bubbleSort(arr: number[]): number[]
-
-export function bubbleSort(arr: StringOrNumberArray) {
+export function bubbleSort<T extends string[] | number[]>(arr: T) {
   let noSwaps
   const _arr = [...arr]
   for (var i = _arr.length; i > 0; i--) {
@@ -914,17 +869,13 @@ export function bubbleSort(arr: StringOrNumberArray) {
     }
     if (noSwaps) break
   }
-  return _arr
+  return _arr as StringOrNumberArray<T>
 }
 
 /** Returns an array sorted (ascending) via selection sort.
  **/
 
-export function selectionSort(arr: string[]): string[]
-
-export function selectionSort(arr: number[]): number[]
-
-export function selectionSort(arr: StringOrNumberArray) {
+export function selectionSort<T extends string[] | number[]>(arr: T) {
   const _arr = [...arr]
   const swap = (arr: unknown[], idx1: number, idx2: number) =>
     ([arr[idx1], arr[idx2]] = [arr[idx2], arr[idx1]])
@@ -939,16 +890,12 @@ export function selectionSort(arr: StringOrNumberArray) {
     if (i !== lowest) swap(_arr, i, lowest)
   }
 
-  return _arr
+  return _arr as StringOrNumberArray<T>
 }
 
 /** Returns an array sorted (ascending) via insertion sort.
  **/
-export function insertionSort(arr: string[]): string[]
-
-export function insertionSort(arr: number[]): number[]
-
-export function insertionSort(arr: StringOrNumberArray) {
+export function insertionSort<T extends string[] | number[]>(arr: T) {
   var currentVal
   const _arr = [...arr]
   for (var i = 1; i < _arr.length; i++) {
@@ -958,7 +905,7 @@ export function insertionSort(arr: StringOrNumberArray) {
     }
     _arr[j + 1] = currentVal
   }
-  return _arr
+  return _arr as StringOrNumberArray<T>
 }
 
 /** Returns an array with any duplicates removed.
@@ -1597,9 +1544,9 @@ export function getKeyWithLargestValue<T extends object>(obj: T) {
  * getKeyWhereValueIs(obj, 3) //=> "c"
  * ```
  */
-export function getKeyWhereValueIs<T extends object>(
+export function getKeyWhereValueIs<T extends object, U extends T[keyof T]>(
   obj: T,
-  value: any
+  value: U
 ): string | null {
   for (let key in obj) {
     if (obj[key] === value) return key
@@ -1692,7 +1639,6 @@ export function sortByCallbackResult<T>(things: T[], func: Function) {
   )
 }
 
-export type Handler = (req: Request, res: Response) => void
 type Handlers = {
   index?: Handler
   show?: Handler
@@ -1741,29 +1687,32 @@ export function convertQueryParamOperators(params: {}) {
   return output
 }
 
-/** Takes a promise and wraps it in another promise that rejects if the original promise takes longer to resolve than a
- * specific amount of time in milliseconds. If the original promise resolves before the timeout, that value is returned.
+/** Takes an async function and wraps it in promise that rejects if the original function takes
+ * longer to resolve than a specific amount of time in milliseconds. If the original function resolves
+ * before the timeout, that value is returned.
  **/
-export function addTimeoutToPromise<T>(
-  asyncFunction: () => Promise<T>,
+export function withTimeout<T extends AsyncFunc>(
+  asyncFunction: T,
   timeout: number
 ) {
-  return () =>
+  return (...args: Parameters<T>) =>
     new Promise((resolve, reject) => {
-      let timer: NodeJS.Timeout
-      asyncFunction().then((result) => {
-        clearTimeout(timer)
-        resolve(result)
-      })
+      let timer: any
+      asyncFunction(...(args as Array<Parameters<T>>)).then(
+        (result: ReturnType<T>) => {
+          clearTimeout(timer)
+          resolve(result)
+        }
+      )
       timer = setTimeout(() => {
         reject("TIMED_OUT")
       }, timeout)
-    }) as Promise<T>
+    }) as Promise<UnwrapPromiseOrResult<T>>
 }
 
 /** Returns a promise that resolves after a given amount of time in milliseconds.
  **/
-export function pauseAsync(milliseconds: number) {
+export function pause(milliseconds: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, milliseconds)
   })
@@ -1771,31 +1720,11 @@ export function pauseAsync(milliseconds: number) {
 
 /** Delays future code from executing until a specific number of milliseconds has passed.
  **/
-export function pauseSync(milliseconds: number) {
-  const start = Date.now()
-  const end = start + milliseconds
-  while (Date.now() < end) {}
-}
-
-type AnyFunc = (...arg: any) => any
-
-// Credit to @ecyrbedev on Twitter for this advanced typing mastery
-type PipeArgs<F extends AnyFunc[], Acc extends AnyFunc[] = []> = F extends [
-  (...args: infer A) => infer B
-]
-  ? [...Acc, (...args: A) => B]
-  : F extends [(...args: infer A) => any, ...infer Tail]
-  ? Tail extends [(arg: infer B) => any, ...any[]]
-    ? PipeArgs<Tail, [...Acc, (...args: A) => B]>
-    : Acc
-  : Acc
-
-type LastFnReturnType<F extends Array<AnyFunc>, Else = never> = F extends [
-  ...any[],
-  (...arg: any) => infer R
-]
-  ? R
-  : Else
+// export function pauseSync(milliseconds: number) {
+//   const start = Date.now()
+//   const end = start + milliseconds
+//   while (Date.now() < end) {}
+// }
 
 /** Returns a function that calls multiple given functions in a specific order.
  * 
@@ -1808,21 +1737,15 @@ const doubleThenTriple = pipe(double, triple)
 doubleThenTriple(6) //=> 36
 ```
  **/
-export function pipe<FirstFn extends AnyFunc, F extends AnyFunc[]>(
+export function pipe<FirstFn extends Func, F extends Func[]>(
   firstFn: FirstFn,
   ...fns: PipeArgs<F> extends F ? F : PipeArgs<F>
 ) {
   return (...args: Parameters<FirstFn>) =>
-    (fns as AnyFunc[]).reduce(
+    (fns as Func[]).reduce(
       (acc, fn) => fn(acc),
       firstFn(...(args as Array<Parameters<FirstFn>>))
     ) as LastFnReturnType<F, ReturnType<FirstFn>>
-}
-
-type DebounceReturnObject<T extends (...args: any[]) => any> = {
-  clear: Function
-  flush: Function
-  result?: ReturnType<T>
 }
 
 /** Returns a debounced version of the function passed. Accepts custom delay in
@@ -1835,91 +1758,100 @@ type DebounceReturnObject<T extends (...args: any[]) => any> = {
  **/
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  milliseconds: number,
-  immediate: boolean
-) {
-  let wait: NodeJS.Timeout
+  delay: number,
+  immediate: boolean = false
+): DebouncedFunction<T> {
+  let timeoutId: ReturnType<typeof setTimeout>
+  let lastArgs: Parameters<T>
   let isWaiting = false
-  let returnObject: DebounceReturnObject<T> = {
-    clear: () => {},
-    flush: () => {},
-  }
 
   const clear = () => {
-    clearTimeout(wait)
+    clearTimeout(timeoutId)
     isWaiting = false
   }
 
-  const getFlushFunction = (args: Parameters<T>) => () => {
-    clearTimeout(wait)
-    isWaiting = false
-    return func(...args)
-  }
+  function debouncedFunction(
+    ...args: Parameters<T>
+  ): Promise<ReturnType<T> | undefined> {
+    lastArgs = args
+    clearTimeout(timeoutId)
 
-  if (immediate) {
-    return (...args: Parameters<T>) => {
-      if (isWaiting) return { clear, flush: getFlushFunction(args) }
-      else {
+    if (immediate) {
+      if (!isWaiting) {
+        const result = func(...lastArgs)
         isWaiting = true
-        wait = setTimeout(() => (isWaiting = false), milliseconds)
-
-        return {
-          clear,
-          flush: getFlushFunction(args),
-          result: func(...args) as ReturnType<T>,
-        } as DebounceReturnObject<T>
+        timeoutId = setTimeout(() => {
+          isWaiting = false
+        }, delay)
+        return new Promise((resolve) => {
+          resolve(result as ReturnType<T>)
+        })
+      } else {
+        return new Promise((resolve) => {
+          resolve(undefined)
+        })
       }
-    }
-  } else {
-    return (...args: Parameters<T>) => {
-      if (isWaiting) clearTimeout(wait)
+    } else {
       isWaiting = true
-      wait = setTimeout(() => {
-        isWaiting = false
-
-        returnObject.result = func(...args) as ReturnType<T>
-      }, milliseconds)
-
-      returnObject = { clear, flush: getFlushFunction(args) }
-
-      return returnObject
+      return new Promise((resolve) => {
+        timeoutId = setTimeout(() => {
+          resolve(func(...lastArgs) as ReturnType<T>)
+          isWaiting = false
+        }, delay)
+      })
     }
   }
+
+  debouncedFunction.clear = clear
+
+  debouncedFunction.flush = (): Promise<ReturnType<T> | undefined> => {
+    if (!immediate && isWaiting) {
+      isWaiting = false
+      clearTimeout(timeoutId)
+      if (lastArgs) {
+        return new Promise((resolve) => resolve(func(...lastArgs))) as Promise<
+          ReturnType<T>
+        >
+      } else {
+        return new Promise((resolve) => resolve(func())) as Promise<
+          ReturnType<T>
+        >
+      }
+    } else {
+      return new Promise((resolve) => resolve(undefined))
+    }
+  }
+
+  return debouncedFunction
 }
 
 /** Returns a throttled version of a function. The throttled version can only execute once every N milliseconds,
- * where N is the delay passed in to the throttle function.
- *
- * An optional third parameter indicates whether subsequent calls of the function before the
- * delay period has passed should be enqueued and run once the delay passes (true)
- * or simply ignored (false). The default is true.
- *
+ * where N is the delay passed in to the throttle function. If the function is called again before the necessary
+ * time has passed since last calling the function, the subsequent execution is queued and will occur
+ * once the time has passed.
  **/
-type Func<T, U> = (...args: T[]) => U
-type AsyncFunc<T, U> = (...args: T[]) => Promise<U>
-
-export function throttle<T, U>(
-  func: Func<T, U>,
-  delay: number,
-  enqueueEarlyCalls = true
-): Func<T, U> {
-  const { enqueue, executeAll, queue } = createAsyncQueue<T, U>(func, delay)
-  let isWaiting = false
-  return ((...args: T[]) => {
-    if (isWaiting) {
-      if (enqueueEarlyCalls) enqueue(...args)
-      else return
-    } else {
-      isWaiting = true
-      setTimeout(() => {
-        isWaiting = false
-      }, delay)
-
-      enqueue(...args)
-      if (queue.length > 1) return
-      else executeAll()
+export function throttle<
+  T extends Func | AsyncFunc,
+  U extends Parameters<T>,
+  R extends UnwrapPromiseOrResult<T>
+>(func: T, delay = 0) {
+  let index = 0
+  let lastCompleted = 0
+  let queue: number[] = []
+  return async (...args: U) => {
+    index++
+    queue.push(index)
+    while (lastCompleted < index - 1) {
+      await pause(250)
     }
-  }) as Func<T, U>
+    const result = await func(...(args as Array<U>))
+    if (delay) {
+      setTimeout(() => {
+        lastCompleted++
+      }, delay)
+    }
+    return result as R
+  }
 }
 
 /** Returns a memoized version of a function.
@@ -1928,19 +1860,17 @@ export function throttle<T, U>(
  * with same parameters, the result can be retrieved from cache, rather than
  * executing the function again._
  */
-export function memoize<T extends (...args: any[]) => any>(func: T): T {
+export function memoize<T extends Func | AsyncFunc>(func: T): T {
   const results: { [key: string]: ReturnType<T> } = {}
   return ((...args: Parameters<T>): ReturnType<T> => {
     const argsAsString = args.join(",")
     if (results[argsAsString]) return results[argsAsString]
     else {
-      results[argsAsString] = func(...args)
+      results[argsAsString] = func(...(args as Array<Parameters<T>>))
       return results[argsAsString]
     }
   }) as T
 }
-
-type Falsy = null | undefined | false
 
 /** Returns a function with arguments prepended to the arguments it receives.
  * 
@@ -1954,7 +1884,7 @@ sayHello("John") //=> "Hello John"
 
 * ```
  **/
-export function partial<T extends (...args: any[]) => any>(
+export function partial<T extends Func>(
   func: T,
   ...args: (Parameters<T>[number] | Falsy)[]
 ) {
@@ -1972,14 +1902,6 @@ export function partial<T extends (...args: any[]) => any>(
     return func(...newArgsToCall, ...newArgs.slice(lastNewArgUsed))
   }
 }
-
-type CurryFunction<T> = T extends (...args: infer Args) => infer Result
-  ? Args extends []
-    ? () => Result
-    : Args extends [infer First, ...infer Rest]
-    ? (arg: First) => CurryFunction<(...rest: Rest) => Result>
-    : never
-  : never
 
 /** Returns a curried version of a function.
  *
@@ -2047,55 +1969,60 @@ export function setCookie(
   document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";"
 }
 
-type AsyncQueueObject<T extends (...args: any[]) => Promise<unknown>> = {
-  queue: unknown[]
-  enqueue: (...args: Parameters<T>) => void
-  executeOne: Function
-  executeAll: (ignoreErrors?: boolean) => unknown
-  breakOut: Function
-}
-
-/** Returns an `AsyncQueueObject` which includes a queue, enqueue function, and two execute methods.
+/** Returns an `Queue` which includes a queue, enqueue function, and two execute methods.
  **/
-export function createAsyncQueue<T, U>(
-  functionToExecute: AsyncFunc<T, U> | Func<T, U>,
-  delay?: number
-): AsyncQueueObject<AsyncFunc<T, U>> {
-  const queue: unknown[][] = []
+export function createQueue<
+  T extends Func | AsyncFunc,
+  U extends Parameters<T>,
+  R extends UnwrapPromiseOrResult<T>
+>(functionToExecute: T, delay?: number): Queue<U, R> {
+  const queue: U[] = []
   let isBreakRequested = false
+
   const executeOne = async () => {
-    await functionToExecute(...(queue[0] as T[]))
+    const returnValue = await functionToExecute(...(queue[0] as Array<U>))
     queue.shift()
+    return returnValue as R
   }
-  const executeAll = async (ignoreErrors = false) => {
-    if (isBreakRequested) return
-    try {
-      await functionToExecute(...(queue[0] as T[]))
-      queue.shift()
-      if (delay) await pauseAsync(delay)
-      if (queue.length > 0) executeAll(ignoreErrors)
-    } catch {
-      if (ignoreErrors) {
+
+  const executeAll = async (ignoreErrors = false): Promise<any> => {
+    type ResultType = R | "error"
+
+    const recursiveExecuteAll = async (
+      results: ResultType[] = []
+    ): Promise<any> => {
+      if (isBreakRequested) return results
+
+      try {
+        const newResults: ResultType[] = [
+          ...results,
+          await functionToExecute(...(queue[0] as Array<U>)),
+        ]
         queue.shift()
-        if (delay) await pauseAsync(delay)
-        if (queue.length > 0) executeAll(true)
+        if (delay) await pause(delay)
+        if (queue.length > 0) return recursiveExecuteAll(newResults)
+        else return newResults
+      } catch {
+        if (ignoreErrors) {
+          queue.shift()
+          if (delay) await pause(delay)
+          if (queue.length > 0) recursiveExecuteAll([...results, "error"])
+          else return results
+        }
       }
     }
+
+    return recursiveExecuteAll()
   }
   return {
     breakOut: () => {
       isBreakRequested = true
     },
     queue,
-    enqueue: (...args: T[]) => queue.push(args),
+    enqueue: (...args: U) => queue.push(args),
     executeOne,
     executeAll,
   }
-}
-
-type GeoCoords = {
-  latitude: number | null
-  longitude: number | null
 }
 
 /** Returns the user's latitude and longitude or an error.
@@ -2119,7 +2046,7 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
     }
   )
   while (browserLocation.latitude === null && err === null) {
-    await pauseAsync(500)
+    await pause(500)
     pauseCount++
     if (pauseCount === timeoutInSeconds * 2) err = "TIMED_OUT"
   }
@@ -2262,3 +2189,88 @@ export function stripHTML(text: string) {
   }
   return result
 }
+
+// TYPES
+
+export interface Duration {
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+}
+
+type DayName =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
+
+type StringOrArray<T extends string | any[]> = T extends (infer U)[]
+  ? U[]
+  : string
+
+type Func = (...args: any) => any
+
+type AsyncFunc = (...args: any) => Promise<any>
+
+type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
+  ? U
+  : T extends (...args: any[]) => any
+  ? ReturnType<T>
+  : never
+
+type DebouncedFunction<T extends Func> = {
+  (...args: Parameters<T>): Promise<ReturnType<T> | undefined>
+  clear: () => void
+  flush: () => Promise<ReturnType<T> | undefined>
+}
+
+type CurryFunction<T> = T extends (...args: infer Args) => infer Result
+  ? Args extends []
+    ? () => Result
+    : Args extends [infer First, ...infer Rest]
+    ? (arg: First) => CurryFunction<(...rest: Rest) => Result>
+    : never
+  : never
+
+type Queue<Params extends any[], Result> = {
+  queue: Params[]
+  enqueue: (...args: Params) => void
+  executeOne: () => Promise<Result>
+  executeAll: (ignoreErrors?: boolean) => Promise<(Result | "error")[]>
+  breakOut: Function
+}
+
+// Credit to @ecyrbedev on Twitter for this advanced typing mastery
+type PipeArgs<F extends Func[], Acc extends Func[] = []> = F extends [
+  (...args: infer A) => infer B
+]
+  ? [...Acc, (...args: A) => B]
+  : F extends [(...args: infer A) => any, ...infer Tail]
+  ? Tail extends [(arg: infer B) => any, ...any[]]
+    ? PipeArgs<Tail, [...Acc, (...args: A) => B]>
+    : Acc
+  : Acc
+
+type LastFnReturnType<F extends Array<Func>, Else = never> = F extends [
+  ...any[],
+  (...arg: any) => infer R
+]
+  ? R
+  : Else
+
+type GeoCoords = {
+  latitude: number | null
+  longitude: number | null
+}
+
+type StringOrNumberArray<T extends string[] | number[]> = T extends string[]
+  ? string[]
+  : number[]
+
+type Falsy = null | undefined | false
+
+export type Handler = (req: Request, res: Response) => void

@@ -93,10 +93,12 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() - 3)
       then.setSeconds(then.getSeconds() - 4)
 
-      const fnResult = _.getDateFromDuration(
-        { days: 1, hours: 2, minutes: 3, seconds: 4 },
-        "past"
-      )
+      const fnResult = _.getDateFromDuration({
+        days: -1,
+        hours: -2,
+        minutes: -3,
+        seconds: -4,
+      })
 
       expect(fnResult.getDate()).toBe(then.getDate())
       expect(fnResult.getHours()).toBe(then.getHours())
@@ -112,10 +114,12 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() + 3)
       then.setSeconds(then.getSeconds() + 4)
 
-      const fnResult = _.getDateFromDuration(
-        { days: 1, hours: 2, minutes: 3, seconds: 4 },
-        "future"
-      )
+      const fnResult = _.getDateFromDuration({
+        days: 1,
+        hours: 2,
+        minutes: 3,
+        seconds: 4,
+      })
 
       expect(fnResult.getDate()).toBe(then.getDate())
       expect(fnResult.getHours()).toBe(then.getHours())
@@ -192,7 +196,7 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getDurationBetweenDates", () => {
+  describe("getDuration", () => {
     it("returns the correct duration", () => {
       const start = new Date()
       const end = new Date(start)
@@ -978,15 +982,15 @@ describe("objects", () => {
 })
 
 describe("misc", () => {
-  describe("addTimeoutToPromise", () => {
+  describe("withTimeout", () => {
     it("throws an error if timeout happens first", async () => {
       let err = ""
       let timer
       const slowThing = async () =>
         new Promise((resolve, reject) => {
-          timer = setTimeout(resolve, 500)
+          timer = setTimeout(resolve, 200)
         })
-      const slowThingWithTimeout = _.addTimeoutToPromise(slowThing, 200)
+      const slowThingWithTimeout = _.withTimeout(slowThing, 100)
       try {
         await slowThingWithTimeout()
       } catch (e) {
@@ -1002,9 +1006,9 @@ describe("misc", () => {
       let timer
       const fastThing = async () =>
         new Promise((resolve, reject) => {
-          timer = setTimeout(() => resolve("DONE"), 200)
+          timer = setTimeout(() => resolve("DONE"), 100)
         })
-      const slowThingWithTimeout = _.addTimeoutToPromise(fastThing, 500)
+      const slowThingWithTimeout = _.withTimeout(fastThing, 200)
       try {
         result = await slowThingWithTimeout()
       } catch (e) {
@@ -1015,23 +1019,23 @@ describe("misc", () => {
     })
   })
 
-  describe("pauseAsync", () => {
+  describe("pause", () => {
     it("pauses for the provided milliseconds", async () => {
       const start = Date.now()
-      await _.pauseAsync(500)
+      await _.pause(200)
       const end = Date.now()
-      expect(end - start).toBeGreaterThanOrEqual(499)
+      expect(end - start).toBeGreaterThanOrEqual(199)
     })
   })
 
-  describe("pauseSync", () => {
-    it("pauses for the provided milliseconds", () => {
-      const start = Date.now()
-      _.pauseSync(500)
-      const end = Date.now()
-      expect(end - start).toBeGreaterThanOrEqual(500)
-    })
-  })
+  // describe("pauseSync", () => {
+  //   it("pauses for the provided milliseconds", () => {
+  //     const start = Date.now()
+  //     _.pauseSync(500)
+  //     const end = Date.now()
+  //     expect(end - start).toBeGreaterThanOrEqual(500)
+  //   })
+  // })
 
   describe("pipe", () => {
     it("creates a pipe function", () => {
@@ -1104,80 +1108,103 @@ describe("misc", () => {
   describe("debounce", () => {
     it("immediate = true. invokes the function immediately on first call", () => {
       const func = jest.fn()
-      const debouncedFunc = _.debounce(func, 200, true)
+      const debouncedFunc = _.debounce(func, 100, true)
       debouncedFunc()
       expect(func).toHaveBeenCalled()
     })
 
     it("immediate = true. does not invoke the function again before time has passed", () => {
       const func = jest.fn()
-      const debouncedFunc = _.debounce(func, 500, true)
-      const { clear } = debouncedFunc()
+      const debouncedFunc = _.debounce(func, 200, true)
       debouncedFunc()
-      clear()
+      debouncedFunc()
       expect(func).toHaveBeenCalledTimes(1)
     })
 
     it("immediate = true. does invoke the function again before time has passed if cleared", () => {
       const func = jest.fn()
-      const debouncedFunc = _.debounce(func, 500, true)
-      const { clear } = debouncedFunc()
-      clear()
+      const debouncedFunc = _.debounce(func, 200, true)
+      debouncedFunc()
+      debouncedFunc.clear()
       debouncedFunc()
       expect(func).toHaveBeenCalledTimes(2)
     })
 
-    it("immediate = true. return object includes result", () => {
+    it("immediate = true. returns a promise that resolves to result", async () => {
       const func = jest.fn(() => 4)
-      const debouncedFunc = _.debounce(func, 500, true)
-      const { result } = debouncedFunc()
-      debouncedFunc()
+      const debouncedFunc = _.debounce(func, 100, true)
+      const result = await debouncedFunc()
       expect(result).toBe(4)
+    })
+
+    it("immediate = true. flush does not execute the function", async () => {
+      const func = jest.fn()
+      const debouncedFunc = _.debounce(func, 100, true)
+      debouncedFunc()
+      debouncedFunc.flush()
+      expect(func).toHaveBeenCalledTimes(1)
     })
 
     it("immediate = false. invokes the function after the delay but not before", async () => {
       const func = jest.fn()
-      const debouncedFunc = _.debounce(func, 200, false)
+      const debouncedFunc = _.debounce(func, 100, false)
       debouncedFunc()
       expect(func).toHaveBeenCalledTimes(0)
-      await _.pauseAsync(500)
+      await _.pause(200)
       expect(func).toHaveBeenCalledTimes(1)
     })
 
     it("immediate = false. restarts the delay if the function is tried before the wait has passed", async () => {
       const func = jest.fn()
-      const debouncedFunc = _.debounce(func, 500, false)
+      const debouncedFunc = _.debounce(func, 200, false)
       debouncedFunc()
       debouncedFunc()
       expect(func).toHaveBeenCalledTimes(0)
-      await _.pauseAsync(200)
+      await _.pause(100)
       expect(func).toHaveBeenCalledTimes(0)
-      await _.pauseAsync(300)
+      await _.pause(300)
       expect(func).toHaveBeenCalledTimes(1)
     })
 
     it("immediate = false. flush executes the function immediately", async () => {
       const func = jest.fn()
-      const debouncedFunc = _.debounce(func, 500, false)
-      const { flush } = debouncedFunc()
-      flush()
+      const debouncedFunc = _.debounce(func, 100, false)
+      debouncedFunc()
+      debouncedFunc.flush()
       expect(func).toHaveBeenCalledTimes(1)
     })
 
-    it("immediate = false. result updates after pause", async () => {
+    it("immediate = false. flush only executes once", async () => {
+      const func = jest.fn()
+      const debouncedFunc = _.debounce(func, 100, false)
+      debouncedFunc()
+      debouncedFunc.flush()
+      debouncedFunc.flush()
+      expect(func).toHaveBeenCalledTimes(1)
+    })
+
+    it("immediate = false. flush does not execute function if no calls pending", async () => {
+      const func = jest.fn()
+      const debouncedFunc = _.debounce(func, 100, false)
+
+      debouncedFunc()
+      await _.pause(200)
+      debouncedFunc.flush()
+      expect(func).toHaveBeenCalledTimes(1)
+    })
+
+    it("immediate = false. returns a promise that resolves after delay", async () => {
       const func = jest.fn(() => 4)
-      const debouncedFunc = _.debounce(func, 500, false)
-      const returnObject = debouncedFunc()
-      setTimeout(() => {
-        expect(returnObject.result).toBe(4)
-      }, 1000)
+      const debouncedFunc = _.debounce(func, 100, false)
+      const result = await debouncedFunc()
+      expect(result).toBe(4)
     })
   })
 
   describe("throttle", () => {
-    it("will not execute a function more than once in the alloted time", () => {
+    it("will not execute a function more than once in the alloted time", async () => {
       const func = jest.fn()
-      const throttledFunc = _.throttle(func, 2000)
+      const throttledFunc = _.throttle(func, 100)
       throttledFunc()
       throttledFunc()
       expect(func).toHaveBeenCalledTimes(1)
@@ -1185,29 +1212,20 @@ describe("misc", () => {
 
     it("executes a function again after the alloted time", async () => {
       const func = jest.fn()
-      const throttledFunc = _.throttle(func, 100, false)
+      const throttledFunc = _.throttle(func, 100)
       throttledFunc()
-      await _.pauseAsync(200)
+      await _.pause(200)
       throttledFunc()
       expect(func).toHaveBeenCalledTimes(2)
     })
 
-    it("enqueues early requests by default", async () => {
+    it("enqueues early requests", async () => {
       const func = jest.fn()
       const throttledFunc = _.throttle(func, 100)
       throttledFunc()
       throttledFunc()
-      await _.pauseAsync(300)
+      await _.pause(300)
       expect(func).toHaveBeenCalledTimes(2)
-    })
-
-    it("ignores early requests if enqueueEarlyCalls is false", async () => {
-      const func = jest.fn()
-      const throttledFunc = _.throttle(func, 100, false)
-      throttledFunc()
-      throttledFunc()
-      await _.pauseAsync(300)
-      expect(func).toHaveBeenCalledTimes(1)
     })
   })
 
