@@ -93,13 +93,13 @@ export function doubleDigit(n: number) {
 export function range(start: number, end: number, step = 1) {
   const result: number[] = []
   if (start < end) {
-    if (step <= 0) return
+    if (step <= 0) return result
     for (let i = start; i <= end; i += step) {
       result.push(i)
     }
   } else {
     if (step === 1) step = -1
-    else if (step >= 0) return
+    else if (step >= 0) return result
     else {
       for (let i = start; i >= end; i += step) {
         result.push(i)
@@ -187,32 +187,15 @@ const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
 
-/** Returns a `TimeObject` with calculated days, hours, minutes and seconds from an amount of seconds.
+/** Returns a `Duration` with calculated days, hours, minutes and seconds from an amount of seconds.
  *
  * _Example:_
  * ```typescript
  * getDurationFromMilliseconds(200000000)
 //=> { days: 2, hours: 7, minutes: 33, seconds: 20 }
-
-interface TimeObject {
-  years: number
-  months: number
-  weeks: number
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-  inYears: () => number
-  inMonths: () => number
-  inWeeks: () => number
-  inDays: () => number
-  inHours: () => number
-  inMinutes: () => number
-  inSeconds: () => number
-}
  * ```
  **/
-function getDurationFromMilliseconds(milliseconds: number): TimeObject {
+function getDurationFromMilliseconds(milliseconds: number): Duration {
   const seconds = Math.floor(milliseconds / 1000)
 
   return {
@@ -233,7 +216,7 @@ function getDurationFromMilliseconds(milliseconds: number): TimeObject {
  * getMillisecondsFromDuration(amountOfTime) //=> 98651000
  * ```
  */
-function getMillisecondsFromDuration(duration: Partial<TimeObject>) {
+function getMillisecondsFromDuration(duration: Partial<Duration>) {
   let result = 0
   if (duration.days) result += duration.days * secondsInADay * 1000
   if (duration.hours) result += duration.hours * secondsInAnHour * 1000
@@ -258,20 +241,16 @@ function getMillisecondsFromDuration(duration: Partial<TimeObject>) {
  * ```
  */
 export function getDateFromDuration(
-  duration: Partial<TimeObject>,
-  inThe: "past" | "future",
+  duration: Partial<Duration>,
   startDate: Date = new Date()
 ) {
-  const ms = getMillisecondsFromDuration(duration)
-  return inThe === "future"
-    ? new Date(startDate.getTime() + ms)
-    : new Date(startDate.getTime() - ms)
+  return new Date(startDate.getTime() + getMillisecondsFromDuration(duration))
 }
 
-/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds until 
- * a specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds until 
+ * a specific date. A `Duration` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
-interface TimeObject {
+interface Duration {
   days: number
   hours: number
   minutes: number
@@ -280,14 +259,14 @@ interface TimeObject {
  * ```
  **/
 
-export function timeUntil(date: Date): TimeObject {
+export function timeUntil(date: Date): Duration {
   return getDuration(new Date(), new Date(date))
 }
 
-/** Returns a `TimeObject` with the number of years, months, weeks, days, hours, minutes and seconds since a
- * specific date. A `TimeObject` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
+/** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds since a
+ * specific date. A `Duration` also includes methods to measure the amount of time in a specific unit (i.e. minutes)
  * ```typescript
-interface TimeObject {
+interface Duration {
   days: number
   hours: number
   minutes: number
@@ -295,7 +274,7 @@ interface TimeObject {
 }
  * ```
  **/
-export function timeSince(date: Date): TimeObject {
+export function timeSince(date: Date): Duration {
   return getDuration(new Date(), new Date(date))
 }
 
@@ -341,7 +320,7 @@ export function isPast(date: Date) {
   return new Date(date).getTime() < Date.now()
 }
 
-/** Returns a TimeObject representing the amount of time between two dates.
+/** Returns a Duration representing the amount of time between two dates.
  *
  * Example:
  *
@@ -2216,7 +2195,7 @@ export function stripHTML(text: string) {
 
 // TYPES
 
-export interface TimeObject {
+export interface Duration {
   days: number
   hours: number
   minutes: number

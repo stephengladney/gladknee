@@ -93,10 +93,12 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() - 3)
       then.setSeconds(then.getSeconds() - 4)
 
-      const fnResult = _.getDateFromDuration(
-        { days: 1, hours: 2, minutes: 3, seconds: 4 },
-        "past"
-      )
+      const fnResult = _.getDateFromDuration({
+        days: -1,
+        hours: -2,
+        minutes: -3,
+        seconds: -4,
+      })
 
       expect(fnResult.getDate()).toBe(then.getDate())
       expect(fnResult.getHours()).toBe(then.getHours())
@@ -112,10 +114,12 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() + 3)
       then.setSeconds(then.getSeconds() + 4)
 
-      const fnResult = _.getDateFromDuration(
-        { days: 1, hours: 2, minutes: 3, seconds: 4 },
-        "future"
-      )
+      const fnResult = _.getDateFromDuration({
+        days: 1,
+        hours: 2,
+        minutes: 3,
+        seconds: 4,
+      })
 
       expect(fnResult.getDate()).toBe(then.getDate())
       expect(fnResult.getHours()).toBe(then.getHours())
