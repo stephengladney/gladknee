@@ -1444,45 +1444,45 @@ export function deepCopy<T extends object>(obj: T): T {
         { id: 2, name: "Heather", sex: "female", isGuy: false },
       ]
 
- * updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }) 
-      // Find all objects where "sex" equals "male"
-      // and update "isGuy" to true
-      //=> 
-      [
-        { id: 1, name: "Stephen", sex: "male", isGuy: true },
-        { id: 2, name: "Heather", sex: "female", isGuy: false },
-      ]
- * ```
- */
-export function updateObjectsWhere<T extends object>(
-  objectArray: T[],
-  matchCriteria: Partial<T>,
-  newKeyValues: Partial<T>,
-  onlyUpdateFirstMatch = false
-) {
-  const indeces: number[] = []
+//  * updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }) 
+//       // Find all objects where "sex" equals "male"
+//       // and update "isGuy" to true
+//       //=> 
+//       [
+//         { id: 1, name: "Stephen", sex: "male", isGuy: true },
+//         { id: 2, name: "Heather", sex: "female", isGuy: false },
+//       ]
+//  * ```
+//  */
+// export function updateObjectsWhere<T extends object>(
+//   objectArray: T[],
+//   matchCriteria: Partial<T>,
+//   newKeyValues: Partial<T>,
+//   onlyUpdateFirstMatch = false
+// ) {
+//   const indeces: number[] = []
 
-  for (let i = 0; i < objectArray.length; i++) {
-    const obj = objectArray[i]
+//   for (let i = 0; i < objectArray.length; i++) {
+//     const obj = objectArray[i]
 
-    const allKeyValuesMatch = Object.keys(matchCriteria).reduce(
-      (allMatch, key) => {
-        if (matchCriteria[key as keyof T] === obj[key as keyof T] && allMatch)
-          return true
-        else return false
-      },
-      true
-    )
+//     const allKeyValuesMatch = Object.keys(matchCriteria).reduce(
+//       (allMatch, key) => {
+//         if (matchCriteria[key as keyof T] === obj[key as keyof T] && allMatch)
+//           return true
+//         else return false
+//       },
+//       true
+//     )
 
-    if (allKeyValuesMatch) indeces.push(i)
-    if (indeces.length > 0 && onlyUpdateFirstMatch) break
-  }
+//     if (allKeyValuesMatch) indeces.push(i)
+//     if (indeces.length > 0 && onlyUpdateFirstMatch) break
+//   }
 
-  return Array.from(objectArray).map((obj, i) => {
-    if (indeces.includes(i)) return { ...obj, ...newKeyValues }
-    else return obj
-  })
-}
+//   return Array.from(objectArray).map((obj, i) => {
+//     if (indeces.includes(i)) return { ...obj, ...newKeyValues }
+//     else return obj
+//   })
+// }
 
 /** Returns an object with the keys and values reversed.
  *
@@ -1586,7 +1586,7 @@ groupByCallbackResult(people, canDrinkAlcohol)
 export function groupByCallbackResult<T>(things: T[], func: Function) {
   const result: { [key: string]: T[] } = {}
   things.forEach((thing) => {
-    const funcResult = String(func(thing))
+    const funcResult = JSON.stringify(func(thing))
     if (result[funcResult]) result[funcResult].push(thing)
     else result[funcResult] = [thing]
   })
