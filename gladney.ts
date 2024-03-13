@@ -1718,26 +1718,18 @@ export function pause(milliseconds: number) {
   })
 }
 
-/** Delays future code from executing until a specific number of milliseconds has passed.
- **/
-// export function pauseSync(milliseconds: number) {
-//   const start = Date.now()
-//   const end = start + milliseconds
-//   while (Date.now() < end) {}
-// }
-
 /** Returns a function that calls multiple given functions in a specific order.
  * 
  * Example:
  * ```typescript
 const double = (n: number) => n * 2
 const triple = (n: number) => n * 3
-const doubleThenTriple = pipe(double, triple)
+const doubleThenTriple = createPipe(double, triple)
 
 doubleThenTriple(6) //=> 36
 ```
  **/
-export function pipe<FirstFn extends Func, F extends Func[]>(
+export function createPipe<FirstFn extends Func, F extends Func[]>(
   firstFn: FirstFn,
   ...fns: PipeArgs<F> extends F ? F : PipeArgs<F>
 ) {
@@ -1746,6 +1738,30 @@ export function pipe<FirstFn extends Func, F extends Func[]>(
       (acc, fn) => fn(acc),
       firstFn(...(args as Array<Parameters<FirstFn>>))
     ) as LastFnReturnType<F, ReturnType<FirstFn>>
+}
+
+/** Takes a starting argument(s) and runs it through a function. The result is then passed
+ * to the next function and so on and so forth. The final result is returned.
+ * 
+ * Example:
+ * ```typescript
+const double = (n: number) => n * 2
+const triple = (n: number) => n * 3
+
+pipe(6, double, triple) //=> 36
+```
+ **/
+export function pipe<FirstFn extends Func, F extends Func[]>(
+  arg: Parameters<FirstFn> extends [any, any, ...any]
+    ? Parameters<FirstFn>
+    : Parameters<FirstFn>[number],
+  firstFn: FirstFn,
+  ...fns: PipeArgs<F> extends F ? F : PipeArgs<F>
+) {
+  return (fns as Func[]).reduce(
+    (acc, fn) => fn(acc),
+    firstFn(arg)
+  ) as LastFnReturnType<F, ReturnType<FirstFn>>
 }
 
 /** Returns a debounced version of the function passed. Accepts custom delay in

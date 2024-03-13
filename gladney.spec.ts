@@ -1037,13 +1037,23 @@ describe("misc", () => {
   //   })
   // })
 
-  describe("pipe", () => {
+  describe("createPipe", () => {
     it("creates a pipe function", () => {
       const double = (n: number) => n * 2
       const triple = (n: number) => n * 3
-      const doubleThenTriple = _.pipe(double, triple)
+      const doubleThenTriple = _.createPipe(double, triple)
 
       expect(doubleThenTriple(3)).toEqual(18)
+    })
+  })
+
+  describe("pipe", () => {
+    it("pipes the provided argument through the functions", () => {
+      const double = (n: number) => n * 2
+      const triple = (n: number) => n * 3
+      const pipedResult = _.pipe(3, double, triple)
+
+      expect(pipedResult).toEqual(18)
     })
   })
 
