@@ -1444,45 +1444,45 @@ export function deepCopy<T extends object>(obj: T): T {
         { id: 2, name: "Heather", sex: "female", isGuy: false },
       ]
 
- * updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }) 
-      // Find all objects where "sex" equals "male"
-      // and update "isGuy" to true
-      //=> 
-      [
-        { id: 1, name: "Stephen", sex: "male", isGuy: true },
-        { id: 2, name: "Heather", sex: "female", isGuy: false },
-      ]
- * ```
- */
-export function updateObjectsWhere<T extends object>(
-  objectArray: T[],
-  matchCriteria: Partial<T>,
-  newKeyValues: Partial<T>,
-  onlyUpdateFirstMatch = false
-) {
-  const indeces: number[] = []
+//  * updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }) 
+//       // Find all objects where "sex" equals "male"
+//       // and update "isGuy" to true
+//       //=> 
+//       [
+//         { id: 1, name: "Stephen", sex: "male", isGuy: true },
+//         { id: 2, name: "Heather", sex: "female", isGuy: false },
+//       ]
+//  * ```
+//  */
+// export function updateObjectsWhere<T extends object>(
+//   objectArray: T[],
+//   matchCriteria: Partial<T>,
+//   newKeyValues: Partial<T>,
+//   onlyUpdateFirstMatch = false
+// ) {
+//   const indeces: number[] = []
 
-  for (let i = 0; i < objectArray.length; i++) {
-    const obj = objectArray[i]
+//   for (let i = 0; i < objectArray.length; i++) {
+//     const obj = objectArray[i]
 
-    const allKeyValuesMatch = Object.keys(matchCriteria).reduce(
-      (allMatch, key) => {
-        if (matchCriteria[key as keyof T] === obj[key as keyof T] && allMatch)
-          return true
-        else return false
-      },
-      true
-    )
+//     const allKeyValuesMatch = Object.keys(matchCriteria).reduce(
+//       (allMatch, key) => {
+//         if (matchCriteria[key as keyof T] === obj[key as keyof T] && allMatch)
+//           return true
+//         else return false
+//       },
+//       true
+//     )
 
-    if (allKeyValuesMatch) indeces.push(i)
-    if (indeces.length > 0 && onlyUpdateFirstMatch) break
-  }
+//     if (allKeyValuesMatch) indeces.push(i)
+//     if (indeces.length > 0 && onlyUpdateFirstMatch) break
+//   }
 
-  return Array.from(objectArray).map((obj, i) => {
-    if (indeces.includes(i)) return { ...obj, ...newKeyValues }
-    else return obj
-  })
-}
+//   return Array.from(objectArray).map((obj, i) => {
+//     if (indeces.includes(i)) return { ...obj, ...newKeyValues }
+//     else return obj
+//   })
+// }
 
 /** Returns an object with the keys and values reversed.
  *
@@ -1586,7 +1586,7 @@ groupByCallbackResult(people, canDrinkAlcohol)
 export function groupByCallbackResult<T>(things: T[], func: Function) {
   const result: { [key: string]: T[] } = {}
   things.forEach((thing) => {
-    const funcResult = String(func(thing))
+    const funcResult = JSON.stringify(func(thing))
     if (result[funcResult]) result[funcResult].push(thing)
     else result[funcResult] = [thing]
   })
@@ -1718,26 +1718,18 @@ export function pause(milliseconds: number) {
   })
 }
 
-/** Delays future code from executing until a specific number of milliseconds has passed.
- **/
-// export function pauseSync(milliseconds: number) {
-//   const start = Date.now()
-//   const end = start + milliseconds
-//   while (Date.now() < end) {}
-// }
-
 /** Returns a function that calls multiple given functions in a specific order.
  * 
  * Example:
  * ```typescript
 const double = (n: number) => n * 2
 const triple = (n: number) => n * 3
-const doubleThenTriple = pipe(double, triple)
+const doubleThenTriple = createPipe(double, triple)
 
 doubleThenTriple(6) //=> 36
 ```
  **/
-export function pipe<FirstFn extends Func, F extends Func[]>(
+export function createPipe<FirstFn extends Func, F extends Func[]>(
   firstFn: FirstFn,
   ...fns: PipeArgs<F> extends F ? F : PipeArgs<F>
 ) {
@@ -1746,6 +1738,30 @@ export function pipe<FirstFn extends Func, F extends Func[]>(
       (acc, fn) => fn(acc),
       firstFn(...(args as Array<Parameters<FirstFn>>))
     ) as LastFnReturnType<F, ReturnType<FirstFn>>
+}
+
+/** Takes a starting argument(s) and runs it through a function. The result is then passed
+ * to the next function and so on and so forth. The final result is returned.
+ * 
+ * Example:
+ * ```typescript
+const double = (n: number) => n * 2
+const triple = (n: number) => n * 3
+
+pipe(6, double, triple) //=> 36
+```
+ **/
+export function pipe<FirstFn extends Func, F extends Func[]>(
+  arg: Parameters<FirstFn> extends [any, any, ...any]
+    ? Parameters<FirstFn>
+    : Parameters<FirstFn>[number],
+  firstFn: FirstFn,
+  ...fns: PipeArgs<F> extends F ? F : PipeArgs<F>
+) {
+  return (fns as Func[]).reduce(
+    (acc, fn) => fn(acc),
+    firstFn(arg)
+  ) as LastFnReturnType<F, ReturnType<FirstFn>>
 }
 
 /** Returns a debounced version of the function passed. Accepts custom delay in

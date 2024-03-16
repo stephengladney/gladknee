@@ -924,39 +924,39 @@ describe("objects", () => {
     })
   })
 
-  describe("updateObjectsWhere", () => {
-    it("updates all of the matching objects with new key values", () => {
-      const objs = [
-        { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: false },
-        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
-        { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
-      ]
+  // describe("updateObjectsWhere", () => {
+  //   it("updates all of the matching objects with new key values", () => {
+  //     const objs = [
+  //       { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: false },
+  //       { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+  //       { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
+  //     ]
 
-      expect(
-        _.updateObjectsWhere(objs, { sex: "male" }, { isGuy: true })
-      ).toEqual([
-        { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: true },
-        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
-        { id: 3, name: "Bob", sex: "male", age: 42, isGuy: true },
-      ])
-    })
+  //     expect(
+  //       _.updateObjectsWhere(objs, { sex: "male" }, { isGuy: true })
+  //     ).toEqual([
+  //       { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: true },
+  //       { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+  //       { id: 3, name: "Bob", sex: "male", age: 42, isGuy: true },
+  //     ])
+  //   })
 
-    it("only updates the first match if requested", () => {
-      const objs = [
-        { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: false },
-        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
-        { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
-      ]
+  //   it("only updates the first match if requested", () => {
+  //     const objs = [
+  //       { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: false },
+  //       { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+  //       { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
+  //     ]
 
-      expect(
-        _.updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }, true)
-      ).toEqual([
-        { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: true },
-        { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
-        { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
-      ])
-    })
-  })
+  //     expect(
+  //       _.updateObjectsWhere(objs, { sex: "male" }, { isGuy: true }, true)
+  //     ).toEqual([
+  //       { id: 1, name: "Stephen", sex: "male", age: 38, isGuy: true },
+  //       { id: 2, name: "Heather", sex: "female", age: 35, isGuy: false },
+  //       { id: 3, name: "Bob", sex: "male", age: 42, isGuy: false },
+  //     ])
+  //   })
+  // })
 
   describe("invert", () => {
     it("swaps the keys and values", () => {
@@ -1037,13 +1037,23 @@ describe("misc", () => {
   //   })
   // })
 
-  describe("pipe", () => {
+  describe("createPipe", () => {
     it("creates a pipe function", () => {
       const double = (n: number) => n * 2
       const triple = (n: number) => n * 3
-      const doubleThenTriple = _.pipe(double, triple)
+      const doubleThenTriple = _.createPipe(double, triple)
 
       expect(doubleThenTriple(3)).toEqual(18)
+    })
+  })
+
+  describe("pipe", () => {
+    it("pipes the provided argument through the functions", () => {
+      const double = (n: number) => n * 2
+      const triple = (n: number) => n * 3
+      const pipedResult = _.pipe(3, double, triple)
+
+      expect(pipedResult).toEqual(18)
     })
   })
 

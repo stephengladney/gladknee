@@ -37,4 +37,4 @@ lowerCaseNoSpaces("Hello World!") //=> "helloworld"
 
 ### Documentation
 
-You can read the full documentation at <a href="https://gladknee.readme.io/">https://gladknee.readme.io/</a>
+You can read the full documentation with a complete list of functions with examples at <a href="https://gladknee.readme.io/">https://gladknee.readme.io/</a>
