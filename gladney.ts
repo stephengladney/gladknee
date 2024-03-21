@@ -971,12 +971,16 @@ export function getCount<T>(arr: T[], target: T) {
  * ```
  * See also: `getCommonItems()` and `getSharedItems()`
  **/
-export function getUniqueItems<T>(...arrs: T[][]) {
-  const seen: T[] = []
-  let result: T[] = []
-  const sets = arrs.map((arr) => new Set(arr))
-  for (let i = 0; i < sets.length; i++) {
-    sets[i].forEach((j) => {
+export function getUniqueItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+  const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
+    arr.map((item: T) => JSON.stringify(item))
+  )
+  const arraysUniqueValues = arraysAsJSONStrings.map((arr) => new Set(arr))
+  const seen: string[] = []
+  let result: string[] = []
+
+  for (let i = 0; i < arraysUniqueValues.length; i++) {
+    arraysUniqueValues[i].forEach((j) => {
       if (seen.includes(j)) {
         result = result.filter((x) => x !== j)
       } else {
@@ -985,7 +989,7 @@ export function getUniqueItems<T>(...arrs: T[][]) {
       }
     })
   }
-  return result
+  return result.map((item) => JSON.parse(item)) as T[]
 }
 
 /** Returns an array of items that appear in at least two of the given arrays.
@@ -1000,13 +1004,14 @@ export function getUniqueItems<T>(...arrs: T[][]) {
  * ```
  * See also: `getUniqueItems()` and `getSharedItems()`
  **/
-export function getCommonItems<T>(...arrays: T[][]) {
-  const arraysAsJSONStrings = arrays.map((arr) =>
-    arr.map((item) => JSON.stringify(item))
+export function getCommonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+  const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
+    arr.map((item: T) => JSON.stringify(item))
   )
   const seen: string[] = []
   let result: string[] = []
-  for (let i = 0; i < arrays.length; i++) {
+
+  for (let i = 0; i < arraysAsJSONStrings.length; i++) {
     arraysAsJSONStrings[i].forEach((j) => {
       if (seen.includes(j) && !result.includes(j)) {
         result.push(j)
