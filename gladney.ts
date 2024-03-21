@@ -1000,18 +1000,21 @@ export function getUniqueItems<T>(...arrs: T[][]) {
  * ```
  * See also: `getUniqueItems()` and `getSharedItems()`
  **/
-export function getCommonItems<T>(...arrs: T[][]) {
-  const seen: T[] = []
-  let result: T[] = []
-  for (let i = 0; i < arrs.length; i++) {
-    arrs[i].forEach((j) => {
+export function getCommonItems<T>(...arrays: T[][]) {
+  const arraysAsJSONStrings = arrays.map((arr) =>
+    arr.map((item) => JSON.stringify(item))
+  )
+  const seen: string[] = []
+  let result: string[] = []
+  for (let i = 0; i < arrays.length; i++) {
+    arraysAsJSONStrings[i].forEach((j) => {
       if (seen.includes(j) && !result.includes(j)) {
         result.push(j)
       }
       seen.push(j)
     })
   }
-  return result
+  return result.map((item) => JSON.parse(item)) as T[]
 }
 
 /** Returns an array of items that appear in all of the given arrays.
@@ -1027,8 +1030,8 @@ export function getCommonItems<T>(...arrs: T[][]) {
  * See also: `getUniqueItems()` and `getCommonItems()`
  **/
 export function getSharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
-  const firstArrayAsJSONString = firstArray.map((item) => JSON.stringify(item))
-  const firstArrayUniqueValues = Array.from(new Set(firstArrayAsJSONString))
+  const firstArrayAsJSONStrings = firstArray.map((item) => JSON.stringify(item))
+  const firstArrayUniqueValues = Array.from(new Set(firstArrayAsJSONStrings))
 
   return otherArrays
     .reduce((acc, arr) => {
