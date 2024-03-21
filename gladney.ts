@@ -1026,16 +1026,16 @@ export function getCommonItems<T>(...arrs: T[][]) {
  * ```
  * See also: `getUniqueItems()` and `getCommonItems()`
  **/
-export function getSharedItems<T>(...arrs: T[][]) {
-  let result: T[] = []
-  arrs[0].forEach((item) => {
-    let isItemInAllOtherArrays = true
-    arrs.slice(1).forEach((compareArray) => {
-      if (!compareArray.includes(item)) isItemInAllOtherArrays = false
-    })
-    if (isItemInAllOtherArrays) result.push(item)
-  })
-  return result
+export function getSharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+  const firstArrayAsJSONString = firstArray.map((item) => JSON.stringify(item))
+  const firstArrayUniqueValues = Array.from(new Set(firstArrayAsJSONString))
+
+  return otherArrays
+    .reduce((acc, arr) => {
+      const arrayAsJSONString = arr.map((item) => JSON.stringify(item))
+      return acc.filter((item) => arrayAsJSONString.includes(item))
+    }, firstArrayUniqueValues)
+    .map((item) => JSON.parse(item))
 }
 
 /** Returns the provided array with two items' positions swapped
