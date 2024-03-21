@@ -1043,7 +1043,7 @@ export function getSharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
       const arrayAsJSONString = arr.map((item) => JSON.stringify(item))
       return acc.filter((item) => arrayAsJSONString.includes(item))
     }, firstArrayUniqueValues)
-    .map((item) => JSON.parse(item))
+    .map((item) => JSON.parse(item)) as T[]
 }
 
 /** Returns the provided array with two items' positions swapped
