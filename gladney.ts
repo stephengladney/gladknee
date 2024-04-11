@@ -1207,13 +1207,14 @@ export function pickKeys<T extends object, U extends keyof T>(
  * //=> { "Stephen": "39/M" }
  * ```
  */
-export function into<T extends object>(
+export function into<T extends object, K extends keyof T, V extends T[K]>(
   obj: T,
-  fn: (key: keyof T, val: T[keyof T]) => object
+  fn: (key: K, val: V) => object
 ) {
-  return Object.keys(obj).reduce((acc, k) => {
-    return { ...acc, ...fn(k as keyof T, obj[k as keyof T]) }
-  }, {})
+  return Object.keys(obj).reduce(
+    (acc, k) => ({ ...acc, ...fn(k as K, obj[k as K] as V) }),
+    {}
+  )
 }
 
 /** Returns the sum of the values of a specific shared key in an array of objects.

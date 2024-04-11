@@ -697,7 +697,7 @@ describe("objects", () => {
   })
 
   describe("into", () => {
-    it("returns the desired new shapre", () => {
+    it("returns the desired new shape", () => {
       const obj = { user: { name: "Stephen", age: 39, sex: "M" } }
       expect(
         _.into(obj, (key, value) => ({ [value.name]: value.age }))
