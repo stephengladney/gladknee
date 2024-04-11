@@ -1207,7 +1207,7 @@ export function pickKeys<T extends object, U extends keyof T>(
  * //=> { "Stephen": "39/M" }
  * ```
  */
-function into<T extends object>(
+export function into<T extends object>(
   obj: T,
   fn: (key: keyof T, val: T[keyof T]) => object
 ) {

@@ -696,6 +696,15 @@ describe("objects", () => {
     })
   })
 
+  describe("into", () => {
+    it("returns the desired new shapre", () => {
+      const obj = { user: { name: "Stephen", age: 39, sex: "M" } }
+      expect(
+        _.into(obj, (key, value) => ({ [value.name]: value.age }))
+      ).toEqual({ Stephen: 39 })
+    })
+  })
+
   describe("sumOfKeyValue", () => {
     it("returns the sum of the key value", () => {
       const arr = [
