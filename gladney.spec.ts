@@ -267,6 +267,18 @@ describe("strings", () => {
     })
   })
 
+  describe("lazyIncludes", () => {
+    it("returns true if the characters are present", () => {
+      expect(_.lazyIncludes("Hello world", "LL")).toBeTruthy()
+      expect(_.lazyIncludes("Hello world", "ll")).toBeTruthy()
+    })
+
+    it("returns false if the characters are present", () => {
+      expect(_.lazyIncludes("Hello world", "f")).toBeFalsy()
+      expect(_.lazyIncludes("Hello world", "F")).toBeFalsy()
+    })
+  })
+
   describe("truncate", () => {
     it("enforces the maximum length and uses traililng by default", () => {
       expect(_.truncate("Hello world", 8)).toBe("Hello wo...")

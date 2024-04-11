@@ -626,6 +626,19 @@ export function capitalize(str: string, lowercaseOthers = false) {
 }
 
 /**
+ * Returns a boolean of whether not the first string includes the second string, ignoring case.
+ * 
+ * Example:
+ * ```typescript
+ * lazyIncludes("Hello world", "LL") //=> true
+ * lazyIncludes("Hello world", "ff") //=> false
+ * ```
+ */
+export function lazyIncludes(str1: string, str2: string) {
+  return String(str1).toLowerCase().includes(String(str2).toLowerCase())
+}
+
+/**
  * Returns a string lowercased with non letter/number characters removed and spaces and underscores replaced with a separator (- by default)
  *
  * Example:
