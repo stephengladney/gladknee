@@ -1196,6 +1196,26 @@ export function pickKeys<T extends object, U extends keyof T>(
   return result as Pick<T, U>
 }
 
+/** Tranforms an object into a new shape provided via callback function
+ *
+ * Example:
+ * ```typescript
+ * const obj = { user: { id: 1, name: "Stephen", age: 39, sex: "M"} }
+ *
+ * into(obj, (key, value) => ({[value.name]: `${value.age}/${value.sex}`}))
+ *
+ * //=> { "Stephen": "39/M" }
+ * ```
+ */
+function into<T extends object>(
+  obj: T,
+  fn: (key: keyof T, val: T[keyof T]) => object
+) {
+  return Object.keys(obj).reduce((acc, k) => {
+    return { ...acc, ...fn(k as keyof T, obj[k as keyof T]) }
+  }, {})
+}
+
 /** Returns the sum of the values of a specific shared key in an array of objects.
  *
  * Example:
