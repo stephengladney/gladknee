@@ -402,6 +402,11 @@ describe("shave", () => {
 })
 
 describe("arrays", () => {
+  describe("multiplyArray", () => {
+    it("multiplies the array N times", () => {
+      expect(_.multiplyArray([1, 2, 3], 3)).toEqual([1, 2, 3, 1, 2, 3, 1, 2, 3])
+    })
+  })
   describe("shuffle", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
