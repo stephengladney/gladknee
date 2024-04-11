@@ -404,7 +404,7 @@ describe("shave", () => {
 describe("arrays", () => {
   describe("multiplyArray", () => {
     it("multiplies the array N times", () => {
-      expect(_.multiplyArray([1, 2, 3], 3)).toEqual([1, 2, 3, 1, 2, 3, 1, 2, 3])
+      expect(_.repeatArray([1, 2, 3], 3)).toEqual([1, 2, 3, 1, 2, 3, 1, 2, 3])
     })
   })
   describe("shuffle", () => {
