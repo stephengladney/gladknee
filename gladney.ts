@@ -627,7 +627,7 @@ export function capitalize(str: string, lowercaseOthers = false) {
 
 /**
  * Returns a boolean of whether not the first string includes the second string, ignoring case.
- * 
+ *
  * Example:
  * ```typescript
  * lazyIncludes("Hello world", "LL") //=> true
@@ -695,6 +695,17 @@ export function shave<T extends string | any[]>(
   return (
     n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
   ) as StringOrArray<T>
+}
+
+/** Returns an array with elements copied N times.
+ *
+ * Example:
+ * ```typescript
+ * multiplyArray([1, 2, 3], 3) //=> [1, 2, 3, 1, 2, 3, 1, 2, 3]
+ * ```
+ */
+export function multiplyArray<T>(arr: T[], n: number) {
+  return [].concat(...Array(n).fill(arr))
 }
 
 /** Returns an array with the items randomly ordered.
