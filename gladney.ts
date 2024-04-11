@@ -704,7 +704,7 @@ export function shave<T extends string | any[]>(
  * multiplyArray([1, 2, 3], 3) //=> [1, 2, 3, 1, 2, 3, 1, 2, 3]
  * ```
  */
-export function multiplyArray<T>(arr: T[], n: number) {
+export function multiplyArray<T>(arr: T[], n: number): T[] {
   return [].concat(...Array(n).fill(arr))
 }
 
