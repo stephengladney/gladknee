@@ -1085,6 +1085,22 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
   })
 }
 
+/** Tranforms an array into an object with keys and values provided via callback function
+ *
+ * Example:
+ * ```typescript
+ * const arr = [{ first: "John", last: "Doe" }]
+ *
+ * arrayInto(arr, (i) => ({[i.first]: i.last})) //=> { "John": "Doe" }
+ * ```
+ */
+export function arrayInto<T extends any[]>(
+  arr: T,
+  fn: (i: T[number]) => object
+) {
+  return arr.reduce((acc, i) => ({ ...acc, ...fn(i) }), {})
+}
+
 /** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
  optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
  apply case sensitivity (default: false).
@@ -1231,7 +1247,7 @@ export function pickKeys<T extends object, U extends keyof T>(
  * //=> { "Stephen": "39/M" }
  * ```
  */
-export function into<T extends object, K extends keyof T, V extends T[K]>(
+export function objectInto<T extends object, K extends keyof T, V extends T[K]>(
   obj: T,
   fn: (key: K, val: V) => object
 ) {

@@ -407,6 +407,20 @@ describe("arrays", () => {
       expect(_.repeatArray([1, 2, 3], 3)).toEqual([1, 2, 3, 1, 2, 3, 1, 2, 3])
     })
   })
+
+  describe("arrayInto", () => {
+    it("converts the array into the proper object", () => {
+      const arr = [
+        { first: "John", last: "Doe" },
+        { first: "Jane", last: "Smith" },
+      ]
+      expect(_.arrayInto(arr, (i) => ({ [i.first]: i.last }))).toEqual({
+        John: "Doe",
+        Jane: "Smith",
+      })
+    })
+  })
+
   describe("shuffle", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -713,11 +727,11 @@ describe("objects", () => {
     })
   })
 
-  describe("into", () => {
+  describe("objectInto", () => {
     it("returns the desired new shape", () => {
       const obj = { user: { name: "Stephen", age: 39, sex: "M" } }
       expect(
-        _.into(obj, (key, value) => ({ [value.name]: value.age }))
+        _.objectInto(obj, (key, value) => ({ [value.name]: value.age }))
       ).toEqual({ Stephen: 39 })
     })
   })
