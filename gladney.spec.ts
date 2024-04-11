@@ -419,6 +419,19 @@ describe("arrays", () => {
         Jane: "Smith",
       })
     })
+
+    it("can use the index in the callback", () => {
+      const arr = [
+        { first: "John", last: "Doe" },
+        { first: "Jane", last: "Smith" },
+      ]
+      expect(
+        _.arrayInto(arr, (i, index) => ({ [String(index)]: i.last }))
+      ).toEqual({
+        "0": "Doe",
+        "1": "Smith",
+      })
+    })
   })
 
   describe("shuffle", () => {

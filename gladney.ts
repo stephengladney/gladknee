@@ -1096,9 +1096,9 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
  */
 export function arrayInto<T extends any[]>(
   arr: T,
-  fn: (i: T[number]) => object
+  fn: (item: T[number], index?: number) => object
 ) {
-  return arr.reduce((acc, i) => ({ ...acc, ...fn(i) }), {})
+  return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
 
 /** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
