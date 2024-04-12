@@ -225,7 +225,7 @@ function getMillisecondsFromDuration(duration: Partial<Duration>) {
   return result
 }
 
-/** Returns a date in the future or past based on a duration from now
+/** Returns a date in the future or past based on a duration from a specific date
  *
  * Example:
  *
@@ -233,10 +233,10 @@ function getMillisecondsFromDuration(duration: Partial<Duration>) {
  * const fromDate = new Date("Jan 1, 2024 12:00:00AM")
  * //=> Date: "2024-01-01T05:00:00.000Z"
  *
- * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, "future", fromDate)
+ * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, fromDate)
  * //=> Date: "2024-01-02T07:03:04.000Z"
  *
- * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, "past", fromDate)
+ * getDateFromDuration({days: -1: hours: -2, minutes: -3, seconds: -4}, fromDate)
  * //=> Date: "2023-12-31T02:56:56.000Z"
  * ```
  */
@@ -245,6 +245,39 @@ export function getDateFromDuration(
   startDate: Date = new Date()
 ) {
   return new Date(startDate.getTime() + getMillisecondsFromDuration(duration))
+}
+
+/** Returns a date in the past based on a duration from now
+ *
+ * Example:
+ *
+ * ```typescript
+ * // Jan 1, 2024 12:00:00AM
+ * ago({days: 1: hours: 2, minutes: 3, seconds: 4})
+ *
+ * //=> Date: "2023-12-31T02:56:56.000Z"
+ * ```
+ */
+export function ago(duration: Partial<Duration>) {
+  const negativeDuration = objectInto(duration, (key, val) => ({
+    [key]: val! * -1,
+  }))
+  return getDateFromDuration(negativeDuration)
+}
+
+/** Returns a date in the future based on a duration from now
+ *
+ * Example:
+ *
+ * ```typescript
+ * // Jan 1, 2024 12:00:00AM
+ * ago({days: 1: hours: 2, minutes: 3, seconds: 4})
+ *
+ * //=> Date: "2024-01-02T07:03:04.000Z"
+ * ```
+ */
+export function fromNow(duration: Partial<Duration>) {
+  return getDateFromDuration(duration)
 }
 
 /** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds until 
