@@ -457,7 +457,7 @@ describe("shave", () => {
 })
 
 describe("arrays", () => {
-  describe("multiplyArray", () => {
+  describe("repeatArray", () => {
     it("multiplies the array N times", () => {
       expect(_.repeatArray([1, 2, 3], 3)).toEqual([1, 2, 3, 1, 2, 3, 1, 2, 3])
     })
