@@ -810,6 +810,23 @@ export function everyNth<T>(arr: T[], n: number) {
   }, [])
 }
 
+/** Returns an array of unique values from the provided arrays
+ *
+ * Example:
+ * ```typescript
+ * union([1, 2, 3], [3, 4, 5], [5, 6, 7]) //=> [1, 2, 3, 4, 5, 6, 7]
+ * ```
+ */
+export function union<T>(...arr: T[]) {
+  const concatenated = arr.reduce((acc, i) => {
+    return [...acc, ...(i as T[])]
+  }, [] as T[])
+
+  const asStrings = concatenated.map((i) => JSON.stringify(i))
+
+  return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
+}
+
 /** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
  is larger than the length of the array, the fill will be added to the array as many times as necessary
  to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
@@ -1130,7 +1147,7 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
 export function arrayInto<T extends any[]>(
   arr: T,
   fn: (item: T[number], index?: number) => object
-) {
+): object {
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
 
@@ -1283,7 +1300,7 @@ export function pickKeys<T extends object, U extends keyof T>(
 export function objectInto<T extends object, K extends keyof T, V extends T[K]>(
   obj: T,
   fn: (key: K, val: V) => object
-) {
+): object {
   return Object.keys(obj).reduce(
     (acc, k) => ({ ...acc, ...fn(k as K, obj[k as K] as V) }),
     {}

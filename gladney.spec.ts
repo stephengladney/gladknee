@@ -681,6 +681,22 @@ describe("arrays", () => {
     })
   })
 
+  describe("union", () => {
+    it("returns an array of unique items", () => {
+      expect(_.union([1, 2], [2, 3], [3, 4])).toEqual([1, 2, 3, 4])
+    })
+
+    it("works with objects", () => {
+      const stephen = { name: "Stephen" }
+      const andrea = { name: "Andrea" }
+
+      expect(_.union([stephen, andrea], [stephen], [andrea])).toEqual([
+        stephen,
+        andrea,
+      ])
+    })
+  })
+
   describe("isEqual", () => {
     it("arrays are equal, order matters", () => {
       expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4], true)).toBe(true)
@@ -1158,10 +1174,10 @@ describe("misc", () => {
   describe("pipe", () => {
     it("pipes the provided argument through the functions", () => {
       const double = (n: number) => n * 2
-      const triple = (n: number) => n * 3
-      const pipedResult = _.pipe(3, double, triple)
+      const add3 = (n: number) => n + 3
+      const pipedResult = _.pipe(6, double, add3)
 
-      expect(pipedResult).toEqual(18)
+      expect(pipedResult).toEqual(15)
     })
   })
 
