@@ -83,6 +83,57 @@ describe("time & dates", () => {
   // })
 
   describe("getDateFromDuration", () => {
+    const now = new Date("1/1/2024")
+    it("returns the correct date in the future", () => {
+      const then = new Date(now)
+
+      then.setDate(then.getDate() + 1)
+      then.setHours(then.getHours() + 2)
+      then.setMinutes(then.getMinutes() + 3)
+      then.setSeconds(then.getSeconds() + 4)
+
+      const fnResult = _.getDateFromDuration(
+        {
+          days: 1,
+          hours: 2,
+          minutes: 3,
+          seconds: 4,
+        },
+        now
+      )
+
+      expect(fnResult.getDate()).toBe(then.getDate())
+      expect(fnResult.getHours()).toBe(then.getHours())
+      expect(fnResult.getMinutes()).toBe(then.getMinutes())
+      expect(fnResult.getSeconds()).toBe(then.getSeconds())
+    })
+
+    it("returns the correct date in the past", () => {
+      const then = new Date(now)
+
+      then.setDate(then.getDate() - 1)
+      then.setHours(then.getHours() - 2)
+      then.setMinutes(then.getMinutes() - 3)
+      then.setSeconds(then.getSeconds() - 4)
+
+      const fnResult = _.getDateFromDuration(
+        {
+          days: -1,
+          hours: -2,
+          minutes: -3,
+          seconds: -4,
+        },
+        now
+      )
+
+      expect(fnResult.getDate()).toBe(then.getDate())
+      expect(fnResult.getHours()).toBe(then.getHours())
+      expect(fnResult.getMinutes()).toBe(then.getMinutes())
+      expect(fnResult.getSeconds()).toBe(then.getSeconds())
+    })
+  })
+
+  describe("ago", () => {
     const now = new Date()
 
     it("returns the correct date in the past", () => {
@@ -93,11 +144,11 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() - 3)
       then.setSeconds(then.getSeconds() - 4)
 
-      const fnResult = _.getDateFromDuration({
-        days: -1,
-        hours: -2,
-        minutes: -3,
-        seconds: -4,
+      const fnResult = _.ago({
+        days: 1,
+        hours: 2,
+        minutes: 3,
+        seconds: 4,
       })
 
       expect(fnResult.getDate()).toBe(then.getDate())
@@ -105,6 +156,10 @@ describe("time & dates", () => {
       expect(fnResult.getMinutes()).toBe(then.getMinutes())
       expect(fnResult.getSeconds()).toBe(then.getSeconds())
     })
+  })
+
+  describe("fromNow", () => {
+    const now = new Date()
 
     it("returns the correct date in the future", () => {
       const then = new Date(now)
@@ -114,7 +169,7 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() + 3)
       then.setSeconds(then.getSeconds() + 4)
 
-      const fnResult = _.getDateFromDuration({
+      const fnResult = _.fromNow({
         days: 1,
         hours: 2,
         minutes: 3,
@@ -267,6 +322,18 @@ describe("strings", () => {
     })
   })
 
+  describe("lazyIncludes", () => {
+    it("returns true if the characters are present", () => {
+      expect(_.lazyIncludes("Hello world", "LL")).toBeTruthy()
+      expect(_.lazyIncludes("Hello world", "ll")).toBeTruthy()
+    })
+
+    it("returns false if the characters are present", () => {
+      expect(_.lazyIncludes("Hello world", "f")).toBeFalsy()
+      expect(_.lazyIncludes("Hello world", "F")).toBeFalsy()
+    })
+  })
+
   describe("truncate", () => {
     it("enforces the maximum length and uses traililng by default", () => {
       expect(_.truncate("Hello world", 8)).toBe("Hello wo...")
@@ -390,6 +457,38 @@ describe("shave", () => {
 })
 
 describe("arrays", () => {
+  describe("repeatArray", () => {
+    it("multiplies the array N times", () => {
+      expect(_.repeatArray([1, 2, 3], 3)).toEqual([1, 2, 3, 1, 2, 3, 1, 2, 3])
+    })
+  })
+
+  describe("arrayInto", () => {
+    it("converts the array into the proper object", () => {
+      const arr = [
+        { first: "John", last: "Doe" },
+        { first: "Jane", last: "Smith" },
+      ]
+      expect(_.arrayInto(arr, (i) => ({ [i.first]: i.last }))).toEqual({
+        John: "Doe",
+        Jane: "Smith",
+      })
+    })
+
+    it("can use the index in the callback", () => {
+      const arr = [
+        { first: "John", last: "Doe" },
+        { first: "Jane", last: "Smith" },
+      ]
+      expect(
+        _.arrayInto(arr, (i, index) => ({ [String(index)]: i.last }))
+      ).toEqual({
+        "0": "Doe",
+        "1": "Smith",
+      })
+    })
+  })
+
   describe("shuffle", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -693,6 +792,15 @@ describe("objects", () => {
     it("returns the object with only the keys provided", () => {
       const obj = { a: 1, b: 2, c: 3 }
       expect(_.pickKeys(obj, "b", "c")).toEqual({ b: 2, c: 3 })
+    })
+  })
+
+  describe("objectInto", () => {
+    it("returns the desired new shape", () => {
+      const obj = { user: { name: "Stephen", age: 39, sex: "M" } }
+      expect(
+        _.objectInto(obj, (key, value) => ({ [value.name]: value.age }))
+      ).toEqual({ Stephen: 39 })
     })
   })
 

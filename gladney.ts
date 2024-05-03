@@ -225,7 +225,7 @@ function getMillisecondsFromDuration(duration: Partial<Duration>) {
   return result
 }
 
-/** Returns a date in the future or past based on a duration from now
+/** Returns a date in the future or past based on a duration from a specific date
  *
  * Example:
  *
@@ -233,10 +233,10 @@ function getMillisecondsFromDuration(duration: Partial<Duration>) {
  * const fromDate = new Date("Jan 1, 2024 12:00:00AM")
  * //=> Date: "2024-01-01T05:00:00.000Z"
  *
- * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, "future", fromDate)
+ * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, fromDate)
  * //=> Date: "2024-01-02T07:03:04.000Z"
  *
- * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, "past", fromDate)
+ * getDateFromDuration({days: -1: hours: -2, minutes: -3, seconds: -4}, fromDate)
  * //=> Date: "2023-12-31T02:56:56.000Z"
  * ```
  */
@@ -245,6 +245,39 @@ export function getDateFromDuration(
   startDate: Date = new Date()
 ) {
   return new Date(startDate.getTime() + getMillisecondsFromDuration(duration))
+}
+
+/** Returns a date in the past based on a duration from now
+ *
+ * Example:
+ *
+ * ```typescript
+ * // Jan 1, 2024 12:00:00AM
+ * ago({days: 1: hours: 2, minutes: 3, seconds: 4})
+ *
+ * //=> Date: "2023-12-31T02:56:56.000Z"
+ * ```
+ */
+export function ago(duration: Partial<Duration>) {
+  const negativeDuration = objectInto(duration, (key, val) => ({
+    [key]: val! * -1,
+  }))
+  return getDateFromDuration(negativeDuration)
+}
+
+/** Returns a date in the future based on a duration from now
+ *
+ * Example:
+ *
+ * ```typescript
+ * // Jan 1, 2024 12:00:00AM
+ * ago({days: 1: hours: 2, minutes: 3, seconds: 4})
+ *
+ * //=> Date: "2024-01-02T07:03:04.000Z"
+ * ```
+ */
+export function fromNow(duration: Partial<Duration>) {
+  return getDateFromDuration(duration)
 }
 
 /** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds until 
@@ -626,6 +659,19 @@ export function capitalize(str: string, lowercaseOthers = false) {
 }
 
 /**
+ * Returns a boolean of whether not the first string includes the second string, ignoring case.
+ *
+ * Example:
+ * ```typescript
+ * lazyIncludes("Hello world", "LL") //=> true
+ * lazyIncludes("Hello world", "ff") //=> false
+ * ```
+ */
+export function lazyIncludes(str1: string, str2: string) {
+  return String(str1).toLowerCase().includes(String(str2).toLowerCase())
+}
+
+/**
  * Returns a string lowercased with non letter/number characters removed and spaces and underscores replaced with a separator (- by default)
  *
  * Example:
@@ -682,6 +728,17 @@ export function shave<T extends string | any[]>(
   return (
     n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
   ) as StringOrArray<T>
+}
+
+/** Returns an array with elements copied N times.
+ *
+ * Example:
+ * ```typescript
+ * multiplyArray([1, 2, 3], 3) //=> [1, 2, 3, 1, 2, 3, 1, 2, 3]
+ * ```
+ */
+export function repeatArray<T>(arr: T[], n: number): T[] {
+  return [].concat(...Array(n).fill(arr))
 }
 
 /** Returns an array with the items randomly ordered.
@@ -1061,6 +1118,22 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
   })
 }
 
+/** Tranforms an array into an object with keys and values provided via callback function
+ *
+ * Example:
+ * ```typescript
+ * const arr = [{ first: "John", last: "Doe" }]
+ *
+ * arrayInto(arr, (i) => ({[i.first]: i.last})) //=> { "John": "Doe" }
+ * ```
+ */
+export function arrayInto<T extends any[]>(
+  arr: T,
+  fn: (item: T[number], index?: number) => object
+) {
+  return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
+}
+
 /** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
  optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
  apply case sensitivity (default: false).
@@ -1194,6 +1267,27 @@ export function pickKeys<T extends object, U extends keyof T>(
     }
   })
   return result as Pick<T, U>
+}
+
+/** Tranforms an object into a new shape provided via callback function
+ *
+ * Example:
+ * ```typescript
+ * const obj = { user: { id: 1, name: "Stephen", age: 39, sex: "M"} }
+ *
+ * into(obj, (key, value) => ({[value.name]: `${value.age}/${value.sex}`}))
+ *
+ * //=> { "Stephen": "39/M" }
+ * ```
+ */
+export function objectInto<T extends object, K extends keyof T, V extends T[K]>(
+  obj: T,
+  fn: (key: K, val: V) => object
+) {
+  return Object.keys(obj).reduce(
+    (acc, k) => ({ ...acc, ...fn(k as K, obj[k as K] as V) }),
+    {}
+  )
 }
 
 /** Returns the sum of the values of a specific shared key in an array of objects.
