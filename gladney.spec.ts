@@ -650,7 +650,7 @@ describe("arrays", () => {
 
       const aPlusB = ({ a, b }: { a: number; b: number }) => a + b
 
-      expect(_.getCallbackResultCounts(objs, aPlusB)).toEqual({
+      expect(_.getCountsBy(objs, aPlusB)).toEqual({
         "2": 3,
         "3": 1,
         "4": 2,

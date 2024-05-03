@@ -817,12 +817,30 @@ export function everyNth<T>(arr: T[], n: number) {
  * union([1, 2, 3], [3, 4, 5], [5, 6, 7]) //=> [1, 2, 3, 4, 5, 6, 7]
  * ```
  */
-export function union<T>(...arr: T[]) {
+export function union<T>(...arr: T[][]) {
   const concatenated = arr.reduce((acc, i) => {
-    return [...acc, ...(i as T[])]
-  }, [] as T[])
+    return [...acc, ...i]
+  }, [])
 
   const asStrings = concatenated.map((i) => JSON.stringify(i))
+
+  return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
+}
+
+export function unionBy<T, U extends keyof T | Func>(by: U, ...arr: T[][]) {
+  const concatenated = arr.reduce((acc, i) => {
+    return [...acc, ...i]
+  }, [])
+
+  let asStrings: string[] = []
+
+  if (typeof by === "string") {
+    asStrings = concatenated.map((i) => JSON.stringify(i[by as keyof T]))
+  }
+
+  if (typeof by === "function") {
+    asStrings = concatenated.map((i) => JSON.stringify(by(i)))
+  }
 
   return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
 }
@@ -995,6 +1013,23 @@ export function removeDuplicates<T>(arr: T[]): T[] {
     const uniques = new Set(strings)
     return Array.from(uniques).map((str) => JSON.parse(str))
   } else return Array.from(new Set(arr))
+}
+
+export function removeDuplicatesBy<T, U extends (arg: T) => any>(
+  arr: T[],
+  callback: U
+) {
+  const seen: ReturnType<U>[] = []
+  return arr.reduce((acc, i) => {
+    const result = callback(i)
+    if (!seen.includes(result)) {
+      seen.push(result)
+      return [...acc, i]
+    } else {
+      seen.push(result)
+      return acc
+    }
+  }, [] as T[])
 }
 
 /** Returns an array of the rolling sum of an array of numbers.
@@ -1688,7 +1723,7 @@ export function getKeyWhereValueIs<T extends object, U extends T[keyof T]>(
  
 const canDrinkAlcohol = (person: { age: number }) => person.age >= 21
  
-groupByCallbackResult(people, canDrinkAlcohol)
+groupBy(people, canDrinkAlcohol)
  //=>
       {
        "true": [
@@ -1702,7 +1737,7 @@ groupByCallbackResult(people, canDrinkAlcohol)
       }
  * ```
  */
-export function groupByCallbackResult<T>(things: T[], func: Function) {
+export function groupBy<T>(things: T[], func: Function) {
   const result: { [key: string]: T[] } = {}
   things.forEach((thing) => {
     const funcResult = JSON.stringify(func(thing))
@@ -1712,9 +1747,9 @@ export function groupByCallbackResult<T>(things: T[], func: Function) {
   return result
 }
 
-export function getCallbackResultCounts<T>(things: T[], func: Function) {
+export function getCountsBy<T>(things: T[], func: Function) {
   const result: { [key: string]: number } = {}
-  const groupedByResult = groupByCallbackResult(things, func)
+  const groupedByResult = groupBy(things, func)
 
   Object.keys(groupedByResult).forEach((key) => {
     result[key] = groupedByResult[key].length
@@ -1740,7 +1775,7 @@ export function getCallbackResultCounts<T>(things: T[], func: Function) {
 const getPopularity = (obj: { follows: number; likes: number }) =>
   obj.follows + obj.likes
 
-sortByCallbackResult(socialStats, getPopularity)
+sortBy(socialStats, getPopularity)
 //=>
 * [
     { follows: 2, likes: 0 },
@@ -1750,8 +1785,8 @@ sortByCallbackResult(socialStats, getPopularity)
 ]
  * ```
  */
-export function sortByCallbackResult<T>(things: T[], func: Function) {
-  const groupedByResult = groupByCallbackResult(things, func)
+export function sortBy<T>(things: T[], func: Function) {
+  const groupedByResult = groupBy(things, func)
   return safeSort(Object.keys(groupedByResult)).reduce(
     (acc: T[], key) => [...acc, ...groupedByResult[key]],
     []
