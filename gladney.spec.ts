@@ -637,11 +637,11 @@ describe("arrays", () => {
     })
   })
 
-  describe("getUniqueItems", () => {
+  describe("getUnsharedItems", () => {
     it("returns the unique items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.getUniqueItems(arr, arr2)).toEqual([1, 4, 5])
+      expect(_.getUnsharedItems(arr, arr2)).toEqual([1, 4, 5])
     })
   })
 
@@ -721,13 +721,9 @@ describe("arrays", () => {
       const andrea2 = { name: "andrea", age: 2 }
 
       expect(
-        _.unionBy(
-          (obj) => {
-            return obj.age
-          },
-          [stephen2],
-          [andrea1, andrea2]
-        )
+        _.unionBy([[stephen2], [andrea1, andrea2]], (obj) => {
+          return obj.age
+        })
       ).toEqual([stephen2, andrea1])
     })
   })

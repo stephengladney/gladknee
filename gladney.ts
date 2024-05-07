@@ -817,7 +817,7 @@ export function everyNth<T>(arr: T[], n: number) {
  * union([1, 2, 3], [3, 4, 5], [5, 6, 7]) //=> [1, 2, 3, 4, 5, 6, 7]
  * ```
  */
-export function union<T>(...arr: T[][]) {
+export function union<T>(...arr: T[][]): T[] {
   const concatenated = arr.reduce((acc, i) => {
     return [...acc, ...i]
   }, [])
@@ -827,7 +827,17 @@ export function union<T>(...arr: T[][]) {
   return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
 }
 
-export function unionBy<T, U extends Func>(by: U, ...arr: T[][]) {
+/** Returns an array of unique values from the provided arrays based on a callback result
+ *
+ * Example:
+ * ```typescript
+ * const arr1 = [1, 3]
+ * const arr2 = [2, 4]
+ *
+ * unionBy([arr1, arr2], (n) => n % 2) //=> [1, 2]
+ * ```
+ */
+export function unionBy<T, U extends Func>(arr: T[][], by: U): T[] {
   const concatenated = arr.reduce((acc, i) => {
     return [...acc, ...i]
   }, [])
@@ -1073,11 +1083,11 @@ export function getCount<T>(arr: T[], target: T) {
  const arr1 = [1, 2, 3, 4]
  const arr2 = [3, 4, 5, 6]
  
- getUniqueItems(arr1, arr2) //=> [1, 2, 5, 6]
+ getUnsharedItems(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
  * See also: `getCommonItems()` and `getSharedItems()`
  **/
-export function getUniqueItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
