@@ -827,22 +827,19 @@ export function union<T>(...arr: T[][]) {
   return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
 }
 
-export function unionBy<T, U extends keyof T | Func>(by: U, ...arr: T[][]) {
+export function unionBy<T, U extends Func>(by: U, ...arr: T[][]) {
   const concatenated = arr.reduce((acc, i) => {
     return [...acc, ...i]
   }, [])
 
-  let asStrings: string[] = []
+  let asStrings = concatenated.map((i) => ({
+    value: JSON.stringify(i),
+    result: JSON.stringify(by(i)),
+  }))
 
-  if (typeof by === "string") {
-    asStrings = concatenated.map((i) => JSON.stringify(i[by as keyof T]))
-  }
+  const unique = removeDuplicatesBy(asStrings, (i) => JSON.parse(i.result))
 
-  if (typeof by === "function") {
-    asStrings = concatenated.map((i) => JSON.stringify(by(i)))
-  }
-
-  return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
+  return unique.map((i) => JSON.parse(i.value))
 }
 
 /** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length

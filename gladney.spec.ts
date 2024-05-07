@@ -592,6 +592,22 @@ describe("arrays", () => {
     })
   })
 
+  describe("removeDuplicatesBy", () => {
+    it("removes duplicates by callback result", () => {
+      const arr = [
+        { a: 1, b: 1 },
+        { a: 2, b: 2 },
+        { a: 3, b: 1 },
+        { a: 3, b: 3 },
+      ]
+      expect(_.removeDuplicatesBy(arr, (i) => i.b)).toEqual([
+        { a: 1, b: 1 },
+        { a: 2, b: 2 },
+        { a: 3, b: 3 },
+      ])
+    })
+  })
+
   describe("sum", () => {
     it("returns the sum of a set of numbers", () => {
       const arr = [1, 2, 3, 4]
@@ -694,6 +710,25 @@ describe("arrays", () => {
         stephen,
         andrea,
       ])
+    })
+  })
+
+  describe("unionBy", () => {
+    it("returns an array of objects with only one instance of key/val pair", () => {
+      const stephen1 = { name: "stephen", age: 1 }
+      const stephen2 = { name: "stephen", age: 2 }
+      const andrea1 = { name: "andrea", age: 1 }
+      const andrea2 = { name: "andrea", age: 2 }
+
+      expect(
+        _.unionBy(
+          (obj) => {
+            return obj.age
+          },
+          [stephen2],
+          [andrea1, andrea2]
+        )
+      ).toEqual([stephen2, andrea1])
     })
   })
 
