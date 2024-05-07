@@ -40,7 +40,7 @@ export function sum(...arr: (number | number[])[]): number {
  * ```
  **/
 export function randomNumber(min: number, max: number) {
-  return Math.floor(Math.random() * max + min)
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 /** Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit.
@@ -1189,7 +1189,6 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
 export function arrayInto<T extends any[]>(
   arr: T,
   fn: (item: T[number], index?: number) => object
-
 ): object {
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
