@@ -592,6 +592,22 @@ describe("arrays", () => {
     })
   })
 
+  describe("removeDuplicatesBy", () => {
+    it("removes duplicates by callback result", () => {
+      const arr = [
+        { a: 1, b: 1 },
+        { a: 2, b: 2 },
+        { a: 3, b: 1 },
+        { a: 3, b: 3 },
+      ]
+      expect(_.removeDuplicatesBy(arr, (i) => i.b)).toEqual([
+        { a: 1, b: 1 },
+        { a: 2, b: 2 },
+        { a: 3, b: 3 },
+      ])
+    })
+  })
+
   describe("sum", () => {
     it("returns the sum of a set of numbers", () => {
       const arr = [1, 2, 3, 4]
@@ -621,11 +637,11 @@ describe("arrays", () => {
     })
   })
 
-  describe("getUniqueItems", () => {
+  describe("getUnsharedItems", () => {
     it("returns the unique items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.getUniqueItems(arr, arr2)).toEqual([1, 4, 5])
+      expect(_.getUnsharedItems(arr, arr2)).toEqual([1, 4, 5])
     })
   })
 
@@ -650,7 +666,7 @@ describe("arrays", () => {
 
       const aPlusB = ({ a, b }: { a: number; b: number }) => a + b
 
-      expect(_.getCallbackResultCounts(objs, aPlusB)).toEqual({
+      expect(_.getCountsBy(objs, aPlusB)).toEqual({
         "2": 3,
         "3": 1,
         "4": 2,
@@ -678,6 +694,37 @@ describe("arrays", () => {
           1
         )
       ).toEqual([1, 2, [3, 4], 5, 6])
+    })
+  })
+
+  describe("union", () => {
+    it("returns an array of unique items", () => {
+      expect(_.union([1, 2], [2, 3], [3, 4])).toEqual([1, 2, 3, 4])
+    })
+
+    it("works with objects", () => {
+      const stephen = { name: "Stephen" }
+      const andrea = { name: "Andrea" }
+
+      expect(_.union([stephen, andrea], [stephen], [andrea])).toEqual([
+        stephen,
+        andrea,
+      ])
+    })
+  })
+
+  describe("unionBy", () => {
+    it("returns an array of objects with only one instance of key/val pair", () => {
+      const stephen1 = { name: "stephen", age: 1 }
+      const stephen2 = { name: "stephen", age: 2 }
+      const andrea1 = { name: "andrea", age: 1 }
+      const andrea2 = { name: "andrea", age: 2 }
+
+      expect(
+        _.unionBy([[stephen2], [andrea1, andrea2]], (obj) => {
+          return obj.age
+        })
+      ).toEqual([stephen2, andrea1])
     })
   })
 
@@ -1158,10 +1205,10 @@ describe("misc", () => {
   describe("pipe", () => {
     it("pipes the provided argument through the functions", () => {
       const double = (n: number) => n * 2
-      const triple = (n: number) => n * 3
-      const pipedResult = _.pipe(3, double, triple)
+      const add3 = (n: number) => n + 3
+      const pipedResult = _.pipe(6, double, add3)
 
-      expect(pipedResult).toEqual(18)
+      expect(pipedResult).toEqual(15)
     })
   })
 

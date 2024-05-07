@@ -810,6 +810,48 @@ export function everyNth<T>(arr: T[], n: number) {
   }, [])
 }
 
+/** Returns an array of unique values from the provided arrays
+ *
+ * Example:
+ * ```typescript
+ * union([1, 2, 3], [3, 4, 5], [5, 6, 7]) //=> [1, 2, 3, 4, 5, 6, 7]
+ * ```
+ */
+export function union<T>(...arr: T[][]): T[] {
+  const concatenated = arr.reduce((acc, i) => {
+    return [...acc, ...i]
+  }, [])
+
+  const asStrings = concatenated.map((i) => JSON.stringify(i))
+
+  return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
+}
+
+/** Returns an array of unique values from the provided arrays based on a callback result
+ *
+ * Example:
+ * ```typescript
+ * const arr1 = [1, 3]
+ * const arr2 = [2, 4]
+ *
+ * unionBy([arr1, arr2], (n) => n % 2) //=> [1, 2]
+ * ```
+ */
+export function unionBy<T, U extends Func>(arr: T[][], by: U): T[] {
+  const concatenated = arr.reduce((acc, i) => {
+    return [...acc, ...i]
+  }, [])
+
+  let asStrings = concatenated.map((i) => ({
+    value: JSON.stringify(i),
+    result: JSON.stringify(by(i)),
+  }))
+
+  const unique = removeDuplicatesBy(asStrings, (i) => JSON.parse(i.result))
+
+  return unique.map((i) => JSON.parse(i.value))
+}
+
 /** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
  is larger than the length of the array, the fill will be added to the array as many times as necessary
  to reach the minimum limit. If a fill is provided, it must match the type of the array provided. If no
@@ -980,6 +1022,23 @@ export function removeDuplicates<T>(arr: T[]): T[] {
   } else return Array.from(new Set(arr))
 }
 
+export function removeDuplicatesBy<T, U extends (arg: T) => any>(
+  arr: T[],
+  callback: U
+) {
+  const seen: ReturnType<U>[] = []
+  return arr.reduce((acc, i) => {
+    const result = callback(i)
+    if (!seen.includes(result)) {
+      seen.push(result)
+      return [...acc, i]
+    } else {
+      seen.push(result)
+      return acc
+    }
+  }, [] as T[])
+}
+
 /** Returns an array of the rolling sum of an array of numbers.
  **/
 export function rollingSum(arr: number[], precision?: number) {
@@ -1024,11 +1083,11 @@ export function getCount<T>(arr: T[], target: T) {
  const arr1 = [1, 2, 3, 4]
  const arr2 = [3, 4, 5, 6]
  
- getUniqueItems(arr1, arr2) //=> [1, 2, 5, 6]
+ getUnsharedItems(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
  * See also: `getCommonItems()` and `getSharedItems()`
  **/
-export function getUniqueItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1130,7 +1189,8 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
 export function arrayInto<T extends any[]>(
   arr: T,
   fn: (item: T[number], index?: number) => object
-) {
+
+): object {
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
 
@@ -1283,7 +1343,7 @@ export function pickKeys<T extends object, U extends keyof T>(
 export function objectInto<T extends object, K extends keyof T, V extends T[K]>(
   obj: T,
   fn: (key: K, val: V) => object
-) {
+): object {
   return Object.keys(obj).reduce(
     (acc, k) => ({ ...acc, ...fn(k as K, obj[k as K] as V) }),
     {}
@@ -1671,7 +1731,7 @@ export function getKeyWhereValueIs<T extends object, U extends T[keyof T]>(
  
 const canDrinkAlcohol = (person: { age: number }) => person.age >= 21
  
-groupByCallbackResult(people, canDrinkAlcohol)
+groupBy(people, canDrinkAlcohol)
  //=>
       {
        "true": [
@@ -1685,7 +1745,7 @@ groupByCallbackResult(people, canDrinkAlcohol)
       }
  * ```
  */
-export function groupByCallbackResult<T>(things: T[], func: Function) {
+export function groupBy<T>(things: T[], func: Function) {
   const result: { [key: string]: T[] } = {}
   things.forEach((thing) => {
     const funcResult = JSON.stringify(func(thing))
@@ -1695,9 +1755,9 @@ export function groupByCallbackResult<T>(things: T[], func: Function) {
   return result
 }
 
-export function getCallbackResultCounts<T>(things: T[], func: Function) {
+export function getCountsBy<T>(things: T[], func: Function) {
   const result: { [key: string]: number } = {}
-  const groupedByResult = groupByCallbackResult(things, func)
+  const groupedByResult = groupBy(things, func)
 
   Object.keys(groupedByResult).forEach((key) => {
     result[key] = groupedByResult[key].length
@@ -1723,7 +1783,7 @@ export function getCallbackResultCounts<T>(things: T[], func: Function) {
 const getPopularity = (obj: { follows: number; likes: number }) =>
   obj.follows + obj.likes
 
-sortByCallbackResult(socialStats, getPopularity)
+sortBy(socialStats, getPopularity)
 //=>
 * [
     { follows: 2, likes: 0 },
@@ -1733,8 +1793,8 @@ sortByCallbackResult(socialStats, getPopularity)
 ]
  * ```
  */
-export function sortByCallbackResult<T>(things: T[], func: Function) {
-  const groupedByResult = groupByCallbackResult(things, func)
+export function sortBy<T>(things: T[], func: Function) {
+  const groupedByResult = groupBy(things, func)
   return safeSort(Object.keys(groupedByResult)).reduce(
     (acc: T[], key) => [...acc, ...groupedByResult[key]],
     []
