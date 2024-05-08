@@ -513,7 +513,7 @@ describe("arrays", () => {
   })
 
   describe("everyNth", () => {
-    it("returns every Nth item in an arry", () => {
+    it("returns every Nth item in an array", () => {
       expect(_.everyNth([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)).toEqual([3, 6, 9])
     })
   })
@@ -657,7 +657,8 @@ describe("arrays", () => {
     it("returns the common items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.common(arr, arr2)).toEqual([2, 3])
+      const arr3 = [2, 5, 7, 8]
+      expect(_.common(arr, arr2, arr3)).toEqual([2, 3, 5])
     })
   })
 
