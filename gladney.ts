@@ -1083,11 +1083,11 @@ export function getCount<T>(arr: T[], target: T) {
  const arr1 = [1, 2, 3, 4]
  const arr2 = [3, 4, 5, 6]
  
- getUnsharedItems(arr1, arr2) //=> [1, 2, 5, 6]
+ difference(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
- * See also: `getCommonItems()` and `getSharedItems()`
+ * See also: `common()` and `intersection()`
  **/
-export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function difference<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1118,9 +1118,9 @@ export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
  
  getCommonItems(arr1, arr2, arr3) //=> [3, 4, 5, 6]
  * ```
- * See also: `getUniqueItems()` and `getSharedItems()`
+ * See also: `difference()` and `intersection()`
  **/
-export function getCommonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function common<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1146,11 +1146,11 @@ export function getCommonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
  const arr2 = [3, 4, 5, 6]
  const arr3 = [4, 5, 6, 7]
  
- getSharedItems(arr1, arr2, arr3) //=> [4]
+ intersection(arr1, arr2, arr3) //=> [4]
  * ```
- * See also: `getUniqueItems()` and `getCommonItems()`
+ * See also: `difference()` and `common()`
  **/
-export function getSharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function intersection<T>(firstArray: T[], ...otherArrays: T[][]) {
   const firstArrayAsJSONStrings = firstArray.map((item) => JSON.stringify(item))
   const firstArrayUniqueValues = Array.from(new Set(firstArrayAsJSONStrings))
 
