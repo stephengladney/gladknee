@@ -662,7 +662,19 @@ describe("arrays", () => {
     })
   })
 
-  describe("getCallbackResultCounts", () => {
+  describe("count", () => {
+    it("returns the correct count", () => {
+      expect(_.count([1, 2, 2, 3, 3, 3], 3)).toBe(3)
+    })
+  })
+
+  describe("counts", () => {
+    it("returns the correct count", () => {
+      expect(_.counts([1, 2, 2, 3, 3, 3])).toEqual({ "1": 1, "2": 2, "3": 3 })
+    })
+  })
+
+  describe("countsBy", () => {
     it("returns the counts of results", () => {
       const objs = [
         { a: 1, b: 1 },
@@ -675,7 +687,7 @@ describe("arrays", () => {
 
       const aPlusB = ({ a, b }: { a: number; b: number }) => a + b
 
-      expect(_.getCountsBy(objs, aPlusB)).toEqual({
+      expect(_.countsBy(objs, aPlusB)).toEqual({
         "2": 3,
         "3": 1,
         "4": 2,
@@ -1221,10 +1233,10 @@ describe("misc", () => {
     })
   })
 
-  describe("convertObjectToQueryParams", () => {
+  describe("objectToQueryParams", () => {
     it("converts an object to string of query params", () => {
       const obj = { name: "john", age: 30 }
-      expect(_.convertObjectToQueryParams(obj)).toEqual("name=john&age=30")
+      expect(_.objectToQueryParams(obj)).toEqual("name=john&age=30")
     })
 
     it("handles nesting (last param)", () => {
@@ -1233,7 +1245,7 @@ describe("misc", () => {
         age: 30,
         favorite: { drink: "coke", food: "chicken" },
       }
-      expect(_.convertObjectToQueryParams(obj)).toEqual(
+      expect(_.objectToQueryParams(obj)).toEqual(
         "name=john&age=30&favorite[drink]=coke&favorite[food]=chicken"
       )
     })
@@ -1244,7 +1256,7 @@ describe("misc", () => {
         favorite: { drink: "coke", food: "chicken" },
         age: 30,
       }
-      expect(_.convertObjectToQueryParams(obj)).toEqual(
+      expect(_.objectToQueryParams(obj)).toEqual(
         "name=john&favorite[drink]=coke&favorite[food]=chicken&age=30"
       )
     })

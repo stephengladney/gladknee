@@ -175,8 +175,8 @@ x * mode(1, 2, 3, 4, 5) //=> null
  **/
 export function mode(...numbers: (number | number[])[]) {
   const flattened = flatten(numbers)
-  const counts = getCounts(flattened)
-  const mostCommon = getKeyWithLargestValue(counts)
+  const nCounts = counts(flattened)
+  const mostCommon = getKeyWithLargestValue(nCounts)
   if (Array.isArray(mostCommon)) {
     if (mostCommon.length === flattened.length) return null
     else return mostCommon.map((key) => Number(key))
@@ -1059,7 +1059,7 @@ export function rollingSum(arr: number[], precision?: number) {
  * getCounts(["a", "a", "b", "c", "c", "c"]) //=> {"a": 2, "b": 1, "c": 3}
  * ```
  **/
-export function getCounts<T>(arr: T[]): { [key: string]: number } {
+export function counts<T>(arr: T[]): { [key: string]: number } {
   const result: { [key: string]: number } = {}
   arr.forEach((item) => {
     const itemAsString = String(item)
@@ -1077,8 +1077,8 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
  getCount(arr, 4) //=> 3
  * ```
  **/
-export function getCount<T>(arr: T[], target: T) {
-  return getCounts(arr)[String(target)] || 0
+export function count<T>(arr: T[], target: T) {
+  return counts(arr)[String(target)] || 0
 }
 
 /** Returns an array of items that only appear in one of the given arrays.
@@ -1566,10 +1566,10 @@ export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
  *
  * Example:
  * ```typescript
- * convertObjectToQueryParams({ age: 30, city: "Atlanta" }) //=> "age=38&city=Atlanta"
+ * objectToQueryParams({ age: 30, city: "Atlanta" }) //=> "age=38&city=Atlanta"
  * ```
  **/
-export function convertObjectToQueryParams(obj: object): string {
+export function objectToQueryParams(obj: object): string {
   let result = ""
   const objectKeys = Object.keys(obj)
   objectKeys.forEach((key, i) => {
@@ -1759,7 +1759,7 @@ export function groupBy<T>(things: T[], func: Function) {
   return result
 }
 
-export function getCountsBy<T>(things: T[], func: Function) {
+export function countsBy<T>(things: T[], func: Function) {
   const result: { [key: string]: number } = {}
   const groupedByResult = groupBy(things, func)
 
