@@ -891,7 +891,7 @@ export function clampArray<T>(
 //=> [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
  * ```
  **/
-export function chunkArray<T>(arr: T[], chunkSize: number) {
+export function chunk<T>(arr: T[], chunkSize: number) {
   const items = Array.from(arr)
   const result: T[][] = []
   while (items.length > 0) {
@@ -1053,6 +1053,11 @@ export function rollingSum(arr: number[], precision?: number) {
 
 /** Returns an object with items from an array as keys and values of the number of
  instances of these values in the array.
+ *
+ * Example:
+ * ```typescript
+ * getCounts(["a", "a", "b", "c", "c", "c"]) //=> {"a": 2, "b": 1, "c": 3}
+ * ```
  **/
 export function getCounts<T>(arr: T[]): { [key: string]: number } {
   const result: { [key: string]: number } = {}

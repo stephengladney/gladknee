@@ -530,10 +530,10 @@ describe("arrays", () => {
     })
   })
 
-  describe("chunkArray", () => {
+  describe("chunk", () => {
     it("chunks the array correctly", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-      expect(_.chunkArray(arr, 2)).toEqual([
+      expect(_.chunk(arr, 2)).toEqual([
         [0, 1],
         [2, 3],
         [4, 5],
