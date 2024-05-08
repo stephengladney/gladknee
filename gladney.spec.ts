@@ -637,19 +637,27 @@ describe("arrays", () => {
     })
   })
 
-  describe("getUnsharedItems", () => {
+  describe("intersection", () => {
     it("returns the unique items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.getUnsharedItems(arr, arr2)).toEqual([1, 4, 5])
+      expect(_.intersection(arr, arr2)).toEqual([2, 3])
     })
   })
 
-  describe("getCommonItems", () => {
+  describe("difference", () => {
+    it("returns the unique items from two arrays", () => {
+      const arr = [1, 2, 3, 4]
+      const arr2 = [2, 3, 5]
+      expect(_.difference(arr, arr2)).toEqual([1, 4, 5])
+    })
+  })
+
+  describe("common", () => {
     it("returns the common items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.getCommonItems(arr, arr2)).toEqual([2, 3])
+      expect(_.common(arr, arr2)).toEqual([2, 3])
     })
   })
 
