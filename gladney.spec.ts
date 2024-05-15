@@ -638,7 +638,7 @@ describe("arrays", () => {
   })
 
   describe("intersection", () => {
-    it("returns the unique items from two arrays", () => {
+    it("returns the shared items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
       expect(_.intersection(arr, arr2)).toEqual([2, 3])
@@ -646,10 +646,18 @@ describe("arrays", () => {
   })
 
   describe("difference", () => {
+    it("returns the items missing from the second array", () => {
+      const arr = [1, 2, 3, 4]
+      const arr2 = [2, 3]
+      expect(_.difference(arr, arr2)).toEqual([1, 4])
+    })
+  })
+
+  describe("uncommon", () => {
     it("returns the unique items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.difference(arr, arr2)).toEqual([1, 4, 5])
+      expect(_.uncommon(arr, arr2)).toEqual([1, 4, 5])
     })
   })
 
