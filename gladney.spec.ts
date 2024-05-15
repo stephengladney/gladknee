@@ -82,7 +82,7 @@ describe("time & dates", () => {
   //   })
   // })
 
-  describe("getDateFromDuration", () => {
+  describe("dateFromDuration", () => {
     const now = new Date("1/1/2024")
     it("returns the correct date in the future", () => {
       const then = new Date(now)
@@ -92,7 +92,7 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() + 3)
       then.setSeconds(then.getSeconds() + 4)
 
-      const fnResult = _.getDateFromDuration(
+      const fnResult = _.dateFromDuration(
         {
           days: 1,
           hours: 2,
@@ -116,7 +116,7 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() - 3)
       then.setSeconds(then.getSeconds() - 4)
 
-      const fnResult = _.getDateFromDuration(
+      const fnResult = _.dateFromDuration(
         {
           days: -1,
           hours: -2,
@@ -980,7 +980,7 @@ describe("objects", () => {
     })
   })
 
-  describe("getKeyValueCounts", () => {
+  describe("keyValueCounts", () => {
     it("returns an object with counts of key values", () => {
       const arr = [
         { name: "Stephen" },
@@ -988,7 +988,7 @@ describe("objects", () => {
         { name: "Mike" },
         { name: "Stephen" },
       ]
-      expect(_.getKeyValueCounts(arr, "name")).toEqual({
+      expect(_.keyValueCounts(arr, "name")).toEqual({
         stephen: 2,
         james: 1,
         mike: 1,
@@ -1002,7 +1002,7 @@ describe("objects", () => {
         { name: "Mike" },
         { name: "stephen" },
       ]
-      expect(_.getKeyValueCounts(arr, "name", true)).toEqual({
+      expect(_.keyValueCounts(arr, "name", true)).toEqual({
         stephen: 1,
         James: 1,
         Mike: 1,
@@ -1144,15 +1144,22 @@ describe("objects", () => {
     })
   })
 
-  describe("getKeyWhereValueIs", () => {
+  describe("keyWhereValueIs", () => {
     it("returns the correct key", () => {
       const obj = { a: 1, b: 2, c: 3 }
-      expect(_.getKeyWhereValueIs(obj, 3)).toBe("c")
+      expect(_.keyWhereValueIs(obj, 3)).toBe("c")
     })
 
     it("returns null if no key/value found", () => {
       const obj = { a: 1, b: 2, c: 3 }
-      expect(_.getKeyWhereValueIs(obj, 4)).toBe(null)
+      expect(_.keyWhereValueIs(obj, 4)).toBe(null)
+    })
+  })
+
+  describe("keyWithLargestValue", () => {
+    it("returns the correct key", () => {
+      const obj = { a: 1, b: 2, c: 3 }
+      expect(_.keyWithLargestValue(obj)).toBe("c")
     })
   })
 })

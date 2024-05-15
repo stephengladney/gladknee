@@ -176,7 +176,7 @@ x * mode(1, 2, 3, 4, 5) //=> null
 export function mode(...numbers: (number | number[])[]) {
   const flattened = flatten(numbers)
   const nCounts = counts(flattened)
-  const mostCommon = getKeyWithLargestValue(nCounts)
+  const mostCommon = keyWithLargestValue(nCounts)
   if (Array.isArray(mostCommon)) {
     if (mostCommon.length === flattened.length) return null
     else return mostCommon.map((key) => Number(key))
@@ -233,14 +233,14 @@ function getMillisecondsFromDuration(duration: Partial<Duration>) {
  * const fromDate = new Date("Jan 1, 2024 12:00:00AM")
  * //=> Date: "2024-01-01T05:00:00.000Z"
  *
- * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, fromDate)
+ * dateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, fromDate)
  * //=> Date: "2024-01-02T07:03:04.000Z"
  *
- * getDateFromDuration({days: -1: hours: -2, minutes: -3, seconds: -4}, fromDate)
+ * dateFromDuration({days: -1: hours: -2, minutes: -3, seconds: -4}, fromDate)
  * //=> Date: "2023-12-31T02:56:56.000Z"
  * ```
  */
-export function getDateFromDuration(
+export function dateFromDuration(
   duration: Partial<Duration>,
   startDate: Date = new Date()
 ) {
@@ -262,7 +262,7 @@ export function ago(duration: Partial<Duration>) {
   const negativeDuration = objectInto(duration, (key, val) => ({
     [key]: val! * -1,
   }))
-  return getDateFromDuration(negativeDuration)
+  return dateFromDuration(negativeDuration)
 }
 
 /** Returns a date in the future based on a duration from now
@@ -277,7 +277,7 @@ export function ago(duration: Partial<Duration>) {
  * ```
  */
 export function fromNow(duration: Partial<Duration>) {
-  return getDateFromDuration(duration)
+  return dateFromDuration(duration)
 }
 
 /** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds until 
@@ -1081,6 +1081,22 @@ export function count<T>(arr: T[], target: T) {
   return counts(arr)[String(target)] || 0
 }
 
+/** Returns items that the first array contains but the second array does not.
+ *
+ * Example:
+ *
+ * ```typescript
+ * difference([1, 2, 3, 4], [1, 2]) //=> [3, 4]
+ * ```
+ */
+export function difference<T>(firstArray: T[], secondArray: T[]) {
+  const firstArrayAsJSON = firstArray.map((item) => JSON.stringify(item))
+  const secondArrayAsJSON = secondArray.map((item) => JSON.stringify(item))
+  return firstArrayAsJSON
+    .filter((item) => !secondArrayAsJSON.includes(item))
+    .map((item) => JSON.parse(item))
+}
+
 /** Returns an array of items that only appear in one of the given arrays.
  *
  * Example:
@@ -1088,11 +1104,11 @@ export function count<T>(arr: T[], target: T) {
  const arr1 = [1, 2, 3, 4]
  const arr2 = [3, 4, 5, 6]
  
- difference(arr1, arr2) //=> [1, 2, 5, 6]
+ uncommon(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
  * See also: `common()` and `intersection()`
  **/
-export function difference<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function uncommon<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1468,10 +1484,10 @@ export function sortByKeyValues<T extends object, U extends keyof T>(
  * ```typescript
  * const arr = [{ name: "John"}, { name: "Sarah"}, { name: "John"}, { name: "Beth"}]
  *
- * getKeyValueCounts(arr, "name") //=> { John: 2, Sarah: 1, Beth: 1 }
+ * keyValueCounts(arr, "name") //=> { John: 2, Sarah: 1, Beth: 1 }
  * ```
  **/
-export function getKeyValueCounts<T extends object, U extends keyof T>(
+export function keyValueCounts<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
   isCaseSensitive = false
@@ -1679,7 +1695,7 @@ export function invert<T extends object>(obj: T): { [key: string]: string } {
  * getKeyWithLargestValue({ a: 1, b: 3, c: 3 }) //=> ["b", "c"]
  * ```
  */
-export function getKeyWithLargestValue<T extends object>(obj: T) {
+export function keyWithLargestValue<T extends object>(obj: T) {
   type KeyValueResult = {
     key: string
     value: number
@@ -1707,10 +1723,10 @@ export function getKeyWithLargestValue<T extends object>(obj: T) {
  * ```typescript
  * const obj = {a: 1, b: 2, c: 3}
  *
- * getKeyWhereValueIs(obj, 3) //=> "c"
+ * keyWhereValueIs(obj, 3) //=> "c"
  * ```
  */
-export function getKeyWhereValueIs<T extends object, U extends T[keyof T]>(
+export function keyWhereValueIs<T extends object, U extends T[keyof T]>(
   obj: T,
   value: U
 ): string | null {
