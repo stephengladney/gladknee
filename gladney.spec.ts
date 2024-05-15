@@ -653,11 +653,11 @@ describe("arrays", () => {
     })
   })
 
-  describe("uncommon", () => {
+  describe("symmetricDifference", () => {
     it("returns the unique items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.uncommon(arr, arr2)).toEqual([1, 4, 5])
+      expect(_.symmetricDifference(arr, arr2)).toEqual([1, 4, 5])
     })
   })
 
