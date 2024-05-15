@@ -1104,11 +1104,11 @@ export function difference<T>(firstArray: T[], secondArray: T[]) {
  const arr1 = [1, 2, 3, 4]
  const arr2 = [3, 4, 5, 6]
  
- symmetricDifference(arr1, arr2) //=> [1, 2, 5, 6]
+ uncommon(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
  * See also: `common()` and `intersection()`
  **/
-export function symmetricDifference<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function uncommon<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
