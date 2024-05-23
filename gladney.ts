@@ -40,7 +40,7 @@ export function sum(...arr: (number | number[])[]): number {
  * ```
  **/
 export function randomNumber(min: number, max: number) {
-  return Math.floor(Math.random() * max + min)
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 /** Enforces a minimum and/or maximum limit on a number and returns the number or the enforced limit.
@@ -175,8 +175,8 @@ x * mode(1, 2, 3, 4, 5) //=> null
  **/
 export function mode(...numbers: (number | number[])[]) {
   const flattened = flatten(numbers)
-  const counts = getCounts(flattened)
-  const mostCommon = getKeyWithLargestValue(counts)
+  const nCounts = counts(flattened)
+  const mostCommon = keyWithLargestValue(nCounts)
   if (Array.isArray(mostCommon)) {
     if (mostCommon.length === flattened.length) return null
     else return mostCommon.map((key) => Number(key))
@@ -233,14 +233,14 @@ function getMillisecondsFromDuration(duration: Partial<Duration>) {
  * const fromDate = new Date("Jan 1, 2024 12:00:00AM")
  * //=> Date: "2024-01-01T05:00:00.000Z"
  *
- * getDateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, fromDate)
+ * dateFromDuration({days: 1: hours: 2, minutes: 3, seconds: 4}, fromDate)
  * //=> Date: "2024-01-02T07:03:04.000Z"
  *
- * getDateFromDuration({days: -1: hours: -2, minutes: -3, seconds: -4}, fromDate)
+ * dateFromDuration({days: -1: hours: -2, minutes: -3, seconds: -4}, fromDate)
  * //=> Date: "2023-12-31T02:56:56.000Z"
  * ```
  */
-export function getDateFromDuration(
+export function dateFromDuration(
   duration: Partial<Duration>,
   startDate: Date = new Date()
 ) {
@@ -262,7 +262,7 @@ export function ago(duration: Partial<Duration>) {
   const negativeDuration = objectInto(duration, (key, val) => ({
     [key]: val! * -1,
   }))
-  return getDateFromDuration(negativeDuration)
+  return dateFromDuration(negativeDuration)
 }
 
 /** Returns a date in the future based on a duration from now
@@ -277,7 +277,7 @@ export function ago(duration: Partial<Duration>) {
  * ```
  */
 export function fromNow(duration: Partial<Duration>) {
-  return getDateFromDuration(duration)
+  return dateFromDuration(duration)
 }
 
 /** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds until 
@@ -891,7 +891,7 @@ export function clampArray<T>(
 //=> [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
  * ```
  **/
-export function chunkArray<T>(arr: T[], chunkSize: number) {
+export function chunk<T>(arr: T[], chunkSize: number) {
   const items = Array.from(arr)
   const result: T[][] = []
   while (items.length > 0) {
@@ -1053,8 +1053,13 @@ export function rollingSum(arr: number[], precision?: number) {
 
 /** Returns an object with items from an array as keys and values of the number of
  instances of these values in the array.
+ *
+ * Example:
+ * ```typescript
+ * getCounts(["a", "a", "b", "c", "c", "c"]) //=> {"a": 2, "b": 1, "c": 3}
+ * ```
  **/
-export function getCounts<T>(arr: T[]): { [key: string]: number } {
+export function counts<T>(arr: T[]): { [key: string]: number } {
   const result: { [key: string]: number } = {}
   arr.forEach((item) => {
     const itemAsString = String(item)
@@ -1072,8 +1077,24 @@ export function getCounts<T>(arr: T[]): { [key: string]: number } {
  getCount(arr, 4) //=> 3
  * ```
  **/
-export function getCount<T>(arr: T[], target: T) {
-  return getCounts(arr)[String(target)] || 0
+export function count<T>(arr: T[], target: T) {
+  return counts(arr)[String(target)] || 0
+}
+
+/** Returns items that the first array contains but the second array does not.
+ *
+ * Example:
+ *
+ * ```typescript
+ * difference([1, 2, 3, 4], [1, 2]) //=> [3, 4]
+ * ```
+ */
+export function difference<T>(firstArray: T[], secondArray: T[]) {
+  const firstArrayAsJSON = firstArray.map((item) => JSON.stringify(item))
+  const secondArrayAsJSON = secondArray.map((item) => JSON.stringify(item))
+  return firstArrayAsJSON
+    .filter((item) => !secondArrayAsJSON.includes(item))
+    .map((item) => JSON.parse(item))
 }
 
 /** Returns an array of items that only appear in one of the given arrays.
@@ -1083,11 +1104,11 @@ export function getCount<T>(arr: T[], target: T) {
  const arr1 = [1, 2, 3, 4]
  const arr2 = [3, 4, 5, 6]
  
- getUnsharedItems(arr1, arr2) //=> [1, 2, 5, 6]
+ uncommon(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
- * See also: `getCommonItems()` and `getSharedItems()`
+ * See also: `common()` and `intersection()`
  **/
-export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function uncommon<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1118,9 +1139,9 @@ export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
  
  getCommonItems(arr1, arr2, arr3) //=> [3, 4, 5, 6]
  * ```
- * See also: `getUniqueItems()` and `getSharedItems()`
+ * See also: `difference()` and `intersection()`
  **/
-export function getCommonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function common<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1146,11 +1167,11 @@ export function getCommonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
  const arr2 = [3, 4, 5, 6]
  const arr3 = [4, 5, 6, 7]
  
- getSharedItems(arr1, arr2, arr3) //=> [4]
+ intersection(arr1, arr2, arr3) //=> [4]
  * ```
- * See also: `getUniqueItems()` and `getCommonItems()`
+ * See also: `difference()` and `common()`
  **/
-export function getSharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function intersection<T>(firstArray: T[], ...otherArrays: T[][]) {
   const firstArrayAsJSONStrings = firstArray.map((item) => JSON.stringify(item))
   const firstArrayUniqueValues = Array.from(new Set(firstArrayAsJSONStrings))
 
@@ -1189,7 +1210,6 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
 export function arrayInto<T extends any[]>(
   arr: T,
   fn: (item: T[number], index?: number) => object
-
 ): object {
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
@@ -1464,10 +1484,10 @@ export function sortByKeyValues<T extends object, U extends keyof T>(
  * ```typescript
  * const arr = [{ name: "John"}, { name: "Sarah"}, { name: "John"}, { name: "Beth"}]
  *
- * getKeyValueCounts(arr, "name") //=> { John: 2, Sarah: 1, Beth: 1 }
+ * keyValueCounts(arr, "name") //=> { John: 2, Sarah: 1, Beth: 1 }
  * ```
  **/
-export function getKeyValueCounts<T extends object, U extends keyof T>(
+export function keyValueCounts<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
   isCaseSensitive = false
@@ -1562,10 +1582,10 @@ export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
  *
  * Example:
  * ```typescript
- * convertObjectToQueryParams({ age: 30, city: "Atlanta" }) //=> "age=38&city=Atlanta"
+ * objectToQueryParams({ age: 30, city: "Atlanta" }) //=> "age=38&city=Atlanta"
  * ```
  **/
-export function convertObjectToQueryParams(obj: object): string {
+export function objectToQueryParams(obj: object): string {
   let result = ""
   const objectKeys = Object.keys(obj)
   objectKeys.forEach((key, i) => {
@@ -1675,7 +1695,7 @@ export function invert<T extends object>(obj: T): { [key: string]: string } {
  * getKeyWithLargestValue({ a: 1, b: 3, c: 3 }) //=> ["b", "c"]
  * ```
  */
-export function getKeyWithLargestValue<T extends object>(obj: T) {
+export function keyWithLargestValue<T extends object>(obj: T) {
   type KeyValueResult = {
     key: string
     value: number
@@ -1703,10 +1723,10 @@ export function getKeyWithLargestValue<T extends object>(obj: T) {
  * ```typescript
  * const obj = {a: 1, b: 2, c: 3}
  *
- * getKeyWhereValueIs(obj, 3) //=> "c"
+ * keyWhereValueIs(obj, 3) //=> "c"
  * ```
  */
-export function getKeyWhereValueIs<T extends object, U extends T[keyof T]>(
+export function keyWhereValueIs<T extends object, U extends T[keyof T]>(
   obj: T,
   value: U
 ): string | null {
@@ -1755,7 +1775,7 @@ export function groupBy<T>(things: T[], func: Function) {
   return result
 }
 
-export function getCountsBy<T>(things: T[], func: Function) {
+export function countsBy<T>(things: T[], func: Function) {
   const result: { [key: string]: number } = {}
   const groupedByResult = groupBy(things, func)
 

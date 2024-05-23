@@ -82,7 +82,7 @@ describe("time & dates", () => {
   //   })
   // })
 
-  describe("getDateFromDuration", () => {
+  describe("dateFromDuration", () => {
     const now = new Date("1/1/2024")
     it("returns the correct date in the future", () => {
       const then = new Date(now)
@@ -92,7 +92,7 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() + 3)
       then.setSeconds(then.getSeconds() + 4)
 
-      const fnResult = _.getDateFromDuration(
+      const fnResult = _.dateFromDuration(
         {
           days: 1,
           hours: 2,
@@ -116,7 +116,7 @@ describe("time & dates", () => {
       then.setMinutes(then.getMinutes() - 3)
       then.setSeconds(then.getSeconds() - 4)
 
-      const fnResult = _.getDateFromDuration(
+      const fnResult = _.dateFromDuration(
         {
           days: -1,
           hours: -2,
@@ -513,7 +513,7 @@ describe("arrays", () => {
   })
 
   describe("everyNth", () => {
-    it("returns every Nth item in an arry", () => {
+    it("returns every Nth item in an array", () => {
       expect(_.everyNth([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)).toEqual([3, 6, 9])
     })
   })
@@ -530,10 +530,10 @@ describe("arrays", () => {
     })
   })
 
-  describe("chunkArray", () => {
+  describe("chunk", () => {
     it("chunks the array correctly", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-      expect(_.chunkArray(arr, 2)).toEqual([
+      expect(_.chunk(arr, 2)).toEqual([
         [0, 1],
         [2, 3],
         [4, 5],
@@ -637,23 +637,52 @@ describe("arrays", () => {
     })
   })
 
-  describe("getUnsharedItems", () => {
+  describe("intersection", () => {
+    it("returns the shared items from two arrays", () => {
+      const arr = [1, 2, 3, 4]
+      const arr2 = [2, 3, 5]
+      expect(_.intersection(arr, arr2)).toEqual([2, 3])
+    })
+  })
+
+  describe("difference", () => {
+    it("returns the items missing from the second array", () => {
+      const arr = [1, 2, 3, 4]
+      const arr2 = [2, 3]
+      expect(_.difference(arr, arr2)).toEqual([1, 4])
+    })
+  })
+
+  describe("uncommon", () => {
     it("returns the unique items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.getUnsharedItems(arr, arr2)).toEqual([1, 4, 5])
+      expect(_.uncommon(arr, arr2)).toEqual([1, 4, 5])
     })
   })
 
-  describe("getCommonItems", () => {
+  describe("common", () => {
     it("returns the common items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.getCommonItems(arr, arr2)).toEqual([2, 3])
+      const arr3 = [2, 5, 7, 8]
+      expect(_.common(arr, arr2, arr3)).toEqual([2, 3, 5])
     })
   })
 
-  describe("getCallbackResultCounts", () => {
+  describe("count", () => {
+    it("returns the correct count", () => {
+      expect(_.count([1, 2, 2, 3, 3, 3], 3)).toBe(3)
+    })
+  })
+
+  describe("counts", () => {
+    it("returns the correct count", () => {
+      expect(_.counts([1, 2, 2, 3, 3, 3])).toEqual({ "1": 1, "2": 2, "3": 3 })
+    })
+  })
+
+  describe("countsBy", () => {
     it("returns the counts of results", () => {
       const objs = [
         { a: 1, b: 1 },
@@ -666,7 +695,7 @@ describe("arrays", () => {
 
       const aPlusB = ({ a, b }: { a: number; b: number }) => a + b
 
-      expect(_.getCountsBy(objs, aPlusB)).toEqual({
+      expect(_.countsBy(objs, aPlusB)).toEqual({
         "2": 3,
         "3": 1,
         "4": 2,
@@ -959,7 +988,7 @@ describe("objects", () => {
     })
   })
 
-  describe("getKeyValueCounts", () => {
+  describe("keyValueCounts", () => {
     it("returns an object with counts of key values", () => {
       const arr = [
         { name: "Stephen" },
@@ -967,7 +996,7 @@ describe("objects", () => {
         { name: "Mike" },
         { name: "Stephen" },
       ]
-      expect(_.getKeyValueCounts(arr, "name")).toEqual({
+      expect(_.keyValueCounts(arr, "name")).toEqual({
         stephen: 2,
         james: 1,
         mike: 1,
@@ -981,7 +1010,7 @@ describe("objects", () => {
         { name: "Mike" },
         { name: "stephen" },
       ]
-      expect(_.getKeyValueCounts(arr, "name", true)).toEqual({
+      expect(_.keyValueCounts(arr, "name", true)).toEqual({
         stephen: 1,
         James: 1,
         Mike: 1,
@@ -1123,15 +1152,22 @@ describe("objects", () => {
     })
   })
 
-  describe("getKeyWhereValueIs", () => {
+  describe("keyWhereValueIs", () => {
     it("returns the correct key", () => {
       const obj = { a: 1, b: 2, c: 3 }
-      expect(_.getKeyWhereValueIs(obj, 3)).toBe("c")
+      expect(_.keyWhereValueIs(obj, 3)).toBe("c")
     })
 
     it("returns null if no key/value found", () => {
       const obj = { a: 1, b: 2, c: 3 }
-      expect(_.getKeyWhereValueIs(obj, 4)).toBe(null)
+      expect(_.keyWhereValueIs(obj, 4)).toBe(null)
+    })
+  })
+
+  describe("keyWithLargestValue", () => {
+    it("returns the correct key", () => {
+      const obj = { a: 1, b: 2, c: 3 }
+      expect(_.keyWithLargestValue(obj)).toBe("c")
     })
   })
 })
@@ -1212,10 +1248,10 @@ describe("misc", () => {
     })
   })
 
-  describe("convertObjectToQueryParams", () => {
+  describe("objectToQueryParams", () => {
     it("converts an object to string of query params", () => {
       const obj = { name: "john", age: 30 }
-      expect(_.convertObjectToQueryParams(obj)).toEqual("name=john&age=30")
+      expect(_.objectToQueryParams(obj)).toEqual("name=john&age=30")
     })
 
     it("handles nesting (last param)", () => {
@@ -1224,7 +1260,7 @@ describe("misc", () => {
         age: 30,
         favorite: { drink: "coke", food: "chicken" },
       }
-      expect(_.convertObjectToQueryParams(obj)).toEqual(
+      expect(_.objectToQueryParams(obj)).toEqual(
         "name=john&age=30&favorite[drink]=coke&favorite[food]=chicken"
       )
     })
@@ -1235,7 +1271,7 @@ describe("misc", () => {
         favorite: { drink: "coke", food: "chicken" },
         age: 30,
       }
-      expect(_.convertObjectToQueryParams(obj)).toEqual(
+      expect(_.objectToQueryParams(obj)).toEqual(
         "name=john&favorite[drink]=coke&favorite[food]=chicken&age=30"
       )
     })
