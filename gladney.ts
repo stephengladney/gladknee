@@ -829,10 +829,10 @@ export function shuffle<T>(array: T[]) {
  *
  * Example:
  * ```typescript
- * getRandomItem([1, 2, 3, 4, 5, 6]) //=> 3
+ * randomItem([1, 2, 3, 4, 5, 6]) //=> 3
  * ```
  **/
-export function getRandomItem<T>(arr: T[], n: number) {
+export function randomItem<T>(arr: T[], n: number) {
   const randomIndex = Math.floor(Math.random() * arr.length)
   return arr[randomIndex]
 }
@@ -841,12 +841,12 @@ export function getRandomItem<T>(arr: T[], n: number) {
  *
  * Example:
  * ```typescript
- * getRandomItems([1, 2, 3, 4, 5, 6], 1) //=> [3]
+ * randomItems([1, 2, 3, 4, 5, 6], 1) //=> [3]
  *
- * getRandomItems([1, 2, 3, 4, 5, 6], 3) //=> [2, 5, 1]
+ * randomItems([1, 2, 3, 4, 5, 6], 3) //=> [2, 5, 1]
  * ```
  **/
-export function getRandomItems<T>(arr: T[], n: number) {
+export function randomItems<T>(arr: T[], n: number) {
   let remainingItems = Array.from(arr)
   const result = []
   for (let i = 1; i <= n; i++) {
