@@ -659,7 +659,7 @@ export function capitalize(str: string, lowercaseOthers = false) {
 }
 
 /**
- * Returns a boolean of whether not the first string includes the second string, ignoring case.
+ * Returns a boolean of whether not the first parameter (array or string) includes the second parameter, ignoring case.
  *
  * Example:
  * ```typescript
@@ -667,8 +667,69 @@ export function capitalize(str: string, lowercaseOthers = false) {
  * lazyIncludes("Hello world", "ff") //=> false
  * ```
  */
-export function lazyIncludes(str1: string, str2: string) {
-  return String(str1).toLowerCase().includes(String(str2).toLowerCase())
+
+export function lazyIncludes<T extends string | any[]>(
+  a: T,
+  b: T extends (infer U)[] ? U : string
+) {
+  let compareA = Array.isArray(a)
+    ? a.map((x) => lowerCaseNoSpaces(x))
+    : lowerCaseNoSpaces(a)
+
+  return compareA.includes(lowerCaseNoSpaces(b))
+}
+
+/**
+ * Returns a boolean of whether or not the first parameter is equal in value to the second. Accepts strings, objects or arrays.
+ * Optionally pass in a third `Options` parameter to enforce loose matching on casing, spaces and order.
+ *
+ * Example:
+ * ```typescript
+ *
+ * isEqual("Hello world", "helloworld", { ignoreCase: true, ingoreSpace: true })
+ * //=> true
+ *
+ * isEqual([1, 2, 3], [3, 2, 1], { ignoreOrder: true })
+ * //=> true
+ *
+ * isEqual({name: "John"}, {Name: "john"})
+ * //=> true
+ * ```
+ */
+export function isEqual<T extends string | any[] | Record<any, any>>(
+  a: T,
+  b: T extends (infer U)[]
+    ? U[]
+    : T extends string
+    ? string
+    : T extends Record<any, unknown>
+    ? Record<any, unknown>
+    : never,
+  options: MatchOptions = defaultMatchOptions
+): boolean {
+  if (typeof a === "string" && typeof b === "string") {
+    return withMatchOptions(a, options) === withMatchOptions(b, options)
+  }
+
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return (
+      JSON.stringify(withMatchOptions(a, options)) ===
+      JSON.stringify(withMatchOptions(b, options))
+    )
+  }
+
+  if (typeof a === "object" && typeof b === "object") {
+    return (
+      JSON.stringify(withMatchOptions(a, options)) ===
+      JSON.stringify(withMatchOptions(b, options))
+    )
+  }
+
+  if (typeof a === typeof b) {
+    return a === b
+  }
+
+  return false
 }
 
 /**
@@ -1137,7 +1198,7 @@ export function uncommon<T>(firstArray: T[], ...otherArrays: T[][]) {
  const arr2 = [3, 4, 5, 6]
  const arr3 = [4, 5, 6, 7]
  
- getCommonItems(arr1, arr2, arr3) //=> [3, 4, 5, 6]
+ common(arr1, arr2, arr3) //=> [3, 4, 5, 6]
  * ```
  * See also: `difference()` and `intersection()`
  **/
@@ -1212,76 +1273,6 @@ export function arrayInto<T extends any[]>(
   fn: (item: T[number], index?: number) => object
 ): object {
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
-}
-
-/** Returns a boolean of whether or not two arrays or two objects have the same items or key value pairs respectively. You can 
- optionally pass in a boolean to require that the order of the items matches for arrays (default: false) and a boolean to 
- apply case sensitivity (default: false).
- *
- * Example:
- * ```typescript
- const arr1 = [1, 2, 3, 4]
- const arr2 = [4, 3, 2, 1]
- 
- isEqual(arr1, arr2) //=> true
-
- isEqual(arr1, arr2, true) //=> false
- * 
- * const obj1 = { a: 1, b: 2, c: 3 }
- * const obj2 = { c: 3, b: 2, a: 1 }
-
- *
- * isEqual(ob1, obj2) //=> true
- * 
- * isEqual(ob1, obj2, false) //=> false
- * ```
- * 
- * NOTE: `orderMatters` is false by default.
- **/
-export function isEqual(
-  thing1: object | any[],
-  thing2: object | any[],
-  orderMatters = false,
-  isCaseSensitive = false
-) {
-  if (orderMatters && Array.isArray(thing1) && Array.isArray(thing2)) {
-    if (isCaseSensitive) {
-      return JSON.stringify(thing1) === JSON.stringify(thing2)
-    } else {
-      return (
-        JSON.stringify(thing1).toLowerCase() ===
-        JSON.stringify(thing2).toLowerCase()
-      )
-    }
-  } else if (Array.isArray(thing1) && Array.isArray(thing2)) {
-    const _thing1 = [...thing1].sort()
-    const _thing2 = [...thing2].sort()
-    for (let i = 0; i < thing1.length; i++) {
-      const thing1value = isCaseSensitive
-        ? _thing1[i]
-        : String(_thing1[i]).toLowerCase()
-      const thing2value = isCaseSensitive
-        ? _thing2[i]
-        : String(_thing2[i]).toLowerCase()
-      if (thing1value !== thing2value) return false
-    }
-    return true
-  } else if (typeof thing1 === "object" && typeof thing2 === "object") {
-    let isObjectsMatchUnordered = true
-    Object.keys(thing1).forEach((key) => {
-      if (
-        (isCaseSensitive &&
-          thing1[key as keyof typeof thing1] !==
-            thing2[key as keyof typeof thing2]) ||
-        (!isCaseSensitive &&
-          String(thing1[key as keyof typeof thing1]).toLowerCase() !==
-            String(thing2[key as keyof typeof thing2]).toLowerCase())
-      ) {
-        isObjectsMatchUnordered = false
-      }
-    })
-    return isObjectsMatchUnordered
-  } else return false
 }
 
 /** Returns a boolean indicating whether or not the array includes the object
@@ -2388,6 +2379,69 @@ export function stripHTML(text: string) {
   return result
 }
 
+const defaultMatchOptions: MatchOptions = {
+  ignoreCase: false,
+  ignoreSpace: false,
+  ignoreOrder: false,
+}
+
+function withMatchOptions(
+  param: string | any[] | Record<any, any>,
+  options: MatchOptions
+): typeof param {
+  if (typeof param === "number") return String(param)
+  if (typeof param === "string") {
+    let compare: string | string[] = param
+    if (options.ignoreCase) compare = compare.toLowerCase()
+    if (options.ignoreSpace) compare = compare.replace(/ /g, "")
+    if (options.ignoreOrder) {
+      compare = JSON.stringify(compare.split("").toSorted().join(""))
+    }
+    return compare
+  } else if (Array.isArray(param)) {
+    let compare = param
+
+    if (options.ignoreCase) {
+      compare = compare.map((x) =>
+        typeof x === "string" ? x.toLowerCase() : x
+      )
+    }
+
+    if (options.ignoreSpace) {
+      compare = compare.map((x) =>
+        typeof x === "string" ? x.replace(/ /g, "") : x
+      )
+    }
+
+    if (options.ignoreOrder) {
+      compare = compare.toSorted()
+    }
+    return compare
+  } else if (typeof param === "object") {
+    let compare: Record<any, any> = {}
+
+    if (options.ignoreOrder) {
+      Object.keys(param)
+        .toSorted()
+        .forEach((p) => {
+          compare[p] = param[p]
+        })
+    } else compare = JSON.parse(JSON.stringify(param))
+
+    if (options.ignoreCase) {
+      compare = JSON.parse(JSON.stringify(compare).toLowerCase())
+    }
+
+    if (options.ignoreSpace) {
+      let newCompare: Record<any, any> = {}
+      Object.keys(compare).forEach((p) => {
+        newCompare[p.replace(/ /g, "")] = String(compare[p]).replace(/ /g, "")
+      })
+      return newCompare
+    }
+    return compare
+  } else return param
+}
 // TYPES
 
 export interface Duration {
@@ -2472,3 +2526,9 @@ type StringOrNumberArray<T extends string[] | number[]> = T extends string[]
 type Falsy = null | undefined | false
 
 export type Handler = (req: Request, res: Response) => void
+
+type MatchOptions = {
+  ignoreCase?: boolean
+  ignoreSpace?: boolean
+  ignoreOrder?: boolean
+}

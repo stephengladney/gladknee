@@ -493,8 +493,8 @@ describe("arrays", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
       const arrShuffled = _.shuffle(arr)
-      expect(_.isEqual(arr, arrShuffled)).toBe(true)
-      expect(_.isEqual(arr, arrShuffled, true)).toBe(false)
+      expect(_.isEqual(arr, arrShuffled, { ignoreOrder: true })).toBe(true)
+      expect(_.isEqual(arr, arrShuffled)).toBe(false)
     })
   })
 
@@ -759,19 +759,23 @@ describe("arrays", () => {
 
   describe("isEqual", () => {
     it("arrays are equal, order matters", () => {
-      expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4], true)).toBe(true)
-    })
-
-    it("arrays are equal, order doesn't matter", () => {
       expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4])).toBe(true)
     })
 
+    it("arrays are equal, order doesn't matter", () => {
+      expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4], { ignoreOrder: true })).toBe(
+        true
+      )
+    })
+
     it("arrays are equal out of order, order doesn't matter", () => {
-      expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4])).toBe(true)
+      expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4], { ignoreOrder: true })).toBe(
+        true
+      )
     })
 
     it("arrays are equal out of order, order does matter", () => {
-      expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4], true)).toBe(false)
+      expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4])).toBe(false)
     })
 
     it("arrays are not equal, order does matter", () => {
@@ -779,7 +783,9 @@ describe("arrays", () => {
     })
 
     it("arrays are not equal, order doesn't matter", () => {
-      expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4])).toBe(false)
+      expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4], { ignoreOrder: true })).toBe(
+        false
+      )
     })
 
     it("objects are not equal", () => {
@@ -787,7 +793,13 @@ describe("arrays", () => {
     })
 
     it("objects are equal out of order, order doesn't matter", () => {
-      expect(_.isEqual({ a: 1, b: 2, c: 3 }, { c: 3, b: 2, a: 1 })).toBe(true)
+      expect(
+        _.isEqual(
+          { a: 1, b: 2, c: 3 },
+          { c: 3, b: 2, a: 1 },
+          { ignoreOrder: true }
+        )
+      ).toBe(true)
     })
 
     it("objects are equal but diff case, case doesn't matter", () => {
@@ -795,20 +807,14 @@ describe("arrays", () => {
         _.isEqual(
           { a: "A", b: "B", c: "C" },
           { a: "a", b: "b", c: "c" },
-          true,
-          false
+          { ignoreCase: true }
         )
       ).toBe(true)
     })
 
     it("objects are equal but diff case, case does matter", () => {
       expect(
-        _.isEqual(
-          { a: "A", b: "B", c: "C" },
-          { a: "a", b: "b", c: "c" },
-          true,
-          true
-        )
+        _.isEqual({ a: "A", b: "B", c: "C" }, { a: "a", b: "b", c: "c" })
       ).toBe(false)
     })
 
@@ -817,8 +823,7 @@ describe("arrays", () => {
         _.isEqual(
           { a: "A", b: "B", c: "C" },
           { c: "c", a: "a", b: "b" },
-          false,
-          false
+          { ignoreOrder: true, ignoreCase: true }
         )
       ).toBe(true)
     })
