@@ -775,7 +775,11 @@ describe("arrays", () => {
 
     it("objects are equal but diff case, case doesn't matter", () => {
       expect(
-        _.isEqual({ a: "A", b: "B", c: "C" }, { a: "a", b: "b", c: "c" })
+        _.isEqual(
+          { a: "A", b: "B", c: "C" },
+          { a: "a", b: "b", c: "c" },
+          { ignoreCase: true }
+        )
       ).toBe(true)
     })
 
@@ -790,7 +794,7 @@ describe("arrays", () => {
         _.isEqual(
           { a: "A", b: "B", c: "C" },
           { c: "c", a: "a", b: "b" },
-          { ignoreOrder: true }
+          { ignoreOrder: true, ignoreCase: true }
         )
       ).toBe(true)
     })
