@@ -874,7 +874,7 @@ export function everyNth<T>(arr: T[], n: number) {
  * union([1, 2, 3], [3, 4, 5], [5, 6, 7]) //=> [1, 2, 3, 4, 5, 6, 7]
  * ```
  */
-export function union<T>(...arr: T[][]) {
+export function union<T>(...arr: T[][]): T[] {
   const concatenated = arr.reduce((acc, i) => {
     return [...acc, ...i]
   }, [])
@@ -884,22 +884,29 @@ export function union<T>(...arr: T[][]) {
   return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
 }
 
-export function unionBy<T, U extends keyof T | Func>(by: U, ...arr: T[][]) {
+/** Returns an array of unique values from the provided arrays based on a callback result
+ *
+ * Example:
+ * ```typescript
+ * const arr1 = [1, 3]
+ * const arr2 = [2, 4]
+ *
+ * unionBy([arr1, arr2], (n) => n % 2) //=> [1, 2]
+ * ```
+ */
+export function unionBy<T, U extends Func>(arr: T[][], by: U): T[] {
   const concatenated = arr.reduce((acc, i) => {
     return [...acc, ...i]
   }, [])
 
-  let asStrings: string[] = []
+  let asStrings = concatenated.map((i) => ({
+    value: JSON.stringify(i),
+    result: JSON.stringify(by(i)),
+  }))
 
-  if (typeof by === "string") {
-    asStrings = concatenated.map((i) => JSON.stringify(i[by as keyof T]))
-  }
+  const unique = removeDuplicatesBy(asStrings, (i) => JSON.parse(i.result))
 
-  if (typeof by === "function") {
-    asStrings = concatenated.map((i) => JSON.stringify(by(i)))
-  }
-
-  return Array.from(new Set(asStrings)).map((i) => JSON.parse(i))
+  return unique.map((i) => JSON.parse(i.value))
 }
 
 /** Returns the provided array with a minimum and/or maximum length limit enforced. If the minimum length
@@ -1134,11 +1141,11 @@ export function getCount<T>(arr: T[], target: T) {
  const arr1 = [1, 2, 3, 4]
  const arr2 = [3, 4, 5, 6]
  
- getUniqueItems(arr1, arr2) //=> [1, 2, 5, 6]
+ getUnsharedItems(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
  * See also: `getCommonItems()` and `getSharedItems()`
  **/
-export function getUniqueItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1240,6 +1247,7 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
 export function arrayInto<T extends any[]>(
   arr: T,
   fn: (item: T[number], index?: number) => object
+
 ): object {
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
