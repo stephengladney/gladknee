@@ -637,19 +637,28 @@ describe("arrays", () => {
     })
   })
 
-  describe("getUnsharedItems", () => {
+  describe("uncommonItems", () => {
     it("returns the unique items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.getUnsharedItems(arr, arr2)).toEqual([1, 4, 5])
+      expect(_.uncommonItems(arr, arr2)).toEqual([1, 4, 5])
     })
   })
 
-  describe("getCommonItems", () => {
+  describe("commonItems", () => {
     it("returns the common items from two arrays", () => {
       const arr = [1, 2, 3, 4]
       const arr2 = [2, 3, 5]
-      expect(_.getCommonItems(arr, arr2)).toEqual([2, 3])
+      expect(_.commonItems(arr, arr2)).toEqual([2, 3])
+    })
+  })
+
+  describe("sharedItems", () => {
+    it("returns the common items from two arrays", () => {
+      const arr = [1, 2, 3, 4]
+      const arr2 = [2, 3, 4, 5]
+      const arr3 = [3, 4, 5, 6]
+      expect(_.sharedItems(arr, arr2, arr3)).toEqual([3, 4])
     })
   })
 
@@ -666,7 +675,7 @@ describe("arrays", () => {
 
       const aPlusB = ({ a, b }: { a: number; b: number }) => a + b
 
-      expect(_.getCountsBy(objs, aPlusB)).toEqual({
+      expect(_.countsBy(objs, aPlusB)).toEqual({
         "2": 3,
         "3": 1,
         "4": 2,

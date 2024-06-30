@@ -667,7 +667,11 @@ export function capitalize(str: string, lowercaseOthers = false) {
  * lazyIncludes("Hello world", "ff") //=> false
  * ```
  */
-export function lazyIncludes(a: string | any[], b: any) {
+
+export function lazyIncludes<T extends string | any[]>(
+  a: T,
+  b: T extends (infer U)[] ? U : string
+) {
   let compareA = Array.isArray(a)
     ? a.map((x) => lowerCaseNoSpaces(x))
     : lowerCaseNoSpaces(a)
@@ -1143,9 +1147,9 @@ export function getCount<T>(arr: T[], target: T) {
  
  getUnsharedItems(arr1, arr2) //=> [1, 2, 5, 6]
  * ```
- * See also: `getCommonItems()` and `getSharedItems()`
+ * See also: `commonItems()` and `sharedItems()`
  **/
-export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function uncommonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1176,9 +1180,9 @@ export function getUnsharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
  
  getCommonItems(arr1, arr2, arr3) //=> [3, 4, 5, 6]
  * ```
- * See also: `getUniqueItems()` and `getSharedItems()`
+ * See also: `uncommonItems()` and `sharedItems()`
  **/
-export function getCommonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function commonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
     arr.map((item: T) => JSON.stringify(item))
   )
@@ -1204,11 +1208,11 @@ export function getCommonItems<T>(firstArray: T[], ...otherArrays: T[][]) {
  const arr2 = [3, 4, 5, 6]
  const arr3 = [4, 5, 6, 7]
  
- getSharedItems(arr1, arr2, arr3) //=> [4]
+ sharedItems(arr1, arr2, arr3) //=> [4]
  * ```
- * See also: `getUniqueItems()` and `getCommonItems()`
+ * See also: `uncommonItems()` and `commonItems()`
  **/
-export function getSharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
+export function sharedItems<T>(firstArray: T[], ...otherArrays: T[][]) {
   const firstArrayAsJSONStrings = firstArray.map((item) => JSON.stringify(item))
   const firstArrayUniqueValues = Array.from(new Set(firstArrayAsJSONStrings))
 
@@ -1247,7 +1251,6 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
 export function arrayInto<T extends any[]>(
   arr: T,
   fn: (item: T[number], index?: number) => object
-
 ): object {
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
@@ -1743,7 +1746,7 @@ export function groupBy<T>(things: T[], func: Function) {
   return result
 }
 
-export function getCountsBy<T>(things: T[], func: Function) {
+export function countsBy<T>(things: T[], func: Function) {
   const result: { [key: string]: number } = {}
   const groupedByResult = groupBy(things, func)
 
