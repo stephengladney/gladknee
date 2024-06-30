@@ -251,7 +251,7 @@ describe("time & dates", () => {
     })
   })
 
-  describe("getDuration", () => {
+  describe("duration", () => {
     it("returns the correct duration", () => {
       const start = new Date()
       const end = new Date(start)
@@ -260,7 +260,7 @@ describe("time & dates", () => {
       end.setMinutes(end.getMinutes() - 5)
       end.setSeconds(end.getSeconds() - 43)
 
-      expect(_.getDuration(start, end)).toEqual({
+      expect(_.duration(start, end)).toEqual({
         days: 11,
         hours: 2,
         minutes: 5,

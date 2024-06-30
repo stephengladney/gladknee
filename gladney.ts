@@ -191,11 +191,11 @@ const secondsInADay = 86400
  *
  * _Example:_
  * ```typescript
- * getDurationFromMilliseconds(200000000)
+ * durationFromMilliseconds(200000000)
 //=> { days: 2, hours: 7, minutes: 33, seconds: 20 }
  * ```
  **/
-function getDurationFromMilliseconds(milliseconds: number): Duration {
+function durationFromMilliseconds(milliseconds: number): Duration {
   const seconds = Math.floor(milliseconds / 1000)
 
   return {
@@ -293,7 +293,7 @@ interface Duration {
  **/
 
 export function timeUntil(date: Date): Duration {
-  return getDuration(new Date(), new Date(date))
+  return duration(new Date(), new Date(date))
 }
 
 /** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds since a
@@ -308,7 +308,7 @@ interface Duration {
  * ```
  **/
 export function timeSince(date: Date): Duration {
-  return getDuration(new Date(), new Date(date))
+  return duration(new Date(), new Date(date))
 }
 
 /** Returns the corresponding human readable day name of an integer (0-6).
@@ -360,7 +360,7 @@ export function isPast(date: Date) {
  * ```typescript
  * const fiveMinutesAgo = new Date(Date.now() - 60 * 1000 * 5)
  *
- * getDuration(new Date(), fiveMinutesAgo) //=>
+ * duration(new Date(), fiveMinutesAgo) //=>
  *  {
  *    days: 0,
  *    hours: 0,
@@ -369,9 +369,9 @@ export function isPast(date: Date) {
  *  }
  * ```
  */
-export function getDuration(dateA: Date, dateB: Date) {
+export function duration(dateA: Date, dateB: Date) {
   const diff = Math.abs(dateA.getTime() - dateB.getTime())
-  return getDurationFromMilliseconds(diff)
+  return durationFromMilliseconds(diff)
 }
 
 /** Returns the relative time difference of two dates
