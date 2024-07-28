@@ -421,6 +421,24 @@ export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
+/** Returns the letter or S or nothing at all based on the number passed. Good for pluralizing nouns.
+ *
+ * Example:
+ * ```typescript
+ * const appleCount = 4
+ * const orangeCount = 1
+ *
+ * console.log(`You have ${appleCount} apple${s(appleCount)}.`})
+ * // => You have 4 apples.
+ *
+ * console.log(`You have ${orangeCount} orange${s(orangeCount)}.`})
+ * // => You have 1 orange.
+ * ```
+ */
+export function s(n: number) {
+  return n > 1 || n == 0 ? "s" : ""
+}
+
 /** Returns a string limited to a max length with "..." or custom filler. You can also choose between a leading, trailing,
  * or middle filler. (trailing by default)
  *

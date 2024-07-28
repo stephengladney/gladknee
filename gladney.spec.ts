@@ -334,6 +334,20 @@ describe("strings", () => {
     })
   })
 
+  describe("s", () => {
+    it("adds an S if n > 1", () => {
+      expect(_.s(2)).toBe("s")
+    })
+
+    it("adds an S if n = 0", () => {
+      expect(_.s(0)).toBe("s")
+    })
+
+    it("doesn't add an S if n = 1", () => {
+      expect(_.s(1)).toBe("")
+    })
+  })
+
   describe("truncate", () => {
     it("enforces the maximum length and uses traililng by default", () => {
       expect(_.truncate("Hello world", 8)).toBe("Hello wo...")
