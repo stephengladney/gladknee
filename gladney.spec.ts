@@ -1,5 +1,12 @@
 import * as _ from "./gladney"
 
+// Use polyfill for array.toSorted
+if (!Array.prototype.toSorted) {
+  Array.prototype.toSorted = function (compareFn) {
+    return [...this].sort(compareFn)
+  }
+}
+
 describe("numbers", () => {
   describe("round", () => {
     it("returns a number to the specific number of decimal places", () => {

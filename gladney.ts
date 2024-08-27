@@ -57,10 +57,7 @@ export function clampNumber(
   min: number | false,
   max?: number | false
 ) {
-  let result = n
-  if (min !== false) result = n > min ? n : min
-  if (max !== false && max !== undefined) result = result < max ? result : max
-  return result
+  return Math.max(Math.min(n, max || Infinity), min || -Infinity)
 }
 
 /** Returns a single digit number with a leading zero as a string.
