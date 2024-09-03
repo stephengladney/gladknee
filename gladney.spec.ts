@@ -1,4 +1,5 @@
 import * as _ from "./gladney"
+import type { Duration } from "./gladney"
 
 describe("numbers", () => {
   describe("round", () => {
@@ -266,6 +267,18 @@ describe("time & dates", () => {
         minutes: 5,
         seconds: 43,
       })
+    })
+  })
+
+  describe("convertDuration", () => {
+    it("converts Duration correctly", () => {
+      const duration: Duration = { seconds: 30, minutes: 5, hours: 2, days: 3 }
+
+      expect(_.convertDuration(duration, "days", 0.00001)).toEqual(3.08715)
+      expect(_.convertDuration(duration, "hours", 0.00001)).toEqual(74.09167)
+      expect(_.convertDuration(duration, "minutes")).toEqual(4445.5)
+      expect(_.convertDuration(duration, "seconds")).toEqual(266730)
+      expect(_.convertDuration(duration, "milliseconds")).toEqual(266730000)
     })
   })
 
