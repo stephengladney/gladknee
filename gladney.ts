@@ -10,7 +10,11 @@ import type { Router } from "express"
 * ```
  **/
 export function round(n: number, precision: number) {
-  return Math.round(n / precision) * precision
+  const multiplier = 1 / precision
+  const rounded = Math.round(n * multiplier) / multiplier
+
+  const precisionDigits = -Math.floor(Math.log10(precision))
+  return Number(rounded.toFixed(clampNumber(precisionDigits, 0, 100)))
 }
 
 /** Returns the sum of given numbers.
@@ -372,6 +376,31 @@ export function isPast(date: Date) {
 export function duration(dateA: Date, dateB: Date) {
   const diff = Math.abs(dateA.getTime() - dateB.getTime())
   return durationFromMilliseconds(diff)
+}
+
+export function convertDuration(
+  d: Duration,
+  to: "milliseconds" | "seconds" | "minutes" | "hours" | "days",
+  precision?: number
+) {
+  const ms = getMillisecondsFromDuration(d)
+  const seconds = ms / 1000
+  const minutes = seconds / 60
+  const hours = minutes / 60
+  const days = hours / 24
+
+  switch (to) {
+    case "milliseconds":
+      return precision ? round(ms, precision) : ms
+    case "seconds":
+      return precision ? round(seconds, precision) : seconds
+    case "minutes":
+      return precision ? round(minutes, precision) : minutes
+    case "hours":
+      return precision ? round(hours, precision) : hours
+    case "days":
+      return precision ? round(days, precision) : days
+  }
 }
 
 /** Returns the relative time difference of two dates
@@ -2462,7 +2491,7 @@ function withMatchOptions(
 }
 // TYPES
 
-export interface Duration {
+export type Duration = {
   days: number
   hours: number
   minutes: number
