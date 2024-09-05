@@ -2434,7 +2434,7 @@ export function stripHTML(text: string) {
  * ```typescript
  * const widthByHeight = round(1920 / 1080, 0.01) // 1.78
  *
- * const ratio = caseEquals(
+ * const apectRatio = caseEquals(
  *   widthByHeight,
  *   [1.78, "16:9"],
  *   [1.5, "3:2"],
