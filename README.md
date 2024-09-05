@@ -30,9 +30,9 @@ To add to your project, just run `npm install gladknee`
 To use any functions from the library, simply import the specific function(s) you wish to use where needed.
 
 ```typescript
-import { lowerCaseNoSpaces } from "gladknee"
+import { memoize } from "gladknee"
 
-lowerCaseNoSpaces("Hello World!") //=> "helloworld"
+const memoizedFunction = memoize(someFunction)
 ```
 
 ### Documentation

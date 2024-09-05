@@ -2442,7 +2442,7 @@ export function stripHTML(text: string) {
  *   [1, "1:1"],
  *   "Uncommon aspect ratio"
  * )
-//=> 16:9
+ * //=> "16:9"
  * ```
  */
 
