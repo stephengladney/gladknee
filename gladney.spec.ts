@@ -1280,6 +1280,38 @@ describe("misc", () => {
     })
   })
 
+  describe("caseEquals", () => {
+    it("returns a corresponding expression if a match is found", () => {
+      const widthByHeight = _.round(1920 / 1080, 0.01)
+
+      const ratio = _.caseEquals(
+        widthByHeight,
+        [1.78, "16:9"],
+        [1.5, "3:2"],
+        [1.33, "4:3"],
+        [1, "1:1"],
+        "Uncommon aspect ratio"
+      )
+
+      expect(ratio).toBe("16:9")
+    })
+
+    it("returns the default express if no match is found", () => {
+      const widthByHeight = _.round(2200 / 1080, 0.01)
+
+      const ratio = _.caseEquals(
+        widthByHeight,
+        [1.78, "16:9"],
+        [1.5, "3:2"],
+        [1.33, "4:3"],
+        [1, "1:1"],
+        "Uncommon aspect ratio"
+      )
+
+      expect(ratio).toBe("Uncommon aspect ratio")
+    })
+  })
+
   describe("objectToQueryParams", () => {
     it("converts an object to string of query params", () => {
       const obj = { name: "john", age: 30 }

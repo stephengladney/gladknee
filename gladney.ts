@@ -2426,6 +2426,39 @@ export function stripHTML(text: string) {
   return result
 }
 
+/**
+ * Returns a corresponding expression based on a matching value of an expression provided. Uses
+ * `isEqual` under the hood.
+ *
+ * Example:
+ * ```typescript
+ * const widthByHeight = round(1920 / 1080, 0.01)
+ *
+ * const ratio = caseEquals(
+ *   widthByHeight,
+ *   [1.78, "16:9"],
+ *   [1.5, "3:2"],
+ *   [1.33, "4:3"],
+ *   [1, "1:1"],
+ *   "Uncommon aspect ratio"
+ * )
+//=> 16:9
+ * ```
+ */
+
+export function caseEquals<T = any, U = any>(
+  value: T,
+  ...casesAndDefault: [...c: [T, U][], U]
+) {
+  for (let i = 0; i < casesAndDefault.length; i++) {
+    const currentCase = casesAndDefault[i]
+    if (Array.isArray(currentCase) && value === currentCase[0]) {
+      return currentCase[1]
+    }
+  }
+  return casesAndDefault[casesAndDefault.length - 1]
+}
+
 const defaultMatchOptions: MatchOptions = {
   ignoreCase: false,
   ignoreSpace: false,
