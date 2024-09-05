@@ -2432,7 +2432,7 @@ export function stripHTML(text: string) {
  *
  * Example:
  * ```typescript
- * const widthByHeight = round(1920 / 1080, 0.01)
+ * const widthByHeight = round(1920 / 1080, 0.01) // 1.78
  *
  * const ratio = caseEquals(
  *   widthByHeight,
