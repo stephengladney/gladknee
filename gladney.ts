@@ -2443,6 +2443,7 @@ export function stripHTML(text: string) {
  *   "Uncommon aspect ratio"
  * )
  * //=> "16:9"
+ */
 
 export function caseEquals<T = any, U = any>(
   value: T,
