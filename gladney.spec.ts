@@ -261,7 +261,9 @@ describe("time & dates", () => {
       end.setMinutes(end.getMinutes() - 5)
       end.setSeconds(end.getSeconds() - 43)
 
-      expect(_.duration(start, end)).toEqual({
+      expect(
+        _.omitKeys(_.duration(start, end), "isGreaterThan", "isLessThan")
+      ).toEqual({
         days: 11,
         hours: 2,
         minutes: 5,
@@ -279,6 +281,78 @@ describe("time & dates", () => {
       expect(_.convertDuration(duration, "minutes")).toEqual(4445.5)
       expect(_.convertDuration(duration, "seconds")).toEqual(266730)
       expect(_.convertDuration(duration, "milliseconds")).toEqual(266730000)
+    })
+  })
+
+  describe("Duration.isGreaterThan", () => {
+    it("returns true if the duration is greater than the other", () => {
+      const largerDuration = _.createDuration({
+        days: 1,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      })
+      const smallerDuration = _.createDuration({
+        days: 0,
+        hours: 23,
+        minutes: 10,
+        seconds: 20,
+      })
+
+      expect(largerDuration.isGreaterThan(smallerDuration)).toBe(true)
+    })
+
+    it("returns false if the duration is not greater than the other", () => {
+      const largerDuration = _.createDuration({
+        days: 1,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      })
+      const smallerDuration = _.createDuration({
+        days: 0,
+        hours: 23,
+        minutes: 10,
+        seconds: 20,
+      })
+
+      expect(smallerDuration.isGreaterThan(largerDuration)).toBe(false)
+    })
+  })
+
+  describe("Duration.isLessThan", () => {
+    it("returns true if the duration is less than the other", () => {
+      const largerDuration = _.createDuration({
+        days: 1,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      })
+      const smallerDuration = _.createDuration({
+        days: 0,
+        hours: 23,
+        minutes: 10,
+        seconds: 20,
+      })
+
+      expect(smallerDuration.isLessThan(largerDuration)).toBe(true)
+    })
+
+    it("returns false if the duration is not less than the other", () => {
+      const largerDuration = _.createDuration({
+        days: 1,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      })
+      const smallerDuration = _.createDuration({
+        days: 0,
+        hours: 23,
+        minutes: 10,
+        seconds: 20,
+      })
+
+      expect(largerDuration.isLessThan(smallerDuration)).toBe(false)
     })
   })
 
