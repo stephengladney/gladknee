@@ -202,12 +202,12 @@ const secondsInADay = 86400
 function durationFromMilliseconds(milliseconds: number): Duration {
   const seconds = Math.floor(milliseconds / 1000)
 
-  return {
+  return createDuration({
     days: Math.floor(seconds / secondsInADay),
     hours: Math.floor((seconds % secondsInADay) / secondsInAnHour),
     minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
     seconds: seconds % secondsInAMinute,
-  }
+  })
 }
 
 /** Returns the number of milliseconds from an amount of time
@@ -263,9 +263,12 @@ export function dateFromDuration(
  * ```
  */
 export function ago(duration: Partial<Duration>) {
-  const negativeDuration = objectInto(duration, (key, val) => ({
-    [key]: val! * -1,
-  }))
+  const negativeDuration = objectInto(
+    omitKeys(duration, "isGreaterThan", "isLessThan"),
+    (key, val) => ({
+      [key]: val! * -1,
+    })
+  )
   return dateFromDuration(negativeDuration)
 }
 
@@ -357,7 +360,7 @@ export function isPast(date: Date) {
   return new Date(date).getTime() < Date.now()
 }
 
-/** Returns a Duration representing the amount of time between two dates.
+/** Returns a Duration representing the amount of time between two dates. Accepts Dates or date strings.
  *
  * Example:
  *
@@ -373,9 +376,40 @@ export function isPast(date: Date) {
  *  }
  * ```
  */
-export function duration(dateA: Date, dateB: Date) {
-  const diff = Math.abs(dateA.getTime() - dateB.getTime())
+export function duration(dateA: Date | string, dateB: Date | string) {
+  const dateASerialized = typeof dateA === "string" ? new Date(dateA) : dateA
+  const dateBSerialized = typeof dateB === "string" ? new Date(dateB) : dateB
+
+  const diff = Math.abs(dateASerialized.getTime() - dateBSerialized.getTime())
   return durationFromMilliseconds(diff)
+}
+
+export function createDuration({
+  seconds,
+  minutes,
+  hours,
+  days,
+}: {
+  seconds: number
+  minutes: number
+  hours: number
+  days: number
+}) {
+  const resultingDuration = {
+    seconds,
+    minutes,
+    hours,
+    days,
+  }
+  return {
+    ...resultingDuration,
+    isGreaterThan: (otherDuration: Duration) =>
+      convertDuration(resultingDuration, "seconds") >
+      convertDuration(otherDuration, "seconds"),
+    isLessThan: (otherDuration: Duration) =>
+      convertDuration(resultingDuration, "seconds") <
+      convertDuration(otherDuration, "seconds"),
+  }
 }
 
 export function convertDuration(
@@ -2528,6 +2562,8 @@ export type Duration = {
   hours: number
   minutes: number
   seconds: number
+  isGreaterThan?: (otherDuration: Duration) => boolean
+  isLessThan?: (otherDuration: Duration) => boolean
 }
 
 type DayName =
