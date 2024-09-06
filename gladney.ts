@@ -202,7 +202,7 @@ const secondsInADay = 86400
 function durationFromMilliseconds(milliseconds: number): Duration {
   const seconds = Math.floor(milliseconds / 1000)
 
-  return createDuration({
+  return duration({
     days: Math.floor(seconds / secondsInADay),
     hours: Math.floor((seconds % secondsInADay) / secondsInAnHour),
     minutes: Math.floor((seconds % secondsInAnHour) / secondsInAMinute),
@@ -300,7 +300,7 @@ interface Duration {
  **/
 
 export function timeUntil(date: Date): Duration {
-  return duration(new Date(), new Date(date))
+  return durationFromDates(new Date(), new Date(date))
 }
 
 /** Returns a `Duration` with the number of years, months, weeks, days, hours, minutes and seconds since a
@@ -315,7 +315,7 @@ interface Duration {
  * ```
  **/
 export function timeSince(date: Date): Duration {
-  return duration(new Date(), new Date(date))
+  return durationFromDates(new Date(), new Date(date))
 }
 
 /** Returns the corresponding human readable day name of an integer (0-6).
@@ -376,7 +376,7 @@ export function isPast(date: Date) {
  *  }
  * ```
  */
-export function duration(dateA: Date | string, dateB: Date | string) {
+export function durationFromDates(dateA: Date | string, dateB: Date | string) {
   const dateASerialized = typeof dateA === "string" ? new Date(dateA) : dateA
   const dateBSerialized = typeof dateB === "string" ? new Date(dateB) : dateB
 
@@ -384,7 +384,7 @@ export function duration(dateA: Date | string, dateB: Date | string) {
   return durationFromMilliseconds(diff)
 }
 
-export function createDuration({
+export function duration({
   seconds,
   minutes,
   hours,
@@ -395,12 +395,15 @@ export function createDuration({
   hours?: number
   days?: number
 }) {
-  const resultingDuration = {
+  const resultingDuration: Duration = {
     seconds: seconds ?? 0,
     minutes: minutes ?? 0,
     hours: hours ?? 0,
     days: days ?? 0,
+    isGreaterThan: (d: Duration) => false,
+    isLessThan: (d: Duration) => false,
   }
+
   return {
     ...resultingDuration,
     isGreaterThan: (otherDuration: Duration) =>
@@ -409,7 +412,7 @@ export function createDuration({
     isLessThan: (otherDuration: Duration) =>
       convertDuration(resultingDuration, "seconds") <
       convertDuration(otherDuration, "seconds"),
-  }
+  } as Duration
 }
 
 export function convertDuration(
@@ -2562,8 +2565,8 @@ export type Duration = {
   hours: number
   minutes: number
   seconds: number
-  isGreaterThan?: (otherDuration: Duration) => boolean
-  isLessThan?: (otherDuration: Duration) => boolean
+  isGreaterThan: (otherDuration: Duration) => boolean
+  isLessThan: (otherDuration: Duration) => boolean
 }
 
 type DayName =
