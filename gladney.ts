@@ -390,16 +390,16 @@ export function createDuration({
   hours,
   days,
 }: {
-  seconds: number
-  minutes: number
-  hours: number
-  days: number
+  seconds?: number
+  minutes?: number
+  hours?: number
+  days?: number
 }) {
   const resultingDuration = {
-    seconds,
-    minutes,
-    hours,
-    days,
+    seconds: seconds ?? 0,
+    minutes: minutes ?? 0,
+    hours: hours ?? 0,
+    days: days ?? 0,
   }
   return {
     ...resultingDuration,
