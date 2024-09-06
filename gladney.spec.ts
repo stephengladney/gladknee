@@ -356,6 +356,23 @@ describe("time & dates", () => {
     })
   })
 
+  describe("createDuration", () => {
+    it("does not require all time units", () => {
+      expect(
+        _.omitKeys(
+          _.createDuration({ hours: 1 }),
+          "isGreaterThan",
+          "isLessThan"
+        )
+      ).toEqual({
+        seconds: 0,
+        minutes: 0,
+        hours: 1,
+        days: 0,
+      })
+    })
+  })
+
   describe("relativeTimeDiff", () => {
     it("returns the correct relative duration", () => {
       const secondsInAMinute = 60
