@@ -2127,6 +2127,30 @@ export function throttle<
   }
 }
 
+/** Returns a function that can only be run a certain number of times
+ *
+ * Example:
+ *
+ * ```typescript
+ * const logHello = () => console.log("hello")
+ * const limitedLogHello = limit(logHello, 1)
+ *
+ * logHello()
+ * logHello()
+ *
+ * //=> "hello"
+ * ```
+ */
+function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
+  let runCount = 0
+  return (...params: Parameters<T>) => {
+    if (runCount < limit) {
+      runCount++
+      func(...params)
+    }
+  }
+}
+
 /** Returns a memoized version of a function.
  *
  * _Memoization is the process of caching a function's result so that if the function is called
