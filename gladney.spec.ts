@@ -54,6 +54,12 @@ describe("numbers", () => {
       expect(_.ordinal(13)).toBe("13th")
     })
   })
+
+  describe("digits", () => {
+    it("returns the digits as an array of numbers", () => {
+      expect(_.digits(789234)).toEqual([7, 8, 9, 2, 3, 4])
+    })
+  })
 })
 
 describe("time & dates", () => {

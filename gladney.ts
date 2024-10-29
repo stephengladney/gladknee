@@ -187,6 +187,13 @@ export function mode(...numbers: (number | number[])[]) {
   } else return Number(mostCommon)
 }
 
+export function digits(n: number) {
+  return n
+    .toString()
+    .split("")
+    .map((s) => Number(s))
+}
+
 const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
