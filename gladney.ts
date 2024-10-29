@@ -1343,6 +1343,21 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
   })
 }
 
+/** Returns items in an array with a falsy result of a callback function
+ *
+ * Example:
+ *
+ * ```typescript
+ * const arr = [1, 2, 3, 4, 5, 6]
+ * const isEven = (n: number) => n % 2 === 0
+ *
+ * reject(arr, isEven) //=> [1, 3, 5]
+ * ```
+ */
+export function reject<T>(arr: T[], fn: Func | AsyncFunc) {
+  return arr.filter((x) => !fn(x))
+}
+
 /** Tranforms an array into an object with keys and values provided via callback function
  *
  * Example:
@@ -2141,7 +2156,7 @@ export function throttle<
  * //=> "hello"
  * ```
  */
-function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
+export function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
   let runCount = 0
   return (...params: Parameters<T>) => {
     if (runCount < limit) {

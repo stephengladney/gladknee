@@ -974,6 +974,15 @@ describe("arrays", () => {
       ])
     })
   })
+
+  describe("reject", () => {
+    it("returns items with falsy result", () => {
+      const arr = [1, 2, 3, 4, 5, 6]
+      const isEven = (n: number) => n % 2 === 0
+
+      expect(_.reject(arr, isEven)).toEqual([1, 3, 5])
+    })
+  })
 })
 
 describe("swapItems", () => {
@@ -1612,6 +1621,18 @@ describe("misc", () => {
       expect(_.stripHTML("<html><p>Hello <b>world</b>!</p></html>")).toBe(
         "Hello world!"
       )
+    })
+  })
+
+  describe("limit", () => {
+    it("does not allow the function to be run more times than the limit", () => {
+      const fn = jest.fn()
+      const limitedFn = _.limit(fn, 2)
+      for (let i = 1; i <= 3; i++) {
+        limitedFn()
+      }
+
+      expect(fn).toBeCalledTimes(2)
     })
   })
 })
