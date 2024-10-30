@@ -1365,6 +1365,14 @@ export function reject<T>(arr: T[], fn: Func | AsyncFunc) {
   return arr.filter((x) => !fn(x))
 }
 
+/** Returns an array of the difference of each consecutive item in an array of numbers
+ *
+ * Example:
+ * ```typescript
+ * steps([1, 3, 2, 5, -1]) //=> [2, -1, 3, -6]
+ * ```
+ *
+ */
 export function steps(arr: number[]) {
   return arr.slice(1).map((item, i) => item - arr[i])
 }
@@ -2177,19 +2185,23 @@ export function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
   }
 }
 
+/** Attempts to run a function succesfully up to a specified number of times
+ *
+ */
 export async function retry<T extends Func | AsyncFunc>(
   func: T,
   attempts: number,
-  delay: number
+  delay: number,
+  onFailure?: Func | AsyncFunc
 ) {
   for (let i = 1; i <= attempts; i++) {
     try {
-      await func()
-      break
+      return await func()
     } catch {
       await pause(delay)
     }
   }
+  if (onFailure) return onFailure()
 }
 
 /** Returns a memoized version of a function.

@@ -1617,13 +1617,62 @@ describe("misc", () => {
     it("retries the function the specified number of times", async () => {
       const countFn = jest.fn()
       const rejectFunction = () =>
-        new Promise((resolve, reject) => {
+        new Promise((_, reject) => {
           countFn()
           reject()
         })
 
       await _.retry(rejectFunction, 3, 1)
       expect(countFn).toHaveBeenCalledTimes(3)
+    })
+
+    it("retries until successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 2) resolve("")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      await _.retry(rejectFunction, 4, 1)
+      expect(countFn).toHaveBeenCalledTimes(3)
+    })
+
+    it("runs the onFailure function if unsuccessful", async () => {
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((_, reject) => {
+          countFn()
+          reject()
+        })
+
+      await _.retry(rejectFunction, 1, 1, failureFn)
+      expect(failureFn).toHaveBeenCalled()
+    })
+
+    it("does not run the onFailure function if successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 1) resolve("")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      await _.retry(rejectFunction, 2, 1, failureFn)
+      expect(failureFn).not.toHaveBeenCalled()
     })
   })
 
