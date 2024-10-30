@@ -2173,6 +2173,21 @@ export function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
   }
 }
 
+export async function retry<T extends Func | AsyncFunc>(
+  func: T,
+  attempts: number,
+  delay: number
+) {
+  for (let i = 0; i <= attempts; i++) {
+    try {
+      func()
+      break
+    } catch {
+      await pause(delay)
+    }
+  }
+}
+
 /** Returns a memoized version of a function.
  *
  * _Memoization is the process of caching a function's result so that if the function is called
