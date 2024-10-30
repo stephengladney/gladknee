@@ -1674,6 +1674,37 @@ describe("misc", () => {
       await _.retry(rejectFunction, 2, 1, failureFn)
       expect(failureFn).not.toHaveBeenCalled()
     })
+
+    it("returns the returned value of the function if successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 1) resolve("hello")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      const returnedValue = await _.retry(rejectFunction, 2, 1, failureFn)
+      expect(returnedValue).toBe("hello")
+    })
+
+    it("returns the returned value of the onFailure function if unsuccessful", async () => {
+      const countFn = jest.fn()
+      const failureFn = () => "hey there"
+      const rejectFunction = () =>
+        new Promise((_, reject) => {
+          countFn()
+          reject()
+        })
+
+      const returnedValue = await _.retry(rejectFunction, 1, 1, failureFn)
+      expect(returnedValue).toBe("hey there")
+    })
   })
 
   describe("rgbToHex", () => {

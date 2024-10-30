@@ -2185,23 +2185,24 @@ export function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
   }
 }
 
-/** Attempts to run a function succesfully up to a specified number of times
+/** Attempts to run a function up to a specified number of times and returns the result if successful. Also accepts a
+ * delay in ms between each attempt and optional fallback function if all calls are unsuccessful.
  *
  */
 export async function retry<T extends Func | AsyncFunc>(
   func: T,
   attempts: number,
-  delay: number,
-  onFailure?: Func | AsyncFunc
+  delay?: number,
+  fallbackFn?: Func | AsyncFunc
 ) {
   for (let i = 1; i <= attempts; i++) {
     try {
       return await func()
     } catch {
-      await pause(delay)
+      await pause(delay ?? 0)
     }
   }
-  if (onFailure) return onFailure()
+  if (fallbackFn) return fallbackFn()
 }
 
 /** Returns a memoized version of a function.
