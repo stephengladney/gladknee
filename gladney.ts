@@ -1365,6 +1365,10 @@ export function reject<T>(arr: T[], fn: Func | AsyncFunc) {
   return arr.filter((x) => !fn(x))
 }
 
+export function steps(arr: number[]) {
+  return arr.slice(1).map((item, i) => item - arr[i])
+}
+
 /** Tranforms an array into an object with keys and values provided via callback function
  *
  * Example:
@@ -2178,9 +2182,9 @@ export async function retry<T extends Func | AsyncFunc>(
   attempts: number,
   delay: number
 ) {
-  for (let i = 0; i <= attempts; i++) {
+  for (let i = 1; i <= attempts; i++) {
     try {
-      func()
+      await func()
       break
     } catch {
       await pause(delay)

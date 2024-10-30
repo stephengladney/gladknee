@@ -979,6 +979,14 @@ describe("arrays", () => {
         "1000",
       ])
     })
+
+    describe("steps", () => {
+      it("returns the diff between each item", () => {
+        expect(_.steps([1, 2, 3, 4])).toEqual([1, 1, 1])
+        expect(_.steps([2, 4, 7, 11])).toEqual([2, 3, 4])
+        expect(_.steps([10, 8, 9, 2])).toEqual([-2, 1, -7])
+      })
+    })
   })
 
   describe("reject", () => {
@@ -1602,6 +1610,20 @@ describe("misc", () => {
       throttledFunc()
       await _.pause(300)
       expect(func).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe("retry", () => {
+    it("retries the function the specified number of times", async () => {
+      const countFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          reject()
+        })
+
+      await _.retry(rejectFunction, 3, 1)
+      expect(countFn).toHaveBeenCalledTimes(3)
     })
   })
 
