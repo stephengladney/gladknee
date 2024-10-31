@@ -509,7 +509,11 @@ export function lowerCaseNoSpaces(str: string) {
  * ```
  */
 export function s(n: number) {
-  return n > 1 || n == 0 ? "s" : ""
+  return n === 1 ? "" : "s"
+}
+
+export function numbers(str: string) {
+  return String(str).replace(/[^0-9]/g, "")
 }
 
 /** Returns a string limited to a max length with "..." or custom filler. You can also choose between a leading, trailing,
@@ -2185,8 +2189,8 @@ export function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
   }
 }
 
-/** Attempts to run a function up to a specified number of times and returns the result if successful. Also accepts a
- * delay in ms between each attempt and optional fallback function if all calls are unsuccessful.
+/** Attempts to run a function up to a specified number of times and returns the result if successful. Also accepts an
+ * optional delay in ms between each attempt and fallback function if all calls are unsuccessful.
  *
  */
 export async function retry<T extends Func | AsyncFunc>(
@@ -2274,6 +2278,23 @@ export function curry<T extends (...args: any[]) => any>(
       : func(...args)
   }
   return curried(func, func.length, []) as CurryFunction<T>
+}
+
+/** Runs a function a specified number of times. Optionally pass in a delay between each execution.
+ * Returns the returned value of the last execution.
+ *
+ */
+export async function times(
+  fn: Func | AsyncFunc,
+  times: number,
+  delay?: number
+) {
+  let result
+  for (let i = 1; i <= times; i++) {
+    result = await fn()
+    if (delay) await pause(delay)
+  }
+  return result
 }
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.
@@ -2636,6 +2657,7 @@ function withMatchOptions(
     return compare
   } else return param
 }
+
 // TYPES
 
 export type Duration = {

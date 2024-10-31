@@ -583,6 +583,10 @@ describe("shave", () => {
   it("removes elements from the beginning if n is negative", () => {
     expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
   })
+
+  describe("numbers", () => {
+    expect(_.numbers("1-22-333")).toBe("122333")
+  })
 })
 
 describe("arrays", () => {
@@ -1704,6 +1708,20 @@ describe("misc", () => {
 
       const returnedValue = await _.retry(rejectFunction, 1, 1, failureFn)
       expect(returnedValue).toBe("hey there")
+    })
+  })
+
+  describe("times", () => {
+    it("runs the function the specified number of times", async () => {
+      const fn = jest.fn()
+      await _.times(fn, 3)
+      expect(fn).toBeCalledTimes(3)
+    })
+
+    it("returns the returned value of the last execution", async () => {
+      const fn = () => "hello"
+      const result = await _.times(fn, 3)
+      expect(result).toBe("hello")
     })
   })
 
