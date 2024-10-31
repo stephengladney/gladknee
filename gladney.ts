@@ -512,7 +512,7 @@ export function s(n: number) {
   return n === 1 ? "" : "s"
 }
 
-export function numbers(str: string) {
+export function onlyNumbers(str: string) {
   return String(str).replace(/[^0-9]/g, "")
 }
 
@@ -1379,6 +1379,12 @@ export function reject<T>(arr: T[], fn: Func | AsyncFunc) {
  */
 export function steps(arr: number[]) {
   return arr.slice(1).map((item, i) => item - arr[i])
+}
+
+export function combine<T>(...arrs: T[][]) {
+  return arrs.reduce((acc, arr) => {
+    return acc.concat(arr)
+  }, [])
 }
 
 /** Tranforms an array into an object with keys and values provided via callback function

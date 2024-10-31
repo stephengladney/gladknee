@@ -585,7 +585,9 @@ describe("shave", () => {
   })
 
   describe("numbers", () => {
-    expect(_.numbers("1-22-333")).toBe("122333")
+    it("removes non numbers", () => {
+      expect(_.onlyNumbers("1-22-333")).toBe("122333")
+    })
   })
 })
 
@@ -999,6 +1001,14 @@ describe("arrays", () => {
       const isEven = (n: number) => n % 2 === 0
 
       expect(_.reject(arr, isEven)).toEqual([1, 3, 5])
+    })
+  })
+
+  describe("combine", () => {
+    it("combines arrays", () => {
+      expect(_.combine([1, 2, 3], [4, 5], [6, 7, 8])).toEqual([
+        1, 2, 3, 4, 5, 6, 7, 8,
+      ])
     })
   })
 })
