@@ -1381,10 +1381,28 @@ export function steps(arr: number[]) {
   return arr.slice(1).map((item, i) => item - arr[i])
 }
 
+/** Combines several arrays into one.
+ *
+ * Example:
+ *
+ * ```typescript
+ *  combine([1, 2, 3], [4, 5], [6, 7, 8]) //=> [1, 2, 3, 4, 5, 6, 7, 8]
+ * ```
+ */
 export function combine<T>(...arrs: T[][]) {
   return arrs.reduce((acc, arr) => {
     return acc.concat(arr)
   }, [])
+}
+
+export function join(arr: string[], separator: string, lastSeparator?: string) {
+  return arr.reduce((acc, item, i) => {
+    if (i === 0) return item
+
+    if (i < arr.length - 1) return acc + separator + item
+
+    return lastSeparator ? acc + lastSeparator + item : acc + separator + item
+  }, "")
 }
 
 /** Tranforms an array into an object with keys and values provided via callback function

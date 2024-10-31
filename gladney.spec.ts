@@ -1011,6 +1011,18 @@ describe("arrays", () => {
       ])
     })
   })
+
+  describe("join", () => {
+    it("joins the items with the appropriate separators", () => {
+      expect(_.join(["apples", "oranges"], " and ")).toBe("apples and oranges")
+      expect(_.join(["apples", "oranges"], ", ", " and ")).toBe(
+        "apples and oranges"
+      )
+      expect(_.join(["apples", "oranges", "bananas"], ", ", " and ")).toBe(
+        "apples, oranges and bananas"
+      )
+    })
+  })
 })
 
 describe("swapItems", () => {
