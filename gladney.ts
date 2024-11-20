@@ -999,7 +999,7 @@ export function unionBy<T, U extends Func>(arr: T[][], by: U): T[] {
     result: JSON.stringify(by(i)),
   }))
 
-  const unique = removeDuplicatesBy(asStrings, (i) => JSON.parse(i.result))
+  const unique = uniqueBy(asStrings, (i) => JSON.parse(i.result))
 
   return unique.map((i) => JSON.parse(i.value))
 }
@@ -1163,10 +1163,10 @@ export function insertionSort<T extends string[] | number[]>(arr: T) {
  *
  * Example:
  * ```typescript
- * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
+ * unique([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
-export function removeDuplicates<T>(arr: T[]): T[] {
+export function unique<T>(arr: T[]): T[] {
   if (typeof arr[0] === "object") {
     const strings = arr.map((obj) => JSON.stringify(obj))
     const uniques = new Set(strings)
@@ -1174,10 +1174,7 @@ export function removeDuplicates<T>(arr: T[]): T[] {
   } else return Array.from(new Set(arr))
 }
 
-export function removeDuplicatesBy<T, U extends (arg: T) => any>(
-  arr: T[],
-  callback: U
-) {
+export function uniqueBy<T, U extends (arg: T) => any>(arr: T[], callback: U) {
   const seen: ReturnType<U>[] = []
   return arr.reduce((acc, i) => {
     const result = callback(i)
@@ -1656,7 +1653,7 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
     { id: 4, name: "Dylan" },
 ]
  *
- * removeDuplicatesByKeyValue(members, "id")
+ * uniqueByKeyValue(members, "id")
  * //=>
  * [{ id: 1, name: "Stephen" },
     { id: 2, name: "Andrea" },
@@ -1664,7 +1661,7 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 ]
  * ```
  */
-export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
+export function uniqueByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
   isCaseSensitive = false

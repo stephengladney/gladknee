@@ -708,20 +708,20 @@ describe("arrays", () => {
     })
   })
 
-  describe("removeDuplicates", () => {
+  describe("unique", () => {
     it("returns the array with duplicates removed", () => {
       const arr = [1, 1, 2, 3, 4, 4, 5]
-      expect(_.removeDuplicates(arr)).toEqual([1, 2, 3, 4, 5])
+      expect(_.unique(arr)).toEqual([1, 2, 3, 4, 5])
     })
 
     it("returns the array with duplicate objects removed", () => {
       const obj = { a: 1, b: 2, c: 3 }
       const arr = [obj, obj, obj]
-      expect(_.removeDuplicates(arr)).toEqual([{ a: 1, b: 2, c: 3 }])
+      expect(_.unique(arr)).toEqual([{ a: 1, b: 2, c: 3 }])
     })
   })
 
-  describe("removeDuplicatesBy", () => {
+  describe("uniqueBy", () => {
     it("removes duplicates by callback result", () => {
       const arr = [
         { a: 1, b: 1 },
@@ -729,7 +729,7 @@ describe("arrays", () => {
         { a: 3, b: 1 },
         { a: 3, b: 3 },
       ]
-      expect(_.removeDuplicatesBy(arr, (i) => i.b)).toEqual([
+      expect(_.uniqueBy(arr, (i) => i.b)).toEqual([
         { a: 1, b: 1 },
         { a: 2, b: 2 },
         { a: 3, b: 3 },
@@ -1227,7 +1227,7 @@ describe("objects", () => {
     })
   })
 
-  describe("removeDuplicatesByKeyValue", () => {
+  describe("uniqueByKeyValue", () => {
     it("removes any subsequent objects with the same key value", () => {
       const members = [
         { id: 1, name: "Stephen" },
@@ -1236,7 +1236,7 @@ describe("objects", () => {
         { id: 4, name: "Dylan" },
       ]
 
-      expect(_.removeDuplicatesByKeyValue(members, "id")).toEqual([
+      expect(_.uniqueByKeyValue(members, "id")).toEqual([
         { id: 1, name: "Stephen" },
         { id: 2, name: "Andrea" },
         { id: 4, name: "Dylan" },
