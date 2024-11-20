@@ -437,6 +437,24 @@ describe("strings", () => {
     })
   })
 
+  describe("endsWith", () => {
+    it("returns true if word ends with only suffix provided", () => {
+      expect(_.endsWith("hello world", "rld")).toBe(true)
+    })
+
+    it("returns false if word does not end with only suffix provided", () => {
+      expect(_.endsWith("hello world", "sdf")).toBe(false)
+    })
+
+    it("returns true if word ends with at least one of many suffixes provided", () => {
+      expect(_.endsWith("hello world", ["sdf", "rld"])).toBe(true)
+    })
+
+    it("returns false if word does not end with only suffix provided", () => {
+      expect(_.endsWith("hello world", ["sdf", "dsc"])).toBe(false)
+    })
+  })
+
   describe("lazyIncludes", () => {
     it("returns true if the characters are present", () => {
       expect(_.lazyIncludes("Hello world", "LL")).toBeTruthy()

@@ -763,6 +763,19 @@ export function capitalize(str: string, lowercaseOthers = false) {
  * ```
  */
 
+export function endsWith(str: string, suffix: string | string[]): boolean {
+  if (Array.isArray(suffix)) {
+    for (let i = 0; i < suffix.length; i++) {
+      if (str.substring(str.length - suffix[i].length) === suffix[i]) {
+        return true
+      }
+    }
+    return false
+  } else {
+    return str.substring(str.length - suffix.length) === suffix
+  }
+}
+
 export function lazyIncludes<T extends string | any[]>(
   a: T,
   b: T extends (infer U)[] ? U : string
