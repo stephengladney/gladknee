@@ -509,7 +509,11 @@ export function lowerCaseNoSpaces(str: string) {
  * ```
  */
 export function s(n: number) {
-  return n > 1 || n == 0 ? "s" : ""
+  return n === 1 ? "" : "s"
+}
+
+export function onlyNumbers(str: string) {
+  return String(str).replace(/[^0-9]/g, "")
 }
 
 /** Returns a string limited to a max length with "..." or custom filler. You can also choose between a leading, trailing,
@@ -1362,6 +1366,42 @@ export function reject<T>(arr: T[], fn: Func | AsyncFunc) {
   return arr.filter((x) => !fn(x))
 }
 
+/** Returns an array of the difference of each consecutive item in an array of numbers
+ *
+ * Example:
+ * ```typescript
+ * steps([1, 3, 2, 5, -1]) //=> [2, -1, 3, -6]
+ * ```
+ *
+ */
+export function steps(arr: number[]) {
+  return arr.slice(1).map((item, i) => item - arr[i])
+}
+
+/** Combines several arrays into one.
+ *
+ * Example:
+ *
+ * ```typescript
+ *  combine([1, 2, 3], [4, 5], [6, 7, 8]) //=> [1, 2, 3, 4, 5, 6, 7, 8]
+ * ```
+ */
+export function combine<T>(...arrs: T[][]) {
+  return arrs.reduce((acc, arr) => {
+    return acc.concat(arr)
+  }, [])
+}
+
+export function join(arr: string[], separator: string, lastSeparator?: string) {
+  return arr.reduce((acc, item, i) => {
+    if (i === 0) return item
+
+    if (i < arr.length - 1) return acc + separator + item
+
+    return lastSeparator ? acc + lastSeparator + item : acc + separator + item
+  }, "")
+}
+
 /** Tranforms an array into an object with keys and values provided via callback function
  *
  * Example:
@@ -2170,19 +2210,24 @@ export function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
   }
 }
 
+/** Attempts to run a function up to a specified number of times and returns the result if successful. Also accepts an
+ * optional delay in ms between each attempt and fallback function if all calls are unsuccessful.
+ *
+ */
 export async function retry<T extends Func | AsyncFunc>(
   func: T,
   attempts: number,
-  delay: number
+  delay?: number,
+  fallbackFn?: Func | AsyncFunc
 ) {
-  for (let i = 0; i <= attempts; i++) {
+  for (let i = 1; i <= attempts; i++) {
     try {
-      func()
-      break
+      return await func()
     } catch {
-      await pause(delay)
+      await pause(delay ?? 0)
     }
   }
+  if (fallbackFn) return fallbackFn()
 }
 
 /** Returns a memoized version of a function.
@@ -2254,6 +2299,23 @@ export function curry<T extends (...args: any[]) => any>(
       : func(...args)
   }
   return curried(func, func.length, []) as CurryFunction<T>
+}
+
+/** Runs a function a specified number of times. Optionally pass in a delay between each execution.
+ * Returns the returned value of the last execution.
+ *
+ */
+export async function times(
+  fn: Func | AsyncFunc,
+  times: number,
+  delay?: number
+) {
+  let result
+  for (let i = 1; i <= times; i++) {
+    result = await fn()
+    if (delay) await pause(delay)
+  }
+  return result
 }
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.
@@ -2616,6 +2678,7 @@ function withMatchOptions(
     return compare
   } else return param
 }
+
 // TYPES
 
 export type Duration = {

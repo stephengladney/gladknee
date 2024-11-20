@@ -583,6 +583,12 @@ describe("shave", () => {
   it("removes elements from the beginning if n is negative", () => {
     expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
   })
+
+  describe("numbers", () => {
+    it("removes non numbers", () => {
+      expect(_.onlyNumbers("1-22-333")).toBe("122333")
+    })
+  })
 })
 
 describe("arrays", () => {
@@ -979,6 +985,14 @@ describe("arrays", () => {
         "1000",
       ])
     })
+
+    describe("steps", () => {
+      it("returns the diff between each item", () => {
+        expect(_.steps([1, 2, 3, 4])).toEqual([1, 1, 1])
+        expect(_.steps([2, 4, 7, 11])).toEqual([2, 3, 4])
+        expect(_.steps([10, 8, 9, 2])).toEqual([-2, 1, -7])
+      })
+    })
   })
 
   describe("reject", () => {
@@ -987,6 +1001,26 @@ describe("arrays", () => {
       const isEven = (n: number) => n % 2 === 0
 
       expect(_.reject(arr, isEven)).toEqual([1, 3, 5])
+    })
+  })
+
+  describe("combine", () => {
+    it("combines arrays", () => {
+      expect(_.combine([1, 2, 3], [4, 5], [6, 7, 8])).toEqual([
+        1, 2, 3, 4, 5, 6, 7, 8,
+      ])
+    })
+  })
+
+  describe("join", () => {
+    it("joins the items with the appropriate separators", () => {
+      expect(_.join(["apples", "oranges"], " and ")).toBe("apples and oranges")
+      expect(_.join(["apples", "oranges"], ", ", " and ")).toBe(
+        "apples and oranges"
+      )
+      expect(_.join(["apples", "oranges", "bananas"], ", ", " and ")).toBe(
+        "apples, oranges and bananas"
+      )
     })
   })
 })
@@ -1602,6 +1636,114 @@ describe("misc", () => {
       throttledFunc()
       await _.pause(300)
       expect(func).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe("retry", () => {
+    it("retries the function the specified number of times", async () => {
+      const countFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((_, reject) => {
+          countFn()
+          reject()
+        })
+
+      await _.retry(rejectFunction, 3, 1)
+      expect(countFn).toHaveBeenCalledTimes(3)
+    })
+
+    it("retries until successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 2) resolve("")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      await _.retry(rejectFunction, 4, 1)
+      expect(countFn).toHaveBeenCalledTimes(3)
+    })
+
+    it("runs the onFailure function if unsuccessful", async () => {
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((_, reject) => {
+          countFn()
+          reject()
+        })
+
+      await _.retry(rejectFunction, 1, 1, failureFn)
+      expect(failureFn).toHaveBeenCalled()
+    })
+
+    it("does not run the onFailure function if successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 1) resolve("")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      await _.retry(rejectFunction, 2, 1, failureFn)
+      expect(failureFn).not.toHaveBeenCalled()
+    })
+
+    it("returns the returned value of the function if successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 1) resolve("hello")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      const returnedValue = await _.retry(rejectFunction, 2, 1, failureFn)
+      expect(returnedValue).toBe("hello")
+    })
+
+    it("returns the returned value of the onFailure function if unsuccessful", async () => {
+      const countFn = jest.fn()
+      const failureFn = () => "hey there"
+      const rejectFunction = () =>
+        new Promise((_, reject) => {
+          countFn()
+          reject()
+        })
+
+      const returnedValue = await _.retry(rejectFunction, 1, 1, failureFn)
+      expect(returnedValue).toBe("hey there")
+    })
+  })
+
+  describe("times", () => {
+    it("runs the function the specified number of times", async () => {
+      const fn = jest.fn()
+      await _.times(fn, 3)
+      expect(fn).toBeCalledTimes(3)
+    })
+
+    it("returns the returned value of the last execution", async () => {
+      const fn = () => "hello"
+      const result = await _.times(fn, 3)
+      expect(result).toBe("hello")
     })
   })
 
