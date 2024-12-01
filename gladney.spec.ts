@@ -455,6 +455,24 @@ describe("strings", () => {
     })
   })
 
+  describe("startsWith", () => {
+    it("returns true if word starts with only prefix provided", () => {
+      expect(_.startsWith("hello world", "hel")).toBe(true)
+    })
+
+    it("returns false if word does not start with only prefix provided", () => {
+      expect(_.startsWith("hello world", "sdf")).toBe(false)
+    })
+
+    it("returns true if word starts with at least one of many prefixes provided", () => {
+      expect(_.startsWith("hello world", ["sdf", "hel"])).toBe(true)
+    })
+
+    it("returns false if word does not start with only prefix provided", () => {
+      expect(_.startsWith("hello world", ["sdf", "dsc"])).toBe(false)
+    })
+  })
+
   describe("lazyIncludes", () => {
     it("returns true if the characters are present", () => {
       expect(_.lazyIncludes("Hello world", "LL")).toBeTruthy()
@@ -1063,6 +1081,25 @@ describe("objects", () => {
     it("returns the object with only the keys provided", () => {
       const obj = { a: 1, b: 2, c: 3 }
       expect(_.pickKeys(obj, "b", "c")).toEqual({ b: 2, c: 3 })
+    })
+  })
+
+  describe("putNew", () => {
+    it("returns an object with the existing key value if it already exists", () => {
+      const obj = { name: "Stephen", age: 39 }
+      expect(_.putNew(obj, "name", "James")).toEqual({
+        name: "Stephen",
+        age: 39,
+      })
+    })
+
+    it("returns an object with a new key value if it doesn't exist", () => {
+      const obj = { name: "Stephen", age: 39 }
+      expect(_.putNew(obj, "city", "Atlanta")).toEqual({
+        name: "Stephen",
+        age: 39,
+        city: "Atlanta",
+      })
     })
   })
 

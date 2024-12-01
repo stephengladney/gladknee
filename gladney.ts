@@ -754,12 +754,37 @@ export function capitalize(str: string, lowercaseOthers = false) {
 }
 
 /**
- * Returns a boolean of whether not the first parameter (array or string) includes the second parameter, ignoring case.
+ * Returns a boolean of whether or not the first string starts with a specific prefix or one of several prefixes
  *
  * Example:
  * ```typescript
- * lazyIncludes("Hello world", "LL") //=> true
- * lazyIncludes("Hello world", "ff") //=> false
+ * startsWith("hello world", "hel") //=> true
+ *
+ * startsWith("hello world", ["sdf", "hel"]) //=> true
+ * ```
+ */
+
+export function startsWith(str: string, suffix: string | string[]): boolean {
+  if (Array.isArray(suffix)) {
+    for (let i = 0; i < suffix.length; i++) {
+      if (str.substring(0, suffix[i].length) === suffix[i]) {
+        return true
+      }
+    }
+    return false
+  } else {
+    return str.substring(0, suffix.length) === suffix
+  }
+}
+
+/**
+ * Returns a boolean of whether or not the first string ends with a specific suffix or one of several suffixes
+ *
+ * Example:
+ * ```typescript
+ * endsWith("hello world", "rld") //=> true
+ *
+ * endsWith("hello world", ["sdf", "rld"]) //=> true
  * ```
  */
 
@@ -775,6 +800,17 @@ export function endsWith(str: string, suffix: string | string[]): boolean {
     return str.substring(str.length - suffix.length) === suffix
   }
 }
+
+/**
+ * Returns a boolean of whether not the first parameter (array or string) includes the second parameter, ignoring case.
+ *
+ * Example:
+ * ```typescript
+ * lazyIncludes("Hello world", "LL") //=> true
+ *
+ * lazyIncludes("Hello world", "ff") //=> false
+ * ```
+ */
 
 export function lazyIncludes<T extends string | any[]>(
   a: T,
@@ -1494,6 +1530,33 @@ export function pickKeys<T extends object, U extends keyof T>(
     }
   })
   return result as Pick<T, U>
+}
+
+/**
+ * Returns an object with a new key value pair added if the key does not already exist
+ *
+ * Example:
+ *
+ * ```typescript
+ * const obj = { name: "Stephen", age: 39 }
+ *
+ * putNew(obj, "name", "James") //=> { name: "Stephen", age: 39}
+ *
+ * putNew(obj, "city", "Atlanta") //=> { name: "Stephen", age: 39, city: "Atlanta" }
+ *
+ * ```
+ */
+export function putNew<T extends Record<string | number, any>>(
+  obj: T,
+  key: string,
+  value: unknown
+) {
+  if (Object.keys(obj).includes(key)) return deepCopy(obj)
+  else {
+    const newObject: Record<string | number, any> = deepCopy(obj)
+    newObject[key] = value
+    return newObject
+  }
 }
 
 /** Tranforms an object into a new shape provided via callback function
