@@ -1451,6 +1451,22 @@ export function join(arr: string[], separator: string, lastSeparator?: string) {
   }, "")
 }
 
+/**
+ * Similar to `Array.find()` but returns the result of the callback function as opposed to the element itself.
+ *
+ * Example:
+ * ```typescript
+ * const callback = (n:number) => n > 2 ? n * n : null
+ *
+ * findValue([1,2,3,4], callback) //=> 9
+ * ```
+ */
+export function findValue<T>(arr: T[], fn: Func<any | Falsy>) {
+  const found = arr.find((item) => !!fn(item))
+
+  return !!found ? fn(found) : null
+}
+
 /** Tranforms an array into an object with keys and values provided via callback function
  *
  * Example:
@@ -2779,9 +2795,9 @@ type StringOrArray<T extends string | any[]> = T extends (infer U)[]
   ? U[]
   : string
 
-type Func = (...args: any) => any
+type Func<T = any, U = any> = (...args: T[]) => U
 
-type AsyncFunc = (...args: any) => Promise<any>
+type AsyncFunc<T = any, U = any> = (...args: T[]) => Promise<U>
 
 type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
   ? U
