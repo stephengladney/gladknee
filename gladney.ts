@@ -187,6 +187,14 @@ export function mode(...numbers: (number | number[])[]) {
   } else return Number(mostCommon)
 }
 
+/**
+ * Returns the digits of a number as an array
+ *
+ * Example:
+ * ```typescript
+ * digits(39482) //=> [3, 9, 4, 8, 2]
+ * ```
+ */
 export function digits(n: number) {
   return n
     .toString()
@@ -494,22 +502,26 @@ export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
-/** Returns the letter or S or nothing at all based on the number passed. Good for pluralizing nouns.
+/** Returns a singular or pluralized string based on a provided number.
+ *  Pluralized version defaults to the letter S appended to the singular form.
  *
  * Example:
  * ```typescript
- * const appleCount = 4
- * const orangeCount = 1
+ * plural(4, "apple") //=> "apples"
  *
- * console.log(`You have ${appleCount} apple${s(appleCount)}.`})
- * // => You have 4 apples.
+ * plural(1, "orange") //=> "orange"
  *
- * console.log(`You have ${orangeCount} orange${s(orangeCount)}.`})
- * // => You have 1 orange.
+ * const personCount = 2
+ *
+ * const personPhrase = plural(personCount, "person is", "people are")
+ *
+ * `${personCount} ${personPhrase} here.` //=> "2 people are here."
  * ```
  */
-export function s(n: number) {
-  return n === 1 ? "" : "s"
+export function plural(n: number, singular: string, plural?: string) {
+  const sOrPlural = plural || singular + "s"
+
+  return n === 1 ? singular : sOrPlural
 }
 
 export function onlyNumbers(str: string) {
@@ -1441,6 +1453,19 @@ export function combine<T>(...arrs: T[][]) {
   }, [])
 }
 
+/**
+ *  Combines multiple strings into one string with specified separators,
+ *  including a specific last separator.
+ *
+ * Example:
+ * ```typescript
+ * join(["apples", "oranges"], " and ") //=> "apples and oranges"
+ *
+ * join(["apples", "oranges"], ", ", " and ") //=> "apples and oranges"
+ *
+ * join(["apples", "oranges", "bananas"], ", ", " and ") //=> "apples, oranges and bananas"
+ * ```
+ */
 export function join(arr: string[], separator: string, lastSeparator?: string) {
   return arr.reduce((acc, item, i) => {
     if (i === 0) return item

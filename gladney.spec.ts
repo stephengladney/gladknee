@@ -485,17 +485,29 @@ describe("strings", () => {
     })
   })
 
-  describe("s", () => {
-    it("adds an S if n > 1", () => {
-      expect(_.s(2)).toBe("s")
+  describe("plural", () => {
+    it("adds an S if n > 1 and no plural form", () => {
+      expect(_.plural(2, "cat")).toBe("cats")
     })
 
-    it("adds an S if n = 0", () => {
-      expect(_.s(0)).toBe("s")
+    it("adds an S if n = 0 and no plural form", () => {
+      expect(_.plural(0, "cat")).toBe("cats")
+    })
+
+    it("returns plural if n > 1", () => {
+      expect(_.plural(2, "foot", "feet")).toBe("feet")
+    })
+
+    it("returns if n = 0", () => {
+      expect(_.plural(0, "foot", "feet")).toBe("feet")
     })
 
     it("doesn't add an S if n = 1", () => {
-      expect(_.s(1)).toBe("")
+      expect(_.plural(1, "foot")).toBe("foot")
+    })
+
+    it("doesn't return plural if n = 1", () => {
+      expect(_.plural(1, "foot")).toBe("foot")
     })
   })
 
