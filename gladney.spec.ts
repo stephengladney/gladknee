@@ -54,6 +54,12 @@ describe("numbers", () => {
       expect(_.ordinal(13)).toBe("13th")
     })
   })
+
+  describe("digits", () => {
+    it("returns the digits as an array of numbers", () => {
+      expect(_.digits(789234)).toEqual([7, 8, 9, 2, 3, 4])
+    })
+  })
 })
 
 describe("time & dates", () => {
@@ -431,6 +437,42 @@ describe("strings", () => {
     })
   })
 
+  describe("endsWith", () => {
+    it("returns true if word ends with only suffix provided", () => {
+      expect(_.endsWith("hello world", "rld")).toBe(true)
+    })
+
+    it("returns false if word does not end with only suffix provided", () => {
+      expect(_.endsWith("hello world", "sdf")).toBe(false)
+    })
+
+    it("returns true if word ends with at least one of many suffixes provided", () => {
+      expect(_.endsWith("hello world", ["sdf", "rld"])).toBe(true)
+    })
+
+    it("returns false if word does not end with only suffix provided", () => {
+      expect(_.endsWith("hello world", ["sdf", "dsc"])).toBe(false)
+    })
+  })
+
+  describe("startsWith", () => {
+    it("returns true if word starts with only prefix provided", () => {
+      expect(_.startsWith("hello world", "hel")).toBe(true)
+    })
+
+    it("returns false if word does not start with only prefix provided", () => {
+      expect(_.startsWith("hello world", "sdf")).toBe(false)
+    })
+
+    it("returns true if word starts with at least one of many prefixes provided", () => {
+      expect(_.startsWith("hello world", ["sdf", "hel"])).toBe(true)
+    })
+
+    it("returns false if word does not start with only prefix provided", () => {
+      expect(_.startsWith("hello world", ["sdf", "dsc"])).toBe(false)
+    })
+  })
+
   describe("lazyIncludes", () => {
     it("returns true if the characters are present", () => {
       expect(_.lazyIncludes("Hello world", "LL")).toBeTruthy()
@@ -577,6 +619,12 @@ describe("shave", () => {
   it("removes elements from the beginning if n is negative", () => {
     expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
   })
+
+  describe("numbers", () => {
+    it("removes non numbers", () => {
+      expect(_.onlyNumbers("1-22-333")).toBe("122333")
+    })
+  })
 })
 
 describe("arrays", () => {
@@ -702,20 +750,20 @@ describe("arrays", () => {
     })
   })
 
-  describe("removeDuplicates", () => {
+  describe("unique", () => {
     it("returns the array with duplicates removed", () => {
       const arr = [1, 1, 2, 3, 4, 4, 5]
-      expect(_.removeDuplicates(arr)).toEqual([1, 2, 3, 4, 5])
+      expect(_.unique(arr)).toEqual([1, 2, 3, 4, 5])
     })
 
     it("returns the array with duplicate objects removed", () => {
       const obj = { a: 1, b: 2, c: 3 }
       const arr = [obj, obj, obj]
-      expect(_.removeDuplicates(arr)).toEqual([{ a: 1, b: 2, c: 3 }])
+      expect(_.unique(arr)).toEqual([{ a: 1, b: 2, c: 3 }])
     })
   })
 
-  describe("removeDuplicatesBy", () => {
+  describe("uniqueBy", () => {
     it("removes duplicates by callback result", () => {
       const arr = [
         { a: 1, b: 1 },
@@ -723,7 +771,7 @@ describe("arrays", () => {
         { a: 3, b: 1 },
         { a: 3, b: 3 },
       ]
-      expect(_.removeDuplicatesBy(arr, (i) => i.b)).toEqual([
+      expect(_.uniqueBy(arr, (i) => i.b)).toEqual([
         { a: 1, b: 1 },
         { a: 2, b: 2 },
         { a: 3, b: 3 },
@@ -973,14 +1021,59 @@ describe("arrays", () => {
         "1000",
       ])
     })
-  })
-})
 
-describe("swapItems", () => {
-  it("swaps the items at the indexes provided", () => {
-    const arr = [0, 1, 2, 3, 4]
-    expect(_.swapItems(arr, 2, 4)).toEqual([0, 1, 4, 3, 2])
-    expect(_.swapItems(arr, 0, 3)).toEqual([3, 1, 2, 0, 4])
+    describe("steps", () => {
+      it("returns the diff between each item", () => {
+        expect(_.steps([1, 2, 3, 4])).toEqual([1, 1, 1])
+        expect(_.steps([2, 4, 7, 11])).toEqual([2, 3, 4])
+        expect(_.steps([10, 8, 9, 2])).toEqual([-2, 1, -7])
+      })
+    })
+  })
+
+  describe("reject", () => {
+    it("returns items with falsy result", () => {
+      const arr = [1, 2, 3, 4, 5, 6]
+      const isEven = (n: number) => n % 2 === 0
+
+      expect(_.reject(arr, isEven)).toEqual([1, 3, 5])
+    })
+  })
+
+  describe("combine", () => {
+    it("combines arrays", () => {
+      expect(_.combine([1, 2, 3], [4, 5], [6, 7, 8])).toEqual([
+        1, 2, 3, 4, 5, 6, 7, 8,
+      ])
+    })
+  })
+
+  describe("join", () => {
+    it("joins the items with the appropriate separators", () => {
+      expect(_.join(["apples", "oranges"], " and ")).toBe("apples and oranges")
+      expect(_.join(["apples", "oranges"], ", ", " and ")).toBe(
+        "apples and oranges"
+      )
+      expect(_.join(["apples", "oranges", "bananas"], ", ", " and ")).toBe(
+        "apples, oranges and bananas"
+      )
+    })
+  })
+
+  describe("swapItems", () => {
+    it("swaps the items at the indexes provided", () => {
+      const arr = [0, 1, 2, 3, 4]
+      expect(_.swapItems(arr, 2, 4)).toEqual([0, 1, 4, 3, 2])
+      expect(_.swapItems(arr, 0, 3)).toEqual([3, 1, 2, 0, 4])
+    })
+  })
+
+  describe("findValue", () => {
+    it("returns the value of the callback fn", () => {
+      const callback = (n: number) => (n > 2 ? n * n : null)
+
+      expect(_.findValue([1, 2, 3, 4], callback)).toBe(9)
+    })
   })
 })
 
@@ -996,6 +1089,25 @@ describe("objects", () => {
     it("returns the object with only the keys provided", () => {
       const obj = { a: 1, b: 2, c: 3 }
       expect(_.pickKeys(obj, "b", "c")).toEqual({ b: 2, c: 3 })
+    })
+  })
+
+  describe("putNew", () => {
+    it("returns an object with the existing key value if it already exists", () => {
+      const obj = { name: "Stephen", age: 39 }
+      expect(_.putNew(obj, "name", "James")).toEqual({
+        name: "Stephen",
+        age: 39,
+      })
+    })
+
+    it("returns an object with a new key value if it doesn't exist", () => {
+      const obj = { name: "Stephen", age: 39 }
+      expect(_.putNew(obj, "city", "Atlanta")).toEqual({
+        name: "Stephen",
+        age: 39,
+        city: "Atlanta",
+      })
     })
   })
 
@@ -1212,7 +1324,7 @@ describe("objects", () => {
     })
   })
 
-  describe("removeDuplicatesByKeyValue", () => {
+  describe("uniqueByKeyValue", () => {
     it("removes any subsequent objects with the same key value", () => {
       const members = [
         { id: 1, name: "Stephen" },
@@ -1221,7 +1333,7 @@ describe("objects", () => {
         { id: 4, name: "Dylan" },
       ]
 
-      expect(_.removeDuplicatesByKeyValue(members, "id")).toEqual([
+      expect(_.uniqueByKeyValue(members, "id")).toEqual([
         { id: 1, name: "Stephen" },
         { id: 2, name: "Andrea" },
         { id: 4, name: "Dylan" },
@@ -1590,6 +1702,114 @@ describe("misc", () => {
     })
   })
 
+  describe("retry", () => {
+    it("retries the function the specified number of times", async () => {
+      const countFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((_, reject) => {
+          countFn()
+          reject()
+        })
+
+      await _.retry(rejectFunction, 3, 1)
+      expect(countFn).toHaveBeenCalledTimes(3)
+    })
+
+    it("retries until successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 2) resolve("")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      await _.retry(rejectFunction, 4, 1)
+      expect(countFn).toHaveBeenCalledTimes(3)
+    })
+
+    it("runs the onFailure function if unsuccessful", async () => {
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((_, reject) => {
+          countFn()
+          reject()
+        })
+
+      await _.retry(rejectFunction, 1, 1, failureFn)
+      expect(failureFn).toHaveBeenCalled()
+    })
+
+    it("does not run the onFailure function if successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 1) resolve("")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      await _.retry(rejectFunction, 2, 1, failureFn)
+      expect(failureFn).not.toHaveBeenCalled()
+    })
+
+    it("returns the returned value of the function if successful", async () => {
+      let count = 0
+      const countFn = jest.fn()
+      const failureFn = jest.fn()
+      const rejectFunction = () =>
+        new Promise((resolve, reject) => {
+          countFn()
+          if (count === 1) resolve("hello")
+          else {
+            count++
+            reject()
+          }
+        })
+
+      const returnedValue = await _.retry(rejectFunction, 2, 1, failureFn)
+      expect(returnedValue).toBe("hello")
+    })
+
+    it("returns the returned value of the onFailure function if unsuccessful", async () => {
+      const countFn = jest.fn()
+      const failureFn = () => "hey there"
+      const rejectFunction = () =>
+        new Promise((_, reject) => {
+          countFn()
+          reject()
+        })
+
+      const returnedValue = await _.retry(rejectFunction, 1, 1, failureFn)
+      expect(returnedValue).toBe("hey there")
+    })
+  })
+
+  describe("times", () => {
+    it("runs the function the specified number of times", async () => {
+      const fn = jest.fn()
+      await _.times(fn, 3)
+      expect(fn).toBeCalledTimes(3)
+    })
+
+    it("returns the returned value of the last execution", async () => {
+      const fn = () => "hello"
+      const result = await _.times(fn, 3)
+      expect(result).toBe("hello")
+    })
+  })
+
   describe("rgbToHex", () => {
     it("converts an RGB value to a hexadecimal code", () => {
       expect(_.rgbToHex(189, 23, 123)).toBe("#BD177B")
@@ -1612,6 +1832,18 @@ describe("misc", () => {
       expect(_.stripHTML("<html><p>Hello <b>world</b>!</p></html>")).toBe(
         "Hello world!"
       )
+    })
+  })
+
+  describe("limit", () => {
+    it("does not allow the function to be run more times than the limit", () => {
+      const fn = jest.fn()
+      const limitedFn = _.limit(fn, 2)
+      for (let i = 1; i <= 3; i++) {
+        limitedFn()
+      }
+
+      expect(fn).toBeCalledTimes(2)
     })
   })
 })

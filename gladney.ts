@@ -187,6 +187,13 @@ export function mode(...numbers: (number | number[])[]) {
   } else return Number(mostCommon)
 }
 
+export function digits(n: number) {
+  return n
+    .toString()
+    .split("")
+    .map((s) => Number(s))
+}
+
 const secondsInAMinute = 60
 const secondsInAnHour = 3600
 const secondsInADay = 86400
@@ -502,7 +509,11 @@ export function lowerCaseNoSpaces(str: string) {
  * ```
  */
 export function s(n: number) {
-  return n > 1 || n == 0 ? "s" : ""
+  return n === 1 ? "" : "s"
+}
+
+export function onlyNumbers(str: string) {
+  return String(str).replace(/[^0-9]/g, "")
 }
 
 /** Returns a string limited to a max length with "..." or custom filler. You can also choose between a leading, trailing,
@@ -743,11 +754,60 @@ export function capitalize(str: string, lowercaseOthers = false) {
 }
 
 /**
+ * Returns a boolean of whether or not the first string starts with a specific prefix or one of several prefixes
+ *
+ * Example:
+ * ```typescript
+ * startsWith("hello world", "hel") //=> true
+ *
+ * startsWith("hello world", ["sdf", "hel"]) //=> true
+ * ```
+ */
+
+export function startsWith(str: string, suffix: string | string[]): boolean {
+  if (Array.isArray(suffix)) {
+    for (let i = 0; i < suffix.length; i++) {
+      if (str.substring(0, suffix[i].length) === suffix[i]) {
+        return true
+      }
+    }
+    return false
+  } else {
+    return str.substring(0, suffix.length) === suffix
+  }
+}
+
+/**
+ * Returns a boolean of whether or not the first string ends with a specific suffix or one of several suffixes
+ *
+ * Example:
+ * ```typescript
+ * endsWith("hello world", "rld") //=> true
+ *
+ * endsWith("hello world", ["sdf", "rld"]) //=> true
+ * ```
+ */
+
+export function endsWith(str: string, suffix: string | string[]): boolean {
+  if (Array.isArray(suffix)) {
+    for (let i = 0; i < suffix.length; i++) {
+      if (str.substring(str.length - suffix[i].length) === suffix[i]) {
+        return true
+      }
+    }
+    return false
+  } else {
+    return str.substring(str.length - suffix.length) === suffix
+  }
+}
+
+/**
  * Returns a boolean of whether not the first parameter (array or string) includes the second parameter, ignoring case.
  *
  * Example:
  * ```typescript
  * lazyIncludes("Hello world", "LL") //=> true
+ *
  * lazyIncludes("Hello world", "ff") //=> false
  * ```
  */
@@ -992,7 +1052,7 @@ export function unionBy<T, U extends Func>(arr: T[][], by: U): T[] {
     result: JSON.stringify(by(i)),
   }))
 
-  const unique = removeDuplicatesBy(asStrings, (i) => JSON.parse(i.result))
+  const unique = uniqueBy(asStrings, (i) => JSON.parse(i.result))
 
   return unique.map((i) => JSON.parse(i.value))
 }
@@ -1156,10 +1216,10 @@ export function insertionSort<T extends string[] | number[]>(arr: T) {
  *
  * Example:
  * ```typescript
- * removeDuplicates([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
+ * unique([1, 2, 3, 3, 4, 4, 5]) //=> [1, 2, 3, 4, 5]
  * ```
  **/
-export function removeDuplicates<T>(arr: T[]): T[] {
+export function unique<T>(arr: T[]): T[] {
   if (typeof arr[0] === "object") {
     const strings = arr.map((obj) => JSON.stringify(obj))
     const uniques = new Set(strings)
@@ -1167,10 +1227,7 @@ export function removeDuplicates<T>(arr: T[]): T[] {
   } else return Array.from(new Set(arr))
 }
 
-export function removeDuplicatesBy<T, U extends (arg: T) => any>(
-  arr: T[],
-  callback: U
-) {
+export function uniqueBy<T, U extends (arg: T) => any>(arr: T[], callback: U) {
   const seen: ReturnType<U>[] = []
   return arr.reduce((acc, i) => {
     const result = callback(i)
@@ -1343,6 +1400,73 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
   })
 }
 
+/** Returns items in an array with a falsy result of a callback function
+ *
+ * Example:
+ *
+ * ```typescript
+ * const arr = [1, 2, 3, 4, 5, 6]
+ * const isEven = (n: number) => n % 2 === 0
+ *
+ * reject(arr, isEven) //=> [1, 3, 5]
+ * ```
+ */
+export function reject<T>(arr: T[], fn: Func | AsyncFunc) {
+  return arr.filter((x) => !fn(x))
+}
+
+/** Returns an array of the difference of each consecutive item in an array of numbers
+ *
+ * Example:
+ * ```typescript
+ * steps([1, 3, 2, 5, -1]) //=> [2, -1, 3, -6]
+ * ```
+ *
+ */
+export function steps(arr: number[]) {
+  return arr.slice(1).map((item, i) => item - arr[i])
+}
+
+/** Combines several arrays into one.
+ *
+ * Example:
+ *
+ * ```typescript
+ *  combine([1, 2, 3], [4, 5], [6, 7, 8]) //=> [1, 2, 3, 4, 5, 6, 7, 8]
+ * ```
+ */
+export function combine<T>(...arrs: T[][]) {
+  return arrs.reduce((acc, arr) => {
+    return acc.concat(arr)
+  }, [])
+}
+
+export function join(arr: string[], separator: string, lastSeparator?: string) {
+  return arr.reduce((acc, item, i) => {
+    if (i === 0) return item
+
+    if (i < arr.length - 1) return acc + separator + item
+
+    return lastSeparator ? acc + lastSeparator + item : acc + separator + item
+  }, "")
+}
+
+/**
+ * Similar to `Array.find()` but returns the result of the callback function as opposed to the element itself.
+ *
+ * Example:
+ * ```typescript
+ * const callback = (n:number) => n > 2 ? n * n : null
+ *
+ * findValue([1,2,3,4], callback) //=> 9
+ * ```
+ */
+export function findValue<T>(arr: T[], fn: Func<any | Falsy>) {
+  const found = arr.find((item) => !!fn(item))
+
+  return !!found ? fn(found) : null
+}
+
 /** Tranforms an array into an object with keys and values provided via callback function
  *
  * Example:
@@ -1422,6 +1546,33 @@ export function pickKeys<T extends object, U extends keyof T>(
     }
   })
   return result as Pick<T, U>
+}
+
+/**
+ * Returns an object with a new key value pair added if the key does not already exist
+ *
+ * Example:
+ *
+ * ```typescript
+ * const obj = { name: "Stephen", age: 39 }
+ *
+ * putNew(obj, "name", "James") //=> { name: "Stephen", age: 39}
+ *
+ * putNew(obj, "city", "Atlanta") //=> { name: "Stephen", age: 39, city: "Atlanta" }
+ *
+ * ```
+ */
+export function putNew<T extends Record<string | number, any>>(
+  obj: T,
+  key: string,
+  value: unknown
+) {
+  if (Object.keys(obj).includes(key)) return deepCopy(obj)
+  else {
+    const newObject: Record<string | number, any> = deepCopy(obj)
+    newObject[key] = value
+    return newObject
+  }
 }
 
 /** Tranforms an object into a new shape provided via callback function
@@ -1634,7 +1785,7 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
     { id: 4, name: "Dylan" },
 ]
  *
- * removeDuplicatesByKeyValue(members, "id")
+ * uniqueByKeyValue(members, "id")
  * //=>
  * [{ id: 1, name: "Stephen" },
     { id: 2, name: "Andrea" },
@@ -1642,7 +1793,7 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 ]
  * ```
  */
-export function removeDuplicatesByKeyValue<T extends object, U extends keyof T>(
+export function uniqueByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
   isCaseSensitive = false
@@ -2127,6 +2278,50 @@ export function throttle<
   }
 }
 
+/** Returns a function that can only be run a certain number of times
+ *
+ * Example:
+ *
+ * ```typescript
+ * const logHello = () => console.log("hello")
+ * const limitedLogHello = limit(logHello, 1)
+ *
+ * logHello()
+ * logHello()
+ *
+ * //=> "hello"
+ * ```
+ */
+export function limit<T extends Func | AsyncFunc>(func: T, limit: number) {
+  let runCount = 0
+  return (...params: Parameters<T>) => {
+    if (runCount < limit) {
+      runCount++
+      func(...params)
+    }
+  }
+}
+
+/** Attempts to run a function up to a specified number of times and returns the result if successful. Also accepts an
+ * optional delay in ms between each attempt and fallback function if all calls are unsuccessful.
+ *
+ */
+export async function retry<T extends Func | AsyncFunc>(
+  func: T,
+  attempts: number,
+  delay?: number,
+  fallbackFn?: Func | AsyncFunc
+) {
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      return await func()
+    } catch {
+      await pause(delay ?? 0)
+    }
+  }
+  if (fallbackFn) return fallbackFn()
+}
+
 /** Returns a memoized version of a function.
  *
  * _Memoization is the process of caching a function's result so that if the function is called
@@ -2196,6 +2391,23 @@ export function curry<T extends (...args: any[]) => any>(
       : func(...args)
   }
   return curried(func, func.length, []) as CurryFunction<T>
+}
+
+/** Runs a function a specified number of times. Optionally pass in a delay between each execution.
+ * Returns the returned value of the last execution.
+ *
+ */
+export async function times(
+  fn: Func | AsyncFunc,
+  times: number,
+  delay?: number
+) {
+  let result
+  for (let i = 1; i <= times; i++) {
+    result = await fn()
+    if (delay) await pause(delay)
+  }
+  return result
 }
 
 /** Prompts a user in their browser to save some specific text to a file on their machine.
@@ -2558,6 +2770,7 @@ function withMatchOptions(
     return compare
   } else return param
 }
+
 // TYPES
 
 export type Duration = {
@@ -2582,9 +2795,9 @@ type StringOrArray<T extends string | any[]> = T extends (infer U)[]
   ? U[]
   : string
 
-type Func = (...args: any) => any
+type Func<T = any, U = any> = (...args: T[]) => U
 
-type AsyncFunc = (...args: any) => Promise<any>
+type AsyncFunc<T = any, U = any> = (...args: T[]) => Promise<U>
 
 type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
   ? U
