@@ -507,7 +507,7 @@ describe("strings", () => {
     })
 
     it("doesn't return plural if n = 1", () => {
-      expect(_.plural(1, "foot")).toBe("foot")
+      expect(_.plural(1, "foot", "feet")).toBe("foot")
     })
   })
 
@@ -1077,6 +1077,19 @@ describe("arrays", () => {
       const arr = [0, 1, 2, 3, 4]
       expect(_.swapItems(arr, 2, 4)).toEqual([0, 1, 4, 3, 2])
       expect(_.swapItems(arr, 0, 3)).toEqual([3, 1, 2, 0, 4])
+    })
+  })
+
+  describe("updateAt", () => {
+    it("returns a new array with the item updated", () => {
+      expect(_.updateAt([0, 1, 2, 3], 0, 1)).toEqual([1, 1, 2, 3])
+    })
+
+    it("doesn't modify the existing array", () => {
+      const arr = [0, 1, 2, 3]
+      const _newArr = _.updateAt(arr, 0, 1)
+
+      expect(arr).toEqual([0, 1, 2, 3])
     })
   })
 

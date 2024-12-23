@@ -1412,6 +1412,24 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
   })
 }
 
+/** Updates an item at a specific index in an array and returns result as a new array.
+ *
+ * Example:
+ * ```typescript
+ * const arr = [0, 1, 2, 3]
+ *
+ * console.log(updateAt(arr, 0, 1)) //=> [1, 1, 2, 3]
+ *
+ * console.log(arr) //=> [0, 1, 2, 3]
+ * ```
+ */
+export function updateAt<T>(arr: T[], index: number, newValue: T) {
+  const newArray = Array.from(arr)
+  newArray[index] = newValue
+
+  return newArray
+}
+
 /** Returns items in an array with a falsy result of a callback function
  *
  * Example:
