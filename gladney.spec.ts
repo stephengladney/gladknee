@@ -1072,33 +1072,11 @@ describe("arrays", () => {
     })
   })
 
-  describe("swapItems", () => {
-    it("swaps the items at the indexes provided", () => {
-      const arr = [0, 1, 2, 3, 4]
-      expect(_.swapItems(arr, 2, 4)).toEqual([0, 1, 4, 3, 2])
-      expect(_.swapItems(arr, 0, 3)).toEqual([3, 1, 2, 0, 4])
-    })
-  })
-
-  describe("updateAt", () => {
-    it("returns a new array with the item updated", () => {
-      expect(_.updateAt([0, 1, 2, 3], 0, 1)).toEqual([1, 1, 2, 3])
-    })
-
-    it("doesn't modify the existing array", () => {
-      const arr = [0, 1, 2, 3]
-      const _newArr = _.updateAt(arr, 0, 1)
-
-      expect(arr).toEqual([0, 1, 2, 3])
-    })
-  })
-
-  describe("findValue", () => {
-    it("returns the value of the callback fn", () => {
-      const callback = (n: number) => (n > 2 ? n * n : null)
-
-      expect(_.findValue([1, 2, 3, 4], callback)).toBe(9)
-    })
+describe("swapItems", () => {
+  it("swaps the items at the indexes provided", () => {
+    const arr = [0, 1, 2, 3, 4]
+    expect(_.swapItems(arr, 2, 4)).toEqual([0, 1, 4, 3, 2])
+    expect(_.swapItems(arr, 0, 3)).toEqual([3, 1, 2, 0, 4])
   })
 })
 

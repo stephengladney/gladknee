@@ -524,10 +524,6 @@ export function plural(n: number, singular: string, plural?: string) {
   return n === 1 ? singular : sOrPlural
 }
 
-export function onlyNumbers(str: string) {
-  return String(str).replace(/[^0-9]/g, "")
-}
-
 /** Returns a string limited to a max length with "..." or custom filler. You can also choose between a leading, trailing,
  * or middle filler. (trailing by default)
  *
