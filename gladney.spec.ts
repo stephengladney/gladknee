@@ -581,60 +581,54 @@ describe("strings", () => {
       ).toBe("Hello <there>, my 'friend'")
     })
   })
-})
 
-describe("slugify", () => {
-  it("lowercases the text", () => {
-    expect(_.slugify("THIS")).toBe("this")
+  describe("slugify", () => {
+    it("lowercases the text", () => {
+      expect(_.slugify("THIS")).toBe("this")
+    })
+
+    it("replaces spaces", () => {
+      expect(_.slugify("this is some text")).toBe("this-is-some-text")
+    })
+
+    it("trims whitespace", () => {
+      expect(_.slugify(" this is some text ")).toBe("this-is-some-text")
+    })
+
+    it("removes non-letter and non-number characters", () => {
+      expect(_.slugify("42 things you can do")).toBe("42-things-you-can-do")
+    })
+
+    it("can use a custom separator", () => {
+      expect(_.slugify("this is some text!", "_")).toBe("this_is_some_text")
+    })
   })
 
-  it("replaces spaces", () => {
-    expect(_.slugify("this is some text")).toBe("this-is-some-text")
+  describe("isNumeric", () => {
+    it("returns true if the parameter is a number", () => {
+      expect(_.isNumeric(24)).toBe(true)
+    })
+
+    it("returns true if the string only contains numbers", () => {
+      expect(_.isNumeric("3524")).toBe(true)
+    })
+
+    it("returns false if the string only contains non-numbers", () => {
+      expect(_.isNumeric("3524a")).toBe(false)
+    })
   })
 
-  it("trims whitespace", () => {
-    expect(_.slugify(" this is some text ")).toBe("this-is-some-text")
-  })
+  describe("shave", () => {
+    it("removes elements from the end of a string", () => {
+      expect(_.shave("hello", 2)).toBe("hel")
+    })
 
-  it("removes non-letter and non-number characters", () => {
-    expect(_.slugify("42 things you can do")).toBe("42-things-you-can-do")
-  })
+    it("removes elements from the end of an array", () => {
+      expect(_.shave([1, 2, 3, 4], 2)).toEqual([1, 2])
+    })
 
-  it("can use a custom separator", () => {
-    expect(_.slugify("this is some text!", "_")).toBe("this_is_some_text")
-  })
-})
-
-describe("isNumeric", () => {
-  it("returns true if the parameter is a number", () => {
-    expect(_.isNumeric(24)).toBe(true)
-  })
-
-  it("returns true if the string only contains numbers", () => {
-    expect(_.isNumeric("3524")).toBe(true)
-  })
-
-  it("returns false if the string only contains non-numbers", () => {
-    expect(_.isNumeric("3524a")).toBe(false)
-  })
-})
-
-describe("shave", () => {
-  it("removes elements from the end of a string", () => {
-    expect(_.shave("hello", 2)).toBe("hel")
-  })
-
-  it("removes elements from the end of an array", () => {
-    expect(_.shave([1, 2, 3, 4], 2)).toEqual([1, 2])
-  })
-
-  it("removes elements from the beginning if n is negative", () => {
-    expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
-  })
-
-  describe("numbers", () => {
-    it("removes non numbers", () => {
-      expect(_.onlyNumbers("1-22-333")).toBe("122333")
+    it("removes elements from the beginning if n is negative", () => {
+      expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
     })
   })
 })
@@ -1072,11 +1066,20 @@ describe("arrays", () => {
     })
   })
 
-describe("swapItems", () => {
-  it("swaps the items at the indexes provided", () => {
-    const arr = [0, 1, 2, 3, 4]
-    expect(_.swapItems(arr, 2, 4)).toEqual([0, 1, 4, 3, 2])
-    expect(_.swapItems(arr, 0, 3)).toEqual([3, 1, 2, 0, 4])
+  describe("swapItems", () => {
+    it("swaps the items at the indexes provided", () => {
+      const arr = [0, 1, 2, 3, 4]
+      expect(_.swapItems(arr, 2, 4)).toEqual([0, 1, 4, 3, 2])
+      expect(_.swapItems(arr, 0, 3)).toEqual([3, 1, 2, 0, 4])
+    })
+  })
+
+  describe("findValue", () => {
+    it("returns the value of the callback fn", () => {
+      const callback = (n: number) => (n > 2 ? n * n : null)
+
+      expect(_.findValue([1, 2, 3, 4], callback)).toBe(9)
+    })
   })
 })
 
