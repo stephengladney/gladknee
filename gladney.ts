@@ -1420,10 +1420,7 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
  * ```
  */
 export function updateAt<T>(arr: T[], index: number, newValue: T) {
-  const newArray = Array.from(arr)
-  newArray[index] = newValue
-
-  return newArray
+  return arr.map((item, i) => (i === index ? newValue : item))
 }
 
 /** Returns items in an array with a falsy result of a callback function
