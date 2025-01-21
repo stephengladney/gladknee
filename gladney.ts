@@ -78,9 +78,9 @@ export function clampNumber(
  **/
 export function leadingZero(n: number, zeros = 1) {
   if (String(n).length > zeros) return String(n)
-  const zeroCount = zeros + 1
-  const z = Array(zeroCount).fill("0").join("")
-  return String(`${z}${n}`).slice(-1 * zeroCount)
+  const digitCount = zeros + 1
+  const z = Array(digitCount).fill("0").join("")
+  return String(`${z}${n}`).slice(-1 * digitCount)
 }
 
 /** Returns an array of numbers, starting from and ending at provided numbers.
@@ -1602,15 +1602,15 @@ export function pickKeys<T extends object, U extends keyof T>(
  *
  * ```
  */
-export function putNew<T extends Record<string | number, any>>(
+export function putNew<T extends object>(
   obj: T,
   key: string,
-  value: unknown
+  value: T[keyof T]
 ) {
   if (Object.keys(obj).includes(key)) return deepCopy(obj)
   else {
-    const newObject: Record<string | number, any> = deepCopy(obj)
-    newObject[key] = value
+    const newObject = deepCopy(obj)
+    newObject[key as keyof T] = value
     return newObject
   }
 }
