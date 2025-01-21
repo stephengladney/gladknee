@@ -22,14 +22,22 @@ describe("numbers", () => {
     })
   })
 
-  describe("doubleDigit", () => {
-    it("returns a single digit with a leading zero", () => {
-      expect(_.doubleDigit(9)).toBe("09")
+  describe("leadingZero", () => {
+    it("returns a single digit with a leading zero by default", () => {
+      expect(_.leadingZero(9)).toBe("09")
     })
 
-    it("returns a number with 2+ digits as a string", () => {
-      expect(_.doubleDigit(29)).toBe("29")
-      expect(_.doubleDigit(109)).toBe("109")
+    it("accepts custom zero counts (9, 2)", () => {
+      expect(_.leadingZero(9, 2)).toBe("009")
+    })
+
+    it("accepts custom zero counts (99, 2)", () => {
+      expect(_.leadingZero(99, 2)).toBe("099")
+    })
+
+    it("returns a number with additional digits as a string", () => {
+      expect(_.leadingZero(29)).toBe("29")
+      expect(_.leadingZero(109, 2)).toBe("109")
     })
   })
 

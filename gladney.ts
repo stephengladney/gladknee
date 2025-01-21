@@ -67,16 +67,20 @@ export function clampNumber(
   return result
 }
 
-/** Returns a single digit number with a leading zero as a string.
+/** Adds a specified number of leading zeros to a number. Default is 1.
  *
  * _Example:_
  * ```typescript
- * doubleDigit(9) //=> "09"
+ * leadingZero(9) //=> "09"
+ *
+ * leadingZero(9, 2) //=> "009"
  * ```
  **/
-export function doubleDigit(n: number) {
-  if (String(n).length > 2) return String(n)
-  else return String(`0${n}`).slice(-2)
+export function leadingZero(n: number, zeros = 1) {
+  if (String(n).length > zeros) return String(n)
+  const zeroCount = zeros + 1
+  const z = Array(zeroCount).fill("0").join("")
+  return String(`${z}${n}`).slice(-1 * zeroCount)
 }
 
 /** Returns an array of numbers, starting from and ending at provided numbers.
