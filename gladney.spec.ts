@@ -22,14 +22,22 @@ describe("numbers", () => {
     })
   })
 
-  describe("doubleDigit", () => {
-    it("returns a single digit with a leading zero", () => {
-      expect(_.doubleDigit(9)).toBe("09")
+  describe("leadingZero", () => {
+    it("returns a single digit with a leading zero by default", () => {
+      expect(_.leadingZero(9)).toBe("09")
     })
 
-    it("returns a number with 2+ digits as a string", () => {
-      expect(_.doubleDigit(29)).toBe("29")
-      expect(_.doubleDigit(109)).toBe("109")
+    it("accepts custom zero counts (9, 2)", () => {
+      expect(_.leadingZero(9, 2)).toBe("009")
+    })
+
+    it("accepts custom zero counts (99, 2)", () => {
+      expect(_.leadingZero(99, 2)).toBe("099")
+    })
+
+    it("returns a number with additional digits as a string", () => {
+      expect(_.leadingZero(29)).toBe("29")
+      expect(_.leadingZero(109, 2)).toBe("109")
     })
   })
 
@@ -485,17 +493,29 @@ describe("strings", () => {
     })
   })
 
-  describe("s", () => {
-    it("adds an S if n > 1", () => {
-      expect(_.s(2)).toBe("s")
+  describe("plural", () => {
+    it("adds an S if n > 1 and no plural form", () => {
+      expect(_.plural(2, "cat")).toBe("cats")
     })
 
-    it("adds an S if n = 0", () => {
-      expect(_.s(0)).toBe("s")
+    it("adds an S if n = 0 and no plural form", () => {
+      expect(_.plural(0, "cat")).toBe("cats")
+    })
+
+    it("returns plural if n > 1", () => {
+      expect(_.plural(2, "foot", "feet")).toBe("feet")
+    })
+
+    it("returns if n = 0", () => {
+      expect(_.plural(0, "foot", "feet")).toBe("feet")
     })
 
     it("doesn't add an S if n = 1", () => {
-      expect(_.s(1)).toBe("")
+      expect(_.plural(1, "foot")).toBe("foot")
+    })
+
+    it("doesn't return plural if n = 1", () => {
+      expect(_.plural(1, "foot", "feet")).toBe("foot")
     })
   })
 
@@ -569,60 +589,54 @@ describe("strings", () => {
       ).toBe("Hello <there>, my 'friend'")
     })
   })
-})
 
-describe("slugify", () => {
-  it("lowercases the text", () => {
-    expect(_.slugify("THIS")).toBe("this")
+  describe("slugify", () => {
+    it("lowercases the text", () => {
+      expect(_.slugify("THIS")).toBe("this")
+    })
+
+    it("replaces spaces", () => {
+      expect(_.slugify("this is some text")).toBe("this-is-some-text")
+    })
+
+    it("trims whitespace", () => {
+      expect(_.slugify(" this is some text ")).toBe("this-is-some-text")
+    })
+
+    it("removes non-letter and non-number characters", () => {
+      expect(_.slugify("42 things you can do")).toBe("42-things-you-can-do")
+    })
+
+    it("can use a custom separator", () => {
+      expect(_.slugify("this is some text!", "_")).toBe("this_is_some_text")
+    })
   })
 
-  it("replaces spaces", () => {
-    expect(_.slugify("this is some text")).toBe("this-is-some-text")
+  describe("isNumeric", () => {
+    it("returns true if the parameter is a number", () => {
+      expect(_.isNumeric(24)).toBe(true)
+    })
+
+    it("returns true if the string only contains numbers", () => {
+      expect(_.isNumeric("3524")).toBe(true)
+    })
+
+    it("returns false if the string only contains non-numbers", () => {
+      expect(_.isNumeric("3524a")).toBe(false)
+    })
   })
 
-  it("trims whitespace", () => {
-    expect(_.slugify(" this is some text ")).toBe("this-is-some-text")
-  })
+  describe("shave", () => {
+    it("removes elements from the end of a string", () => {
+      expect(_.shave("hello", 2)).toBe("hel")
+    })
 
-  it("removes non-letter and non-number characters", () => {
-    expect(_.slugify("42 things you can do")).toBe("42-things-you-can-do")
-  })
+    it("removes elements from the end of an array", () => {
+      expect(_.shave([1, 2, 3, 4], 2)).toEqual([1, 2])
+    })
 
-  it("can use a custom separator", () => {
-    expect(_.slugify("this is some text!", "_")).toBe("this_is_some_text")
-  })
-})
-
-describe("isNumeric", () => {
-  it("returns true if the parameter is a number", () => {
-    expect(_.isNumeric(24)).toBe(true)
-  })
-
-  it("returns true if the string only contains numbers", () => {
-    expect(_.isNumeric("3524")).toBe(true)
-  })
-
-  it("returns false if the string only contains non-numbers", () => {
-    expect(_.isNumeric("3524a")).toBe(false)
-  })
-})
-
-describe("shave", () => {
-  it("removes elements from the end of a string", () => {
-    expect(_.shave("hello", 2)).toBe("hel")
-  })
-
-  it("removes elements from the end of an array", () => {
-    expect(_.shave([1, 2, 3, 4], 2)).toEqual([1, 2])
-  })
-
-  it("removes elements from the beginning if n is negative", () => {
-    expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
-  })
-
-  describe("numbers", () => {
-    it("removes non numbers", () => {
-      expect(_.onlyNumbers("1-22-333")).toBe("122333")
+    it("removes elements from the beginning if n is negative", () => {
+      expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
     })
   })
 })

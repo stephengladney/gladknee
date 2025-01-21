@@ -67,16 +67,20 @@ export function clampNumber(
   return result
 }
 
-/** Returns a single digit number with a leading zero as a string.
+/** Adds a specified number of leading zeros to a number. Default is 1.
  *
  * _Example:_
  * ```typescript
- * doubleDigit(9) //=> "09"
+ * leadingZero(9) //=> "09"
+ *
+ * leadingZero(9, 2) //=> "009"
  * ```
  **/
-export function doubleDigit(n: number) {
-  if (String(n).length > 2) return String(n)
-  else return String(`0${n}`).slice(-2)
+export function leadingZero(n: number, zeros = 1) {
+  if (String(n).length > zeros) return String(n)
+  const digitCount = zeros + 1
+  const z = Array(digitCount).fill("0").join("")
+  return String(`${z}${n}`).slice(-1 * digitCount)
 }
 
 /** Returns an array of numbers, starting from and ending at provided numbers.
@@ -187,6 +191,14 @@ export function mode(...numbers: (number | number[])[]) {
   } else return Number(mostCommon)
 }
 
+/**
+ * Returns the digits of a number as an array
+ *
+ * Example:
+ * ```typescript
+ * digits(39482) //=> [3, 9, 4, 8, 2]
+ * ```
+ */
 export function digits(n: number) {
   return n
     .toString()
@@ -494,26 +506,26 @@ export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
-/** Returns the letter or S or nothing at all based on the number passed. Good for pluralizing nouns.
+/** Returns a singular or pluralized string based on a provided number.
+ *  Pluralized version defaults to the letter S appended to the singular form.
  *
  * Example:
  * ```typescript
- * const appleCount = 4
- * const orangeCount = 1
+ * plural(4, "apple") //=> "apples"
  *
- * console.log(`You have ${appleCount} apple${s(appleCount)}.`})
- * // => You have 4 apples.
+ * plural(1, "orange") //=> "orange"
  *
- * console.log(`You have ${orangeCount} orange${s(orangeCount)}.`})
- * // => You have 1 orange.
+ * const personCount = 2
+ *
+ * const personPhrase = plural(personCount, "person is", "people are")
+ *
+ * `${personCount} ${personPhrase} here.` //=> "2 people are here."
  * ```
  */
-export function s(n: number) {
-  return n === 1 ? "" : "s"
-}
+export function plural(n: number, singular: string, plural?: string) {
+  const sOrPlural = plural || singular + "s"
 
-export function onlyNumbers(str: string) {
-  return String(str).replace(/[^0-9]/g, "")
+  return n === 1 ? singular : sOrPlural
 }
 
 /** Returns a string limited to a max length with "..." or custom filler. You can also choose between a leading, trailing,
@@ -1400,6 +1412,21 @@ export function swapItems<T>(arr: T[], index1: number, index2: number) {
   })
 }
 
+/** Updates an item at a specific index in an array and returns result as a new array.
+ *
+ * Example:
+ * ```typescript
+ * const arr = [0, 1, 2, 3]
+ *
+ * console.log(updateAt(arr, 0, 1)) //=> [1, 1, 2, 3]
+ *
+ * console.log(arr) //=> [0, 1, 2, 3]
+ * ```
+ */
+export function updateAt<T>(arr: T[], index: number, newValue: T) {
+  return arr.map((item, i) => (i === index ? newValue : item))
+}
+
 /** Returns items in an array with a falsy result of a callback function
  *
  * Example:
@@ -1441,6 +1468,19 @@ export function combine<T>(...arrs: T[][]) {
   }, [])
 }
 
+/**
+ *  Combines multiple strings into one string with specified separators,
+ *  including a specific last separator.
+ *
+ * Example:
+ * ```typescript
+ * join(["apples", "oranges"], " and ") //=> "apples and oranges"
+ *
+ * join(["apples", "oranges"], ", ", " and ") //=> "apples and oranges"
+ *
+ * join(["apples", "oranges", "bananas"], ", ", " and ") //=> "apples, oranges and bananas"
+ * ```
+ */
 export function join(arr: string[], separator: string, lastSeparator?: string) {
   return arr.reduce((acc, item, i) => {
     if (i === 0) return item
@@ -1562,15 +1602,15 @@ export function pickKeys<T extends object, U extends keyof T>(
  *
  * ```
  */
-export function putNew<T extends Record<string | number, any>>(
+export function putNew<T extends object>(
   obj: T,
   key: string,
-  value: unknown
+  value: T[keyof T]
 ) {
   if (Object.keys(obj).includes(key)) return deepCopy(obj)
   else {
-    const newObject: Record<string | number, any> = deepCopy(obj)
-    newObject[key] = value
+    const newObject = deepCopy(obj)
+    newObject[key as keyof T] = value
     return newObject
   }
 }
