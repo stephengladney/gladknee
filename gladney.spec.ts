@@ -1,3 +1,4 @@
+import exp from "constants"
 import * as _ from "./gladney"
 import type { Duration } from "./gladney"
 
@@ -1054,6 +1055,18 @@ describe("arrays", () => {
     })
   })
 
+  describe("rejectAsync", () => {
+    it("returns items with falsy result", async () => {
+      const arr = [1, 2, 3, 4, 5, 6]
+      const asyncIsEven = async (n: number) =>
+        new Promise((resolve) => resolve(n % 2 === 0))
+
+      const result = await _.rejectAsync(arr, asyncIsEven)
+
+      expect(result).toEqual([1, 3, 5])
+    })
+  })
+
   describe("combine", () => {
     it("combines arrays", () => {
       expect(_.combine([1, 2, 3], [4, 5], [6, 7, 8])).toEqual([
@@ -1087,6 +1100,39 @@ describe("arrays", () => {
       const callback = (n: number) => (n > 2 ? n * n : null)
 
       expect(_.findValue([1, 2, 3, 4], callback)).toBe(9)
+    })
+  })
+
+  describe("mapAsync", () => {
+    it("returns a map of the async function on the array", async () => {
+      const asyncDouble = async (n: number) =>
+        new Promise((resolve) => resolve(n * 2))
+
+      const result = await _.mapAsync([1, 2, 3], asyncDouble)
+
+      expect(result).toEqual([2, 4, 6])
+    })
+  })
+
+  describe("filterAsync", () => {
+    it("returns a filtered version of the array based on async function", async () => {
+      const asyncIsEven = async (n: number) =>
+        new Promise((resolve) => resolve(n % 2 === 0))
+
+      const result = await _.filterAsync([1, 2, 3], asyncIsEven)
+
+      expect(result).toEqual([2])
+    })
+  })
+
+  describe("reduceAsync", () => {
+    it("returns a reduced version of the array based on async function", async () => {
+      const asyncAdd = async (acc: number, n: number) =>
+        new Promise((resolve) => resolve(acc + n))
+
+      const result = await _.reduceAsync([1, 2, 3], asyncAdd, 0)
+
+      expect(result).toBe(6)
     })
   })
 })
