@@ -938,7 +938,7 @@ export function isNumeric(n: string | number) {
  * ```
  */
 
-export function shave<T extends string | any[]>(
+export function shave<T extends string | U[], U = any>(
   iterable: T,
   n: number
 ): StringOrArray<T> {
