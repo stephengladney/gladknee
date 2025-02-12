@@ -1433,6 +1433,7 @@ export function updateAt<T>(arr: T[], index: number, newValue: T) {
  *
  * ```typescript
  * const arr = [1, 2, 3, 4, 5, 6]
+ *
  * const isEven = (n: number) => n % 2 === 0
  *
  * reject(arr, isEven) //=> [1, 3, 5]
@@ -1448,12 +1449,13 @@ export function reject<T>(arr: T[], fn: Func) {
  *
  * ```typescript
  * const arr = [1, 2, 3, 4, 5, 6]
- * const isEven = async (n: number) => n % 2 === 0
  *
- * await rejectAsync(arr, isEven) //=> [1, 3, 5]
+ * const asyncIsEven = async (n: number) => new Promise((resolve) => resolve(n % 2 === 0))
+ *
+ * await rejectAsync(arr, asyncIsEven) //=> [1, 3, 5]
  * ```
  */
-export function rejectAsync<T>(arr: T[], fn: AsyncFunc) {
+export function rejectAsync<T>(arr: T[], fn: AsyncFunc<T, any>) {
   return filterAsync(arr, async (x: T) => !(await fn(x)))
 }
 
@@ -1465,7 +1467,10 @@ export function rejectAsync<T>(arr: T[], fn: AsyncFunc) {
  * const result = await mapAsync([1, 2, 3], asyncDouble) //=> [2, 4, 6]
  * ```
  */
-export async function mapAsync<T, U extends AsyncFunc>(arr: T[], fn: U) {
+export async function mapAsync<T, U extends AsyncFunc<T, any>>(
+  arr: T[],
+  fn: U
+) {
   const result: ReturnType<U>[] = []
   for (let i = 0; i < arr.length; i++) {
     result.push(await fn(arr[i]))
@@ -1481,7 +1486,7 @@ export async function mapAsync<T, U extends AsyncFunc>(arr: T[], fn: U) {
  * const result = await filterAsync([1, 2, 3], asyncIsEven) //=> [2]
  * ```
  */
-export async function filterAsync<T>(arr: T[], fn: AsyncFunc) {
+export async function filterAsync<T>(arr: T[], fn: AsyncFunc<T, any>) {
   const result: T[] = []
   for (let i = 0; i < arr.length; i++) {
     const fnResult = await fn(arr[i])
@@ -1500,9 +1505,9 @@ export async function filterAsync<T>(arr: T[], fn: AsyncFunc) {
  * const result = await reduceAsync([1, 2, 3], asyncAdd) //=> 6
  * ```
  */
-export async function reduceAsync<T, U extends AsyncFunc, V = any>(
+export async function reduceAsync<T, V = any>(
   arr: T[],
-  fn: U,
+  fn: (acc: any, i: T) => Promise<any>,
   defaultValue?: V
 ) {
   let result: V | undefined = defaultValue
@@ -1511,7 +1516,7 @@ export async function reduceAsync<T, U extends AsyncFunc, V = any>(
     result = await fn(result, arr[i])
   }
 
-  return result
+  return result as V
 }
 
 /** Returns an array of the difference of each consecutive item in an array of numbers
