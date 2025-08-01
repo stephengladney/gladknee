@@ -938,7 +938,7 @@ export function isNumeric(n: string | number) {
  * ```
  */
 
-export function shave<T extends string | any[]>(
+export function shave<T extends string | U[], U = any>(
   iterable: T,
   n: number
 ): StringOrArray<T> {
@@ -1433,13 +1433,90 @@ export function updateAt<T>(arr: T[], index: number, newValue: T) {
  *
  * ```typescript
  * const arr = [1, 2, 3, 4, 5, 6]
+ *
  * const isEven = (n: number) => n % 2 === 0
  *
  * reject(arr, isEven) //=> [1, 3, 5]
  * ```
  */
-export function reject<T>(arr: T[], fn: Func | AsyncFunc) {
+export function reject<T>(arr: T[], fn: Func) {
   return arr.filter((x) => !fn(x))
+}
+
+/** Returns items in an array with a falsy result of an async callback function
+ *
+ * Example:
+ *
+ * ```typescript
+ * const arr = [1, 2, 3, 4, 5, 6]
+ *
+ * const asyncIsEven = async (n: number) => new Promise((resolve) => resolve(n % 2 === 0))
+ *
+ * await rejectAsync(arr, asyncIsEven) //=> [1, 3, 5]
+ * ```
+ */
+export function rejectAsync<T>(arr: T[], fn: AsyncFunc<T, any>) {
+  return filterAsync(arr, async (x: T) => !(await fn(x)))
+}
+
+/** Maps over an array and runs an async function
+ *
+ * Example:
+ *
+ * ```typescript
+ * const result = await mapAsync([1, 2, 3], asyncDouble) //=> [2, 4, 6]
+ * ```
+ */
+export async function mapAsync<T, U extends AsyncFunc<T, any>>(
+  arr: T[],
+  fn: U
+) {
+  const result: ReturnType<U>[] = []
+  for (let i = 0; i < arr.length; i++) {
+    result.push(await fn(arr[i]))
+  }
+  return result as ReturnType<U>[]
+}
+
+/** Filters an array with an async function
+ *
+ * Example:
+ *
+ * ```typescript
+ * const result = await filterAsync([1, 2, 3], asyncIsEven) //=> [2]
+ * ```
+ */
+export async function filterAsync<T>(arr: T[], fn: AsyncFunc<T, any>) {
+  const result: T[] = []
+  for (let i = 0; i < arr.length; i++) {
+    const fnResult = await fn(arr[i])
+    if (!!fnResult) result.push(arr[i])
+  }
+  return result as T[]
+}
+
+/** Reduces an array with an async function
+ *
+ * Example:
+ *
+ * ```typescript
+ * const asyncAdd = async (acc: number, n: number) => new Promise((resolve) => resolve(acc + n))
+ *
+ * const result = await reduceAsync([1, 2, 3], asyncAdd) //=> 6
+ * ```
+ */
+export async function reduceAsync<T, V = any>(
+  arr: T[],
+  fn: (acc: any, i: T) => Promise<any>,
+  defaultValue?: V
+) {
+  let result: V | undefined = defaultValue
+
+  for (let i = 0; i < arr.length; i++) {
+    result = await fn(result, arr[i])
+  }
+
+  return result as V
 }
 
 /** Returns an array of the difference of each consecutive item in an array of numbers
