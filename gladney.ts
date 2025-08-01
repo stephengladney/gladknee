@@ -1712,7 +1712,6 @@ export function objectInto<T extends object, K extends keyof T, V extends T[K]>(
     {}
   )
 }
-
 /** Returns the sum of the values of a specific shared key in an array of objects.
  *
  * Example:
@@ -1765,6 +1764,29 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
   return [...arr].sort((a, b) =>
     a[key] < b[key] ? (isAscending ? -1 : 1) : isAscending ? 1 : -1
   )
+}
+
+/** Returns the value of a nested key within an object of objects.
+ * 
+ * Example:
+ * ```typescript
+ * const nestedObject = { a: { b: { c: 42 } } }
+ * getIn(nestedObject, ["a", "b", "c"]) //=> 42
+ * ```
+ * 
+ 
+ */
+export function getIn<T extends object>(
+  o: T,
+  nestedKeys: [string, string, ...rest: string[]]
+) {
+  const recursiveGet = (obj: any, key: any, i: number): any => {
+    return i == nestedKeys.length - 1
+      ? obj[nestedKeys[i]]
+      : recursiveGet(obj[key], nestedKeys[i + 1], i + 1)
+  }
+
+  return recursiveGet(o, nestedKeys[0], 0)
 }
 
 /** Returns an array of objects with nested sorting based on a set of specific shared keys. Optionally

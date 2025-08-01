@@ -1218,6 +1218,14 @@ describe("objects", () => {
     })
   })
 
+  describe("getIn", () => {
+    it("returns the last key value", () => {
+      const obj = { a: { b: { c: 42 } } }
+      expect(_.getIn(obj, ["a", "b"])).toEqual({ c: 42 })
+      expect(_.getIn(obj, ["a", "b", "c"])).toBe(42)
+    })
+  })
+
   describe("sortByKeyValues", () => {
     it("returns the array sorted by key values (all asc)", () => {
       const arr = [
