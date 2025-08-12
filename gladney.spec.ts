@@ -674,6 +674,20 @@ describe("arrays", () => {
     })
   })
 
+  describe("zip", () => {
+    it("returns tuples of combined elements", () => {
+      const arr = [1, 2, 3]
+      const arr2 = ["a", "b", "c"]
+      const arr3 = ["alpha", "beta", "chi"]
+
+      expect(_.zip(arr, arr2, arr3)).toEqual([
+        [1, "a", "alpha"],
+        [2, "b", "beta"],
+        [3, "c", "chi"],
+      ])
+    })
+  })
+
   describe("shuffle", () => {
     it("returns the array in a different order", () => {
       const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]

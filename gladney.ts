@@ -1573,9 +1573,9 @@ export function join(arr: string[], separator: string, lastSeparator?: string) {
  *
  * Example:
  * ```typescript
- * const callback = (n:number) => n > 2 ? n * n : null
+ * const squareGreaterThan2 = (n:number) => n > 2 ? n * n : null
  *
- * findValue([1,2,3,4], callback) //=> 9
+ * findValue([1, 2, 3, 4], squareGreaterThan2) //=> 9
  * ```
  */
 export function findValue<T>(arr: T[], fn: Func<any | Falsy>) {
@@ -1600,6 +1600,26 @@ export function arrayInto<T extends any[]>(
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
 
+/** Combines corresponding elements from a collection of arrays into an array of tuples
+ *
+ * Example:
+ * ```typescript
+ * zip([1, 2, 3], ["a", "b", "c"]) //=> [[1, "a"], [2, "b"], [3, "c"]]
+ * ```
+ *
+ */
+export function zip(arr: any[], ...rest: any[][]) {
+  const result = []
+  for (let i = 0; i < arr.length; i++) {
+    const current = [arr[i]]
+
+    for (let j = 0; j < rest.length; j++) {
+      current.push(rest[j][i])
+    }
+    result.push(current)
+  }
+  return result
+}
 /** Returns a boolean indicating whether or not the array includes the object
  *
  * Example:
