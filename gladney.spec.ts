@@ -22,25 +22,6 @@ describe("numbers", () => {
     })
   })
 
-  describe("leadingZero", () => {
-    it("returns a single digit with a leading zero by default", () => {
-      expect(_.leadingZero(9)).toBe("09")
-    })
-
-    it("accepts custom zero counts (9, 2)", () => {
-      expect(_.leadingZero(9, 2)).toBe("009")
-    })
-
-    it("accepts custom zero counts (99, 2)", () => {
-      expect(_.leadingZero(99, 2)).toBe("099")
-    })
-
-    it("returns a number with additional digits as a string", () => {
-      expect(_.leadingZero(29)).toBe("29")
-      expect(_.leadingZero(109, 2)).toBe("109")
-    })
-  })
-
   describe("range", () => {
     it("returns a range of numbers", () => {
       expect(_.range(1, 5)).toEqual([1, 2, 3, 4, 5])
