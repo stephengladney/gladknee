@@ -22,25 +22,6 @@ describe("numbers", () => {
     })
   })
 
-  describe("leadingZero", () => {
-    it("returns a single digit with a leading zero by default", () => {
-      expect(_.leadingZero(9)).toBe("09")
-    })
-
-    it("accepts custom zero counts (9, 2)", () => {
-      expect(_.leadingZero(9, 2)).toBe("009")
-    })
-
-    it("accepts custom zero counts (99, 2)", () => {
-      expect(_.leadingZero(99, 2)).toBe("099")
-    })
-
-    it("returns a number with additional digits as a string", () => {
-      expect(_.leadingZero(29)).toBe("29")
-      expect(_.leadingZero(109, 2)).toBe("109")
-    })
-  })
-
   describe("range", () => {
     it("returns a range of numbers", () => {
       expect(_.range(1, 5)).toEqual([1, 2, 3, 4, 5])
@@ -671,6 +652,20 @@ describe("arrays", () => {
         "0": "Doe",
         "1": "Smith",
       })
+    })
+  })
+
+  describe("zip", () => {
+    it("returns tuples of combined elements", () => {
+      const arr = [1, 2, 3]
+      const arr2 = ["a", "b", "c"]
+      const arr3 = ["alpha", "beta", "chi"]
+
+      expect(_.zip(arr, arr2, arr3)).toEqual([
+        [1, "a", "alpha"],
+        [2, "b", "beta"],
+        [3, "c", "chi"],
+      ])
     })
   })
 
@@ -1552,38 +1547,6 @@ describe("misc", () => {
       const pipedResult = _.pipe(6, double, add3)
 
       expect(pipedResult).toEqual(15)
-    })
-  })
-
-  describe("caseEquals", () => {
-    it("returns a corresponding expression if a match is found", () => {
-      const widthByHeight = _.round(1920 / 1080, 0.01)
-
-      const ratio = _.caseEquals(
-        widthByHeight,
-        [1.78, "16:9"],
-        [1.5, "3:2"],
-        [1.33, "4:3"],
-        [1, "1:1"],
-        "Uncommon aspect ratio"
-      )
-
-      expect(ratio).toBe("16:9")
-    })
-
-    it("returns the default express if no match is found", () => {
-      const widthByHeight = _.round(2200 / 1080, 0.01)
-
-      const ratio = _.caseEquals(
-        widthByHeight,
-        [1.78, "16:9"],
-        [1.5, "3:2"],
-        [1.33, "4:3"],
-        [1, "1:1"],
-        "Uncommon aspect ratio"
-      )
-
-      expect(ratio).toBe("Uncommon aspect ratio")
     })
   })
 

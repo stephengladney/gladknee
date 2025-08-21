@@ -67,22 +67,6 @@ export function clampNumber(
   return result
 }
 
-/** Adds a specified number of leading zeros to a number. Default is 1.
- *
- * _Example:_
- * ```typescript
- * leadingZero(9) //=> "09"
- *
- * leadingZero(9, 2) //=> "009"
- * ```
- **/
-export function leadingZero(n: number, zeros = 1) {
-  if (String(n).length > zeros) return String(n)
-  const digitCount = zeros + 1
-  const z = Array(digitCount).fill("0").join("")
-  return String(`${z}${n}`).slice(-1 * digitCount)
-}
-
 /** Returns an array of numbers, starting from and ending at provided numbers.
  * You can optionally pass in a step number to increment by a number other than 1. You can also increment negatively.
  *
@@ -1573,9 +1557,9 @@ export function join(arr: string[], separator: string, lastSeparator?: string) {
  *
  * Example:
  * ```typescript
- * const callback = (n:number) => n > 2 ? n * n : null
+ * const squareGreaterThan2 = (n:number) => n > 2 ? n * n : null
  *
- * findValue([1,2,3,4], callback) //=> 9
+ * findValue([1, 2, 3, 4], squareGreaterThan2) //=> 9
  * ```
  */
 export function findValue<T>(arr: T[], fn: Func<any | Falsy>) {
@@ -1600,6 +1584,26 @@ export function arrayInto<T extends any[]>(
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
 
+/** Combines corresponding elements from a collection of arrays into an array of tuples
+ *
+ * Example:
+ * ```typescript
+ * zip([1, 2, 3], ["a", "b", "c"]) //=> [[1, "a"], [2, "b"], [3, "c"]]
+ * ```
+ *
+ */
+export function zip(arr: any[], ...rest: any[][]) {
+  const result = []
+  for (let i = 0; i < arr.length; i++) {
+    const current = [arr[i]]
+
+    for (let j = 0; j < rest.length; j++) {
+      current.push(rest[j][i])
+    }
+    result.push(current)
+  }
+  return result
+}
 /** Returns a boolean indicating whether or not the array includes the object
  *
  * Example:
@@ -2812,38 +2816,6 @@ export function stripHTML(text: string) {
     else if (text[i] === ">") isInsideBracket = false
   }
   return result
-}
-
-/**
- * Returns a corresponding expression based on a matching value of an expression provided. Uses
- * `isEqual` under the hood.
- *
- * Example:
- * ```typescript
- * const widthByHeight = round(1920 / 1080, 0.01) // 1.78
- *
- * const apectRatio = caseEquals(
- *   widthByHeight,
- *   [1.78, "16:9"],
- *   [1.5, "3:2"],
- *   [1.33, "4:3"],
- *   [1, "1:1"],
- *   "Uncommon aspect ratio"
- * )
- * //=> "16:9"
- */
-
-export function caseEquals<T = any, U = any>(
-  value: T,
-  ...casesAndDefault: [...c: [T, U][], U]
-) {
-  for (let i = 0; i < casesAndDefault.length; i++) {
-    const currentCase = casesAndDefault[i]
-    if (Array.isArray(currentCase) && value === currentCase[0]) {
-      return currentCase[1]
-    }
-  }
-  return casesAndDefault[casesAndDefault.length - 1]
 }
 
 const defaultMatchOptions: MatchOptions = {
