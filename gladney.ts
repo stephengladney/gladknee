@@ -1340,9 +1340,10 @@ export function uncommon<T>(firstArray: T[], ...otherArrays: T[][]) {
  * See also: `difference()` and `intersection()`
  **/
 export function common<T>(firstArray: T[], ...otherArrays: T[][]) {
-  const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
-    arr.map((item: T) => JSON.stringify(item))
-  )
+  let arraysAsJSONStrings = [firstArray, ...otherArrays]
+    .map((arr) => arr.map((item: T) => JSON.stringify(item)))
+    .map((arr) => unique(arr))
+
   const seen: string[] = []
   let result: string[] = []
 
