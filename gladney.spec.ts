@@ -848,6 +848,13 @@ describe("arrays", () => {
       const arr3 = [2, 5, 7, 8]
       expect(_.common(arr, arr2, arr3)).toEqual([2, 3, 5])
     })
+
+    it("does not return duplicates in one array", () => {
+      const arr = [1, 1, 3, 4]
+      const arr2 = [2, 3, 5]
+
+      expect(_.common(arr, arr2).includes(1)).toBe(false)
+    })
   })
 
   describe("count", () => {
