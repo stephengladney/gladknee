@@ -593,7 +593,7 @@ interface KeepOptions {
   custom?: string[]
 }
 
-/** Keeps specific character types or substring(s) from a string. See also: `strip()`
+/** Keeps specific character types or substring(s) in a string. See also: `strip()`
  * 
  * Example:
  * ```typescript
