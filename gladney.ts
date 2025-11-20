@@ -522,7 +522,7 @@ export function strip(
   if (config.nonNumbers) newBody = newBody.replace(/[^\d]/g, "")
   if (config.letters) newBody = newBody.replace(/[a-zA-Z]+/g, "")
   if (config.nonLetters) newBody = newBody.replace(/[^a-zA-Z]+/g, "")
-  if (config.punctuation) newBody = newBody.replace(/\'\"\:\;\,\.\?\!/g, "")
+  if (config.punctuation) newBody = newBody.replace(/[,.!?;:'"]/g, "")
   if (config.spaces) newBody = newBody.replace(/\s/g, "")
   if (config.specialChars)
     newBody = newBody.replace(/[!@#$%^&*()\[\]\{\}]/g, "")
