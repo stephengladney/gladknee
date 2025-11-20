@@ -490,50 +490,198 @@ export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
-/** Removes specific substring(s) from a larger string
- *
+interface StripOptions {
+  letters?: boolean
+  numbers?: boolean
+  spaces?: boolean
+  special?: boolean
+  lowercase?: boolean
+  uppercase?: boolean
+  punctuation?: boolean
+  custom?: string[]
+}
+
+type CharacterType =
+  | "letters"
+  | "numbers"
+  | "spaces"
+  | "special"
+  | "lowercase"
+  | "uppercase"
+  | "punctuation"
+
+interface StripOptions {
+  types?: CharacterType[]
+  custom?: string[]
+}
+
+/** Removes specific character types or substring(s) from a string. See also: `keep()`
+ * 
  * Example:
  * ```typescript
- * strip("hello1234", { numbers: true }) //=> "hello"
+ * strip("hello1234", { type: ["numbers"] }) //=> "hello"
  * strip("hello1234", { letters: true }) //=> "1234"
  * strip("hello, newman!", { punctuation: true }) //=> "hello newman"
  * strip("hello@#$%^", { specialChars: true }) //=> "hello"
  * strip("hello newman", { spaces: true }) //=> "hellonewman"
  * strip("hello newman", { terms: ["new", "man"] }) //=> "hello "
+ * 
+ * interface StripOptions {
+  types?: CharacterType[]
+  custom?: string[]
+}
+ * 
+ * type CharacterType =
+  | "letters"
+  | "numbers"
+  | "spaces"
+  | "special"
+  | "lowercase"
+  | "uppercase"
+  | "punctuation"
  * ```
  *
  */
-export function strip(
-  body: string,
-  config: {
-    numbers?: boolean
-    nonNumbers?: boolean
-    letters?: boolean
-    nonLetters?: boolean
-    punctuation?: boolean
-    specialChars?: boolean
-    spaces?: boolean
-    text?: string[]
+export function strip(str: string, options: StripOptions = {}): string {
+  const patterns: Record<CharacterType, string> = {
+    letters: "a-zA-Z",
+    numbers: "0-9",
+    spaces: "\\s",
+    special: "!@#$%^&*()",
+    lowercase: "a-z",
+    uppercase: "A-Z",
+    punctuation: ".,:;!?'\"",
   }
-): string {
-  let newBody = body
 
-  if (config.numbers) newBody = newBody.replace(/\d/g, "")
-  if (config.nonNumbers) newBody = newBody.replace(/[^\d]/g, "")
-  if (config.letters) newBody = newBody.replace(/[a-zA-Z]+/g, "")
-  if (config.nonLetters) newBody = newBody.replace(/[^a-zA-Z]+/g, "")
-  if (config.punctuation) newBody = newBody.replace(/[,.!?;:'"]/g, "")
-  if (config.spaces) newBody = newBody.replace(/\s/g, "")
-  if (config.specialChars)
-    newBody = newBody.replace(/[!@#$%^&*()\[\]\{\}]/g, "")
+  let result = str
 
-  if (config.text) {
-    for (const text of config.text) {
-      newBody = newBody.replace(text, "")
+  if (options.custom && options.custom.length > 0) {
+    for (const substring of options.custom) {
+      const escapedSubstring = substring.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+      const regex = new RegExp(escapedSubstring, "g")
+      result = result.replace(regex, "")
     }
   }
 
-  return newBody
+  if (options.types) {
+    let pattern = ""
+    for (const type of options.types) {
+      pattern += patterns[type]
+    }
+
+    if (pattern) {
+      const regex = new RegExp(`[${pattern}]`, "g")
+      result = result.replace(regex, "")
+    }
+  }
+
+  return result
+}
+interface KeepOptions {
+  letters?: boolean
+  numbers?: boolean
+  spaces?: boolean
+  special?: boolean
+  lowercase?: boolean
+  uppercase?: boolean
+  punctuation?: boolean
+  custom?: string[]
+}
+
+interface KeepOptions {
+  types?: CharacterType[]
+  custom?: string[]
+}
+
+/** Keeps specific character types or substring(s) from a string. See also: `strip()`
+ * 
+ * Example:
+ * ```typescript
+ * keep("hello1234", { type: ["numbers"] }) //=> "1234"
+ * keep("hello1234", { type: ["letters"] }) //=> "hello"
+ * keep("hello, newman!", { type: ["punctuation"] }) //=> ",!"
+ * keep("hello@#$%^", { type: ["special"] }) //=> "@#$%^"
+ * keep("hello newman", { type: ["spaces"] }) //=> " "
+ * keep("hello newman", { custom : ["new", "man"] }) //=> "newman"
+ * 
+ * interface KeepOptions {
+  types?: CharacterType[]
+  custom?: string[]
+}
+ * 
+ * type CharacterType =
+  | "letters"
+  | "numbers"
+  | "spaces"
+  | "special"
+  | "lowercase"
+  | "uppercase"
+  | "punctuation"
+ * ```
+ *
+ */
+export function keep(str: string, options: KeepOptions = {}): string {
+  const patterns: Record<CharacterType, string> = {
+    letters: "a-zA-Z",
+    numbers: "0-9",
+    spaces: "\\s",
+    special: "!@#$%^&*()",
+    lowercase: "a-z",
+    uppercase: "A-Z",
+    punctuation: ".,:;!?'\"",
+  }
+
+  // If we have custom substrings, extract and keep only those
+  if (options.custom && options.custom.length > 0) {
+    let result = ""
+    let remainingStr = str
+    let position = 0
+
+    while (position < remainingStr.length) {
+      let matched = false
+
+      for (const substring of options.custom) {
+        if (remainingStr.substring(position).startsWith(substring)) {
+          result += substring
+          position += substring.length
+          matched = true
+          break
+        }
+      }
+
+      if (!matched) {
+        position++
+      }
+    }
+
+    if (options.types) {
+      let pattern = ""
+      for (const type of options.types) {
+        pattern += patterns[type]
+      }
+
+      if (pattern) {
+        const regex = new RegExp(`[^${pattern}]`, "g")
+        result = result.replace(regex, "")
+      }
+    }
+
+    return result
+  }
+
+  if (options.types) {
+    let pattern = ""
+    for (const type of options.types) {
+      pattern += patterns[type]
+    }
+
+    if (pattern) {
+      const regex = new RegExp(`[^${pattern}]`, "g")
+      return str.replace(regex, "")
+    }
+  }
+
+  return ""
 }
 
 /** Returns a singular or pluralized string based on a provided number.

@@ -623,39 +623,59 @@ describe("strings", () => {
 
   describe("strip", () => {
     it("removes numbers", () => {
-      expect(_.strip("hello1234", { numbers: true })).toBe("hello")
+      expect(_.strip("hello1234", { types: ["numbers"] })).toBe("hello")
     })
 
     it("removes non-numbers", () => {
-      expect(_.strip("hello1234", { nonNumbers: true })).toBe("1234")
-    })
-
-    it("removes letters", () => {
-      expect(_.strip("hello1234", { letters: true })).toBe("1234")
-    })
-
-    it("removes non-letters", () => {
-      expect(_.strip("hello1234", { nonLetters: true })).toBe("hello")
+      expect(_.strip("hello1234", { types: ["letters"] })).toBe("1234")
     })
 
     it("removes whitespace", () => {
-      expect(_.strip("hello there", { spaces: true })).toBe("hellothere")
+      expect(_.strip("hello there", { types: ["spaces"] })).toBe("hellothere")
     })
 
     it("removes punctuation", () => {
-      expect(_.strip("hello, there!", { punctuation: true })).toBe(
+      expect(_.strip("hello, there!", { types: ["punctuation"] })).toBe(
         "hello there"
       )
     })
 
     it("removes specialChars", () => {
-      expect(_.strip("hello, there!@#$%", { specialChars: true })).toBe(
+      expect(_.strip("hello, there!@#$%", { types: ["special"] })).toBe(
         "hello, there"
       )
     })
 
     it("removes strings", () => {
-      expect(_.strip("hellonewman", { text: ["hello", "new"] })).toBe("man")
+      expect(_.strip("hellonewman", { custom: ["hello", "new"] })).toBe("man")
+    })
+  })
+
+  describe("keep", () => {
+    it("keeps numbers", () => {
+      expect(_.keep("hello1234", { types: ["numbers"] })).toBe("1234")
+    })
+
+    it("keeps letters", () => {
+      expect(_.keep("hello1234", { types: ["letters"] })).toBe("hello")
+    })
+
+    it("keeps whitespace", () => {
+      expect(_.keep("hello there", { types: ["spaces"] })).toBe(" ")
+    })
+
+    it("keeps punctuation", () => {
+      expect(_.keep("hello, there!", { types: ["punctuation"] })).toBe(",!")
+    })
+
+    it("keeps special characters", () => {
+      expect(_.keep("hello, there!@#$%", { types: ["special"] })).toBe("!@#$%")
+    })
+
+    it("keeps custom strings", () => {
+      expect(_.keep("hellonewman", { custom: ["hello", "man"] })).toBe(
+        "helloman"
+      )
     })
   })
 })
