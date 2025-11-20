@@ -490,20 +490,45 @@ export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
-/** Returns a provided string with specific string(s) removed
+/** Removes specific substring(s) from a larger string
  *
  * Example:
  * ```typescript
- * strip("hello newman", ["new", "man"]) //=> "hello "
+ * strip("hello1234", { numbers: true }) //=> "hello"
+ * strip("hello1234", { letters: true }) //=> "1234"
+ * strip("hello, newman!", { punctuation: true }) //=> "hello newman"
+ * strip("hello@#$%^", { specialChars: true }) //=> "hello"
+ * strip("hello newman", { spaces: true }) //=> "hellonewman"
+ * strip("hello newman", { terms: ["new", "man"] }) //=> "hello "
  * ```
  *
  */
-export function strip(body: string, textToStrip: string | string[]) {
-  let newBody = body
-  const texts = Array.isArray(textToStrip) ? textToStrip : [textToStrip]
-  for (const text of texts) {
-    newBody = newBody.replace(text, "")
+export function strip(
+  body: string,
+  config: {
+    numbers?: boolean
+    letters?: boolean
+    punctuation?: boolean
+    specialChars?: boolean
+    spaces?: boolean
+    text?: string[]
   }
+): string {
+  let newBody = body
+
+  if (config.numbers) newBody = newBody.replace(/\d/g, "")
+  if (config.letters) newBody = newBody.replace(/[a-zA-Z]+/g, "")
+  if (config.punctuation) newBody = newBody.replace(/\'\"\:\;\,\.\?\!/g, "")
+  if (config.spaces) newBody = newBody.replace(/\s/g, "")
+  if (config.specialChars)
+    newBody = newBody.replace(/\!\@\#\$\%\^\&\*\(\)\{\}\[\]\\\//g, "")
+
+  if (config.text) {
+    for (const text of config.text) {
+      newBody = newBody.replace(text, "")
+    }
+  }
+
   return newBody
 }
 

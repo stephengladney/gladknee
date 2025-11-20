@@ -622,12 +622,32 @@ describe("strings", () => {
   })
 
   describe("strip", () => {
-    it("removes a single string", () => {
-      expect(_.strip("hellothere", "hello")).toBe("there")
+    it("removes numbers", () => {
+      expect(_.strip("hello1234", { numbers: true })).toBe("hello")
     })
 
-    it("removes multiple strings", () => {
-      expect(_.strip("hellonewman", ["hello", "new"])).toBe("man")
+    it("removes letters", () => {
+      expect(_.strip("hellot1234", { letters: true })).toBe("1234")
+    })
+
+    it("removes whitespace", () => {
+      expect(_.strip("hello there", { spaces: true })).toBe("hellothere")
+    })
+
+    it("removes punctuation", () => {
+      expect(_.strip("hello, there!", { punctuation: true })).toBe(
+        "hello there"
+      )
+    })
+
+    it("removes specialChars", () => {
+      expect(_.strip("hello, there!@#$%", { punctuation: true })).toBe(
+        "hello, there"
+      )
+    })
+
+    it("removes strings", () => {
+      expect(_.strip("hellonewman", { text: ["hello", "new"] })).toBe("man")
     })
   })
 })
