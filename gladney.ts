@@ -525,7 +525,7 @@ export function strip(
   if (config.punctuation) newBody = newBody.replace(/\'\"\:\;\,\.\?\!/g, "")
   if (config.spaces) newBody = newBody.replace(/\s/g, "")
   if (config.specialChars)
-    newBody = newBody.replace(/\!\@\#\$\%\^\&\*\(\)\{\}\[\]\\\//g, "")
+    newBody = newBody.replace(/[!@#$%^&*()\[\]\{\}]/g, "")
 
   if (config.text) {
     for (const text of config.text) {
