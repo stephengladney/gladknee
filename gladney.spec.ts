@@ -620,6 +620,16 @@ describe("strings", () => {
       expect(_.shave([1, 2, 3, 4], -2)).toEqual([3, 4])
     })
   })
+
+  describe("strip", () => {
+    it("removes a single string", () => {
+      expect(_.strip("hellothere", "hello")).toBe("there")
+    })
+
+    it("removes multiple strings", () => {
+      expect(_.strip("hellonewman", ["hello", "new"])).toBe("man")
+    })
+  })
 })
 
 describe("arrays", () => {

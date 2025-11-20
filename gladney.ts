@@ -490,6 +490,23 @@ export function lowerCaseNoSpaces(str: string) {
   return String(str).toLowerCase().replace(/ /g, "")
 }
 
+/** Returns a provided string with specific string(s) removed
+ *
+ * Example:
+ * ```typescript
+ * strip("hello newman", ["new", "man"]) //=> "hello "
+ * ```
+ *
+ */
+export function strip(body: string, textToStrip: string | string[]) {
+  let newBody = body
+  const texts = Array.isArray(textToStrip) ? textToStrip : [textToStrip]
+  for (const text of texts) {
+    newBody = newBody.replace(text, "")
+  }
+  return newBody
+}
+
 /** Returns a singular or pluralized string based on a provided number.
  *  Pluralized version defaults to the letter S appended to the singular form.
  *

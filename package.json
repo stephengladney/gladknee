@@ -1,6 +1,6 @@
 {
   "name": "gladknee",
-  "version": "1.17.2",
+  "version": "1.17.3",
   "description": "A zero-dependency utility library written in TypeScript",
   "main": "dist/gladney.js",
   "types": "dist/gladney.d.ts",
