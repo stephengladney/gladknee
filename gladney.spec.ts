@@ -649,7 +649,7 @@ describe("strings", () => {
     })
 
     it("removes specialChars", () => {
-      expect(_.strip("hello, there!@#$%", { punctuation: true })).toBe(
+      expect(_.strip("hello, there!@#$%", { specialChars: true })).toBe(
         "hello, there"
       )
     })
