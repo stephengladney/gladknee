@@ -626,8 +626,16 @@ describe("strings", () => {
       expect(_.strip("hello1234", { numbers: true })).toBe("hello")
     })
 
+    it("removes non-numbers", () => {
+      expect(_.strip("hello1234", { nonNumbers: true })).toBe("1234")
+    })
+
     it("removes letters", () => {
-      expect(_.strip("hellot1234", { letters: true })).toBe("1234")
+      expect(_.strip("hello1234", { letters: true })).toBe("1234")
+    })
+
+    it("removes non-letters", () => {
+      expect(_.strip("hello1234", { nonLetters: true })).toBe("hello")
     })
 
     it("removes whitespace", () => {

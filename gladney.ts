@@ -507,7 +507,9 @@ export function strip(
   body: string,
   config: {
     numbers?: boolean
+    nonNumbers?: boolean
     letters?: boolean
+    nonLetters?: boolean
     punctuation?: boolean
     specialChars?: boolean
     spaces?: boolean
@@ -517,7 +519,9 @@ export function strip(
   let newBody = body
 
   if (config.numbers) newBody = newBody.replace(/\d/g, "")
+  if (config.nonNumbers) newBody = newBody.replace(/[^\d]/g, "")
   if (config.letters) newBody = newBody.replace(/[a-zA-Z]+/g, "")
+  if (config.nonLetters) newBody = newBody.replace(/[^a-zA-Z]+/g, "")
   if (config.punctuation) newBody = newBody.replace(/\'\"\:\;\,\.\?\!/g, "")
   if (config.spaces) newBody = newBody.replace(/\s/g, "")
   if (config.specialChars)
