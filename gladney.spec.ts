@@ -472,6 +472,18 @@ describe("strings", () => {
       expect(_.lazyIncludes("Hello world", "f")).toBeFalsy()
       expect(_.lazyIncludes("Hello world", "F")).toBeFalsy()
     })
+
+    it("ignores punctuation", () => {
+      expect(
+        _.lazyIncludes("McDonald's", "mcdonalds", { ignore: ["punctuation"] })
+      ).toBeTruthy()
+    })
+
+    it("ignores spaces", () => {
+      expect(
+        _.lazyIncludes("h e l l o", "hello", { ignore: ["spaces"] })
+      ).toBeTruthy()
+    })
   })
 
   describe("plural", () => {
