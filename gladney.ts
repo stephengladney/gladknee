@@ -992,25 +992,35 @@ export function endsWith(str: string, suffix: string | string[]): boolean {
 }
 
 /**
- * Returns a boolean of whether not the first parameter (array or string) includes the second parameter, ignoring case.
+ * Returns a boolean of whether not the first parameter (array or string) includes the second parameter, ignoring case. You can also optionally pass in other character types to ignore.
  *
  * Example:
  * ```typescript
  * lazyIncludes("Hello world", "LL") //=> true
  *
  * lazyIncludes("Hello world", "ff") //=> false
+ * 
+ * type CharacterType =
+  | "letters"
+  | "numbers"
+  | "spaces"
+  | "special"
+  | "lowercase"
+  | "uppercase"
+  | "punctuation"
  * ```
  */
 
 export function lazyIncludes<T extends string | any[]>(
   a: T,
-  b: T extends (infer U)[] ? U : string
+  b: T extends (infer U)[] ? U : string,
+  config: { ignore: CharacterType[] } = { ignore: [] }
 ) {
   let compareA = Array.isArray(a)
-    ? a.map((x) => lowerCaseNoSpaces(x))
-    : lowerCaseNoSpaces(a)
+    ? a.map((x) => strip(x, { types: config.ignore }).toLowerCase())
+    : strip(a, { types: config.ignore }).toLowerCase()
 
-  return compareA.includes(lowerCaseNoSpaces(b))
+  return compareA.includes(strip(b, { types: config.ignore }).toLowerCase())
 }
 
 /**
