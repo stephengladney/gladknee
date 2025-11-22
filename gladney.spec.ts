@@ -474,7 +474,7 @@ describe("strings", () => {
     })
 
     it("accepts arrays for the first param", () => {
-      expect(_.lazyIncludes(["Hello", " world"], "LL")).toBeTruthy()
+      expect(_.lazyIncludes(["Hello", " world"], "hello")).toBeTruthy()
       expect(
         _.lazyIncludes(["Hell'o", " world"], "hello", {
           ignore: ["punctuation"],
