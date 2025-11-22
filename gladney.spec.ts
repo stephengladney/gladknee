@@ -473,6 +473,15 @@ describe("strings", () => {
       expect(_.lazyIncludes("Hello world", "F")).toBeFalsy()
     })
 
+    it("accepts arrays for the first param", () => {
+      expect(_.lazyIncludes(["Hello", " world"], "LL")).toBeTruthy()
+      expect(
+        _.lazyIncludes(["Hell'o", " world"], "hello", {
+          ignore: ["punctuation"],
+        })
+      ).toBeTruthy()
+    })
+
     it("ignores punctuation", () => {
       expect(
         _.lazyIncludes("McDonald's", "mcdonalds", { ignore: ["punctuation"] })
