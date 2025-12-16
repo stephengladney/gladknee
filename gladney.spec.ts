@@ -851,6 +851,17 @@ describe("arrays", () => {
     })
   })
 
+  describe("groupBy", () => {
+    it("groups items by callback result", () => {
+      const isEven = (n: number) => n % 2 === 0
+
+      expect(_.groupBy([1, 2, 3, 4, 5, 6], isEven)).toEqual({
+        true: [2, 4, 6],
+        false: [1, 3, 5],
+      })
+    })
+  })
+
   describe("uniqueBy", () => {
     it("removes duplicates by callback result", () => {
       const arr = [
