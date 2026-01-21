@@ -1412,7 +1412,20 @@ export function insertionSort<T extends string[] | number[]>(arr: T) {
   return _arr as StringOrNumberArray<T>
 }
 
-export function moveItem<T>(arr: T[], currentIndex: number, newIndex: number) {
+/** Returns an array with an item moved to a new position.
+ *
+ * Example:
+ * ```typescript
+ * const arr = [0, 1, 2, 3, 4, 5]
+
+* moveItem(arr, 3, 1) //=> [0, 3, 1, 2, 4, 5]
+ * ```
+ */
+export function moveItem<T>(
+  arr: T[],
+  currentIndex: number,
+  newIndex: number,
+): T[] {
   const newArr = Array.from(arr)
   const item = newArr[currentIndex]
 
