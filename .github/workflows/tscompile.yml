@@ -19,5 +19,5 @@ jobs:
       - run: tsc
       - run: rm dist/gladney.spec.js dist/gladney.spec.d.ts
       - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # env:
+        #   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
