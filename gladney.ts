@@ -59,7 +59,7 @@ export function randomNumber(min: number, max: number) {
 export function clampNumber(
   n: number,
   min: number | false,
-  max?: number | false
+  max?: number | false,
 ) {
   let result = n
   if (min !== false) result = n > min ? n : min
@@ -249,7 +249,7 @@ function getMillisecondsFromDuration(duration: Partial<Duration>) {
  */
 export function dateFromDuration(
   duration: Partial<Duration>,
-  startDate: Date = new Date()
+  startDate: Date = new Date(),
 ) {
   return new Date(startDate.getTime() + getMillisecondsFromDuration(duration))
 }
@@ -270,7 +270,7 @@ export function ago(duration: Partial<Duration>) {
     omitKeys(duration, "isGreaterThan", "isLessThan"),
     (key, val) => ({
       [key]: val! * -1,
-    })
+    }),
   )
   return dateFromDuration(negativeDuration)
 }
@@ -421,7 +421,7 @@ export function duration({
 export function convertDuration(
   d: Duration,
   to: "milliseconds" | "seconds" | "minutes" | "hours" | "days",
-  precision?: number
+  precision?: number,
 ) {
   const ms = getMillisecondsFromDuration(d)
   const seconds = ms / 1000
@@ -724,7 +724,7 @@ export function truncate(
   str: string,
   maxLength: number,
   fill: string = "...",
-  style: "leading" | "trailing" | "middle" = "trailing"
+  style: "leading" | "trailing" | "middle" = "trailing",
 ) {
   if (str.length > maxLength) {
     switch (style) {
@@ -781,7 +781,7 @@ export function mask(
     style: "trailing",
     maskLength: str.length,
     ignore: [],
-  }
+  },
 ) {
   if (config?.style !== "middle" || !config?.style) {
     const _str =
@@ -839,7 +839,7 @@ export function pad(
   str: string,
   length: number,
   char: string,
-  style: "leading" | "trailing" = "trailing"
+  style: "leading" | "trailing" = "trailing",
 ) {
   if (str.length >= length) return str
 
@@ -902,7 +902,7 @@ export function randomString(
   length: number,
   includeLetters = true,
   includeNumbers = true,
-  includeSpecialChars = false
+  includeSpecialChars = false,
 ): string {
   const chars =
     (includeLetters
@@ -1014,7 +1014,7 @@ export function endsWith(str: string, suffix: string | string[]): boolean {
 export function lazyIncludes<T extends string | any[]>(
   a: T,
   b: T extends (infer U)[] ? U : string,
-  config: { ignore: CharacterType[] } = { ignore: [] }
+  config: { ignore: CharacterType[] } = { ignore: [] },
 ) {
   let compareA = Array.isArray(a)
     ? a.map((x) => strip(x, { types: config.ignore }).toLowerCase())
@@ -1045,11 +1045,11 @@ export function isEqual<T extends string | any[] | Record<any, any>>(
   b: T extends (infer U)[]
     ? U[]
     : T extends string
-    ? string
-    : T extends Record<any, unknown>
-    ? Record<any, unknown>
-    : never,
-  options: MatchOptions = defaultMatchOptions
+      ? string
+      : T extends Record<any, unknown>
+        ? Record<any, unknown>
+        : never,
+  options: MatchOptions = defaultMatchOptions,
 ): boolean {
   if (typeof a === "string" && typeof b === "string") {
     return withMatchOptions(a, options) === withMatchOptions(b, options)
@@ -1128,7 +1128,7 @@ export function isNumeric(n: string | number) {
 
 export function shave<T extends string | U[], U = any>(
   iterable: T,
-  n: number
+  n: number,
 ): StringOrArray<T> {
   return (
     n > 0 ? iterable.slice(0, iterable.length - n) : iterable.slice(n * -1)
@@ -1274,7 +1274,7 @@ export function clampArray<T>(
   arr: T[],
   min: number | false,
   max: number | false,
-  fill?: T
+  fill?: T,
 ) {
   let result: (T | undefined)[] = []
   if (min && arr.length < min) {
@@ -1319,7 +1319,7 @@ export function flatten(arr: any[], levels = 0): unknown[] {
   function flattenWithAccumulator(
     arr: any[],
     levels = 0,
-    currentLevel = 0
+    currentLevel = 0,
   ): any[] {
     return arr.reduce((acc, item) => {
       if (Array.isArray(item) && (!levels || currentLevel < levels)) {
@@ -1412,6 +1412,16 @@ export function insertionSort<T extends string[] | number[]>(arr: T) {
   return _arr as StringOrNumberArray<T>
 }
 
+export function moveItem<T>(arr: T[], currentIndex: number, newIndex: number) {
+  const newArr = Array.from(arr)
+  const item = newArr[currentIndex]
+
+  newArr.splice(currentIndex, 1)
+  newArr.splice(newIndex, 0, item)
+
+  return newArr
+}
+
 /** Returns an array with any duplicates removed.
  *
  * Example:
@@ -1449,7 +1459,7 @@ export function rollingSum(arr: number[], precision?: number) {
       index > 0
         ? [...acc, round(acc[acc.length - 1] + Number(i), precision ?? 1)]
         : [i],
-    []
+    [],
   )
 }
 
@@ -1512,7 +1522,7 @@ export function difference<T>(firstArray: T[], secondArray: T[]) {
  **/
 export function uncommon<T>(firstArray: T[], ...otherArrays: T[][]) {
   const arraysAsJSONStrings = [firstArray, ...otherArrays].map((arr) =>
-    arr.map((item: T) => JSON.stringify(item))
+    arr.map((item: T) => JSON.stringify(item)),
   )
   const arraysUniqueValues = arraysAsJSONStrings.map((arr) => new Set(arr))
   const seen: string[] = []
@@ -1658,7 +1668,7 @@ export function rejectAsync<T>(arr: T[], fn: AsyncFunc<T, any>) {
  */
 export async function mapAsync<T, U extends AsyncFunc<T, any>>(
   arr: T[],
-  fn: U
+  fn: U,
 ) {
   const result: ReturnType<U>[] = []
   for (let i = 0; i < arr.length; i++) {
@@ -1697,7 +1707,7 @@ export async function filterAsync<T>(arr: T[], fn: AsyncFunc<T, any>) {
 export async function reduceAsync<T, V = any>(
   arr: T[],
   fn: (acc: any, i: T) => Promise<any>,
-  defaultValue?: V
+  defaultValue?: V,
 ) {
   let result: V | undefined = defaultValue
 
@@ -1784,7 +1794,7 @@ export function findValue<T>(arr: T[], fn: Func<any | Falsy>) {
  */
 export function arrayInto<T extends any[]>(
   arr: T,
-  fn: (item: T[number], index?: number) => object
+  fn: (item: T[number], index?: number) => object,
 ): object {
   return arr.reduce((acc, i, index) => ({ ...acc, ...fn(i, index) }), {})
 }
@@ -1891,7 +1901,7 @@ export function pickKeys<T extends object, U extends keyof T>(
 export function putNew<T extends object>(
   obj: T,
   key: string,
-  value: T[keyof T]
+  value: T[keyof T],
 ) {
   if (Object.keys(obj).includes(key)) return deepCopy(obj)
   else {
@@ -1914,11 +1924,11 @@ export function putNew<T extends object>(
  */
 export function objectInto<T extends object, K extends keyof T, V extends T[K]>(
   obj: T,
-  fn: (key: K, val: V) => object
+  fn: (key: K, val: V) => object,
 ): object {
   return Object.keys(obj).reduce(
     (acc, k) => ({ ...acc, ...fn(k as K, obj[k as K] as V) }),
-    {}
+    {},
   )
 }
 /** Returns the sum of the values of a specific shared key in an array of objects.
@@ -1933,7 +1943,7 @@ export function objectInto<T extends object, K extends keyof T, V extends T[K]>(
  **/
 export function sumOfKeyValue<T extends object, U extends keyof T>(
   arr: (T & { [K in U]: number })[],
-  key: U
+  key: U,
 ) {
   return arr.reduce((acc, i) => acc + i[key], 0)
 }
@@ -1967,11 +1977,11 @@ export function sumOfKeyValue<T extends object, U extends keyof T>(
 export function sortByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
-  order: "asc" | "desc" = "asc"
+  order: "asc" | "desc" = "asc",
 ) {
   const isAscending = order === "asc"
   return [...arr].sort((a, b) =>
-    a[key] < b[key] ? (isAscending ? -1 : 1) : isAscending ? 1 : -1
+    a[key] < b[key] ? (isAscending ? -1 : 1) : isAscending ? 1 : -1,
   )
 }
 
@@ -1987,7 +1997,7 @@ export function sortByKeyValue<T extends object, U extends keyof T>(
  */
 export function getIn<T extends object>(
   o: T,
-  nestedKeys: [string, string, ...rest: string[]]
+  nestedKeys: [string, string, ...rest: string[]],
 ) {
   const recursiveGet = (obj: any, key: any, i: number): any => {
     return i == nestedKeys.length - 1
@@ -2033,7 +2043,7 @@ export function getIn<T extends object>(
 export function sortByKeyValues<T extends object, U extends keyof T>(
   objs: T[],
   keys: U[],
-  order?: ("asc" | "desc")[]
+  order?: ("asc" | "desc")[],
 ): T[] {
   if (keys.length === 1)
     return sortByKeyValue(objs, keys[0], order ? order[0] : undefined)
@@ -2048,7 +2058,7 @@ export function sortByKeyValues<T extends object, U extends keyof T>(
       ...acc,
       ...sortByKeyValues(groupedByKey[keyVal], keys.slice(1), order?.slice(1)),
     ],
-    []
+    [],
   )
 }
 
@@ -2064,7 +2074,7 @@ export function sortByKeyValues<T extends object, U extends keyof T>(
 export function keyValueCounts<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
-  isCaseSensitive = false
+  isCaseSensitive = false,
 ) {
   return arr.reduce((result: { [key: string]: number }, obj) => {
     const value = isCaseSensitive
@@ -2104,7 +2114,7 @@ export function keyValueCounts<T extends object, U extends keyof T>(
 export function groupByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
-  isCaseSensitive = false
+  isCaseSensitive = false,
 ) {
   const result: { [key: string]: T[] } = {}
   arr.forEach((obj: T) => {
@@ -2144,7 +2154,7 @@ export function groupByKeyValue<T extends object, U extends keyof T>(
 export function uniqueByKeyValue<T extends object, U extends keyof T>(
   arr: T[],
   key: U,
-  isCaseSensitive = false
+  isCaseSensitive = false,
 ) {
   const groupedByKey = groupByKeyValue(arr, key, isCaseSensitive)
   return Object.keys(groupedByKey).reduce((acc: T[], k) => {
@@ -2302,7 +2312,7 @@ export function keyWithLargestValue<T extends object>(obj: T) {
  */
 export function keyWhereValueIs<T extends object, U extends T[keyof T]>(
   obj: T,
-  value: U
+  value: U,
 ): string | null {
   for (let key in obj) {
     if (obj[key] === value) return key
@@ -2391,7 +2401,7 @@ export function sortBy<T>(things: T[], func: Function) {
   const groupedByResult = groupBy(things, func)
   return safeSort(Object.keys(groupedByResult)).reduce(
     (acc: T[], key) => [...acc, ...groupedByResult[key]],
-    []
+    [],
   )
 }
 
@@ -2428,7 +2438,7 @@ export function convertQueryParamOperators(params: {}) {
     const operator = paramString.substring(paramString.length - 1)
     const paramStringWithoutOperator = paramString.substring(
       0,
-      paramString.length - 1
+      paramString.length - 1,
     )
     switch (operator) {
       case "!":
@@ -2449,7 +2459,7 @@ export function convertQueryParamOperators(params: {}) {
  **/
 export function withTimeout<T extends AsyncFunc>(
   asyncFunction: T,
-  timeout: number
+  timeout: number,
 ) {
   return (...args: Parameters<T>) =>
     new Promise((resolve, reject) => {
@@ -2458,7 +2468,7 @@ export function withTimeout<T extends AsyncFunc>(
         (result: ReturnType<T>) => {
           clearTimeout(timer)
           resolve(result)
-        }
+        },
       )
       timer = setTimeout(() => {
         reject("TIMED_OUT")
@@ -2492,7 +2502,7 @@ export function createPipe<FirstFn extends Func, F extends Func[]>(
   return (...args: Parameters<FirstFn>) =>
     (fns as Func[]).reduce(
       (acc, fn) => fn(acc),
-      firstFn(...(args as Array<Parameters<FirstFn>>))
+      firstFn(...(args as Array<Parameters<FirstFn>>)),
     ) as LastFnReturnType<F, ReturnType<FirstFn>>
 }
 
@@ -2516,7 +2526,7 @@ export function pipe<FirstFn extends Func, F extends Func[]>(
 ) {
   return (fns as Func[]).reduce(
     (acc, fn) => fn(acc),
-    firstFn(arg)
+    firstFn(arg),
   ) as LastFnReturnType<F, ReturnType<FirstFn>>
 }
 
@@ -2531,7 +2541,7 @@ export function pipe<FirstFn extends Func, F extends Func[]>(
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   delay: number,
-  immediate: boolean = false
+  immediate: boolean = false,
 ): DebouncedFunction<T> {
   let timeoutId: ReturnType<typeof setTimeout>
   let lastArgs: Parameters<T>
@@ -2605,7 +2615,7 @@ export function debounce<T extends (...args: any[]) => any>(
 export function throttle<
   T extends Func | AsyncFunc,
   U extends Parameters<T>,
-  R extends UnwrapPromiseOrResult<T>
+  R extends UnwrapPromiseOrResult<T>,
 >(func: T, delay = 0) {
   let index = 0
   let lastCompleted = 0
@@ -2658,7 +2668,7 @@ export async function retry<T extends Func | AsyncFunc>(
   func: T,
   attempts: number,
   delay?: number,
-  fallbackFn?: Func | AsyncFunc
+  fallbackFn?: Func | AsyncFunc,
 ) {
   for (let i = 1; i <= attempts; i++) {
     try {
@@ -2731,7 +2741,7 @@ export function partial<T extends Func>(
  * ```
  **/
 export function curry<T extends (...args: any[]) => any>(
-  func: T
+  func: T,
 ): CurryFunction<T> {
   function curried(func: Function, i: number, args: any[]): Function {
     return args.length < func.length
@@ -2748,7 +2758,7 @@ export function curry<T extends (...args: any[]) => any>(
 export async function times(
   fn: Func | AsyncFunc,
   times: number,
-  delay?: number
+  delay?: number,
 ) {
   let result
   for (let i = 1; i <= times; i++) {
@@ -2794,7 +2804,7 @@ export function getCookie(cookieName: string) {
 export function setCookie(
   cookieName: string,
   cookieValue: string,
-  expirationInDays: number
+  expirationInDays: number,
 ) {
   const d = new Date()
   d.setTime(d.getTime() + expirationInDays * 24 * 60 * 60 * 1000)
@@ -2807,7 +2817,7 @@ export function setCookie(
 export function createQueue<
   T extends Func | AsyncFunc,
   U extends Parameters<T>,
-  R extends UnwrapPromiseOrResult<T>
+  R extends UnwrapPromiseOrResult<T>,
 >(functionToExecute: T, delay?: number): Queue<U, R> {
   const queue: U[] = []
   let isBreakRequested = false
@@ -2822,7 +2832,7 @@ export function createQueue<
     type ResultType = R | "error"
 
     const recursiveExecuteAll = async (
-      results: ResultType[] = []
+      results: ResultType[] = [],
     ): Promise<any> => {
       if (isBreakRequested) return results
 
@@ -2876,7 +2886,7 @@ export async function getBrowserGeolocation(timeoutInSeconds = 10) {
     },
     (error) => {
       err = String(error)
-    }
+    },
   )
   while (browserLocation.latitude === null && err === null) {
     await pause(500)
@@ -2963,7 +2973,7 @@ export function rgbToHex(red: number, green: number, blue: number): string {
  * ```
  */
 export function hexToRgb(
-  hex: string
+  hex: string,
 ): [red: number, green: number, blue: number] {
   const _hex = hex[0] === "#" ? hex.slice(1) : hex
   const redHex = _hex.substring(0, 2)
@@ -3031,7 +3041,7 @@ const defaultMatchOptions: MatchOptions = {
 
 function withMatchOptions(
   param: string | any[] | Record<any, any>,
-  options: MatchOptions
+  options: MatchOptions,
 ): typeof param {
   if (typeof param === "number") return String(param)
   if (typeof param === "string") {
@@ -3047,13 +3057,13 @@ function withMatchOptions(
 
     if (options.ignoreCase) {
       compare = compare.map((x) =>
-        typeof x === "string" ? x.toLowerCase() : x
+        typeof x === "string" ? x.toLowerCase() : x,
       )
     }
 
     if (options.ignoreSpace) {
       compare = compare.map((x) =>
-        typeof x === "string" ? x.replace(/ /g, "") : x
+        typeof x === "string" ? x.replace(/ /g, "") : x,
       )
     }
 
@@ -3118,8 +3128,8 @@ type AsyncFunc<T = any, U = any> = (...args: T[]) => Promise<U>
 type UnwrapPromiseOrResult<T> = T extends (...args: any[]) => Promise<infer U>
   ? U
   : T extends (...args: any[]) => any
-  ? ReturnType<T>
-  : never
+    ? ReturnType<T>
+    : never
 
 type DebouncedFunction<T extends Func> = {
   (...args: Parameters<T>): Promise<ReturnType<T> | undefined>
@@ -3131,8 +3141,8 @@ type CurryFunction<T> = T extends (...args: infer Args) => infer Result
   ? Args extends []
     ? () => Result
     : Args extends [infer First, ...infer Rest]
-    ? (arg: First) => CurryFunction<(...rest: Rest) => Result>
-    : never
+      ? (arg: First) => CurryFunction<(...rest: Rest) => Result>
+      : never
   : never
 
 type Queue<Params extends any[], Result> = {
@@ -3145,18 +3155,18 @@ type Queue<Params extends any[], Result> = {
 
 // Credit to @ecyrbedev on Twitter for this advanced typing mastery
 type PipeArgs<F extends Func[], Acc extends Func[] = []> = F extends [
-  (...args: infer A) => infer B
+  (...args: infer A) => infer B,
 ]
   ? [...Acc, (...args: A) => B]
   : F extends [(...args: infer A) => any, ...infer Tail]
-  ? Tail extends [(arg: infer B) => any, ...any[]]
-    ? PipeArgs<Tail, [...Acc, (...args: A) => B]>
+    ? Tail extends [(arg: infer B) => any, ...any[]]
+      ? PipeArgs<Tail, [...Acc, (...args: A) => B]>
+      : Acc
     : Acc
-  : Acc
 
 type LastFnReturnType<F extends Array<Func>, Else = never> = F extends [
   ...any[],
-  (...arg: any) => infer R
+  (...arg: any) => infer R,
 ]
   ? R
   : Else
