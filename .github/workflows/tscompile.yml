@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "16.x"
           registry-url: "https://registry.npmjs.org"
@@ -22,5 +22,3 @@ jobs:
       - run: tsc
       - run: rm dist/gladney.spec.js dist/gladney.spec.d.ts
       - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
