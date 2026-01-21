@@ -95,7 +95,7 @@ describe("time & dates", () => {
           minutes: 3,
           seconds: 4,
         },
-        now
+        now,
       )
 
       expect(fnResult.getDate()).toBe(then.getDate())
@@ -119,7 +119,7 @@ describe("time & dates", () => {
           minutes: -3,
           seconds: -4,
         },
-        now
+        now,
       )
 
       expect(fnResult.getDate()).toBe(then.getDate())
@@ -260,8 +260,8 @@ describe("time & dates", () => {
         _.omitKeys(
           _.durationFromDates(start, end),
           "isGreaterThan",
-          "isLessThan"
-        )
+          "isLessThan",
+        ),
       ).toEqual({
         days: 11,
         hours: 2,
@@ -363,7 +363,7 @@ describe("time & dates", () => {
   describe("duration", () => {
     it("does not require all time units", () => {
       expect(
-        _.omitKeys(_.duration({ hours: 1 }), "isGreaterThan", "isLessThan")
+        _.omitKeys(_.duration({ hours: 1 }), "isGreaterThan", "isLessThan"),
       ).toEqual({
         seconds: 0,
         minutes: 0,
@@ -478,19 +478,19 @@ describe("strings", () => {
       expect(
         _.lazyIncludes(["Hell'o", " world"], "hello", {
           ignore: ["punctuation"],
-        })
+        }),
       ).toBeTruthy()
     })
 
     it("ignores punctuation", () => {
       expect(
-        _.lazyIncludes("McDonald's", "mcdonalds", { ignore: ["punctuation"] })
+        _.lazyIncludes("McDonald's", "mcdonalds", { ignore: ["punctuation"] }),
       ).toBeTruthy()
     })
 
     it("ignores spaces", () => {
       expect(
-        _.lazyIncludes("h e l l o", "hello", { ignore: ["spaces"] })
+        _.lazyIncludes("h e l l o", "hello", { ignore: ["spaces"] }),
       ).toBeTruthy()
     })
   })
@@ -554,25 +554,29 @@ describe("strings", () => {
 
     it("can be leading", () => {
       expect(
-        _.mask("Password", { maskWith: "*", style: "leading", maskLength: 4 })
+        _.mask("Password", { maskWith: "*", style: "leading", maskLength: 4 }),
       ).toBe("****word")
     })
 
     it("can be trailing", () => {
       expect(
-        _.mask("Password", { maskWith: "*", style: "trailing", maskLength: 4 })
+        _.mask("Password", { maskWith: "*", style: "trailing", maskLength: 4 }),
       ).toBe("Pass****")
     })
 
     it("can be middle", () => {
       expect(
-        _.mask("Password", { maskWith: "*", style: "middle", maskLength: 4 })
+        _.mask("Password", { maskWith: "*", style: "middle", maskLength: 4 }),
       ).toBe("Pa****rd")
     })
 
     it("divides string correctly if uneven length", () => {
       expect(
-        _.mask("Hello world", { maskWith: ".", style: "middle", maskLength: 2 })
+        _.mask("Hello world", {
+          maskWith: ".",
+          style: "middle",
+          maskLength: 2,
+        }),
       ).toBe("Hell..world")
     })
   })
@@ -580,14 +584,14 @@ describe("strings", () => {
   describe("escapeString", () => {
     it("returns a string with characters escaped", () => {
       expect(_.escapeString("Hello <there>, my 'friend'")).toBe(
-        "Hello &lt;there&gt;, my &#x27;friend&#x27;"
+        "Hello &lt;there&gt;, my &#x27;friend&#x27;",
       )
     })
   })
   describe("unEscapeString", () => {
     it("returns a string with characters unescaped", () => {
       expect(
-        _.unEscapeString("Hello &lt;there&gt;, my &#x27;friend&#x27;")
+        _.unEscapeString("Hello &lt;there&gt;, my &#x27;friend&#x27;"),
       ).toBe("Hello <there>, my 'friend'")
     })
   })
@@ -657,13 +661,13 @@ describe("strings", () => {
 
     it("removes punctuation", () => {
       expect(_.strip("hello, there!", { types: ["punctuation"] })).toBe(
-        "hello there"
+        "hello there",
       )
     })
 
     it("removes specialChars", () => {
       expect(_.strip("hello, there!@#$%", { types: ["special"] })).toBe(
-        "hello, there"
+        "hello, there",
       )
     })
 
@@ -695,7 +699,7 @@ describe("strings", () => {
 
     it("keeps custom strings", () => {
       expect(_.keep("hellonewman", { custom: ["hello", "man"] })).toBe(
-        "helloman"
+        "helloman",
       )
     })
   })
@@ -726,7 +730,7 @@ describe("arrays", () => {
         { first: "Jane", last: "Smith" },
       ]
       expect(
-        _.arrayInto(arr, (i, index) => ({ [String(index)]: i.last }))
+        _.arrayInto(arr, (i, index) => ({ [String(index)]: i.last })),
       ).toEqual({
         "0": "Doe",
         "1": "Smith",
@@ -862,6 +866,11 @@ describe("arrays", () => {
     })
   })
 
+  describe("changeItemIndex", () => {
+    const arr = [0, 1, 2, 3, 4, 5]
+    expect(_.changeItemIndex(arr, 3, 1)).toEqual([0, 3, 1, 2, 4, 5])
+  })
+
   describe("uniqueBy", () => {
     it("removes duplicates by callback result", () => {
       const arr = [
@@ -986,7 +995,7 @@ describe("arrays", () => {
         _.flatten([
           [1, 2, [3, 4]],
           [5, 6],
-        ])
+        ]),
       ).toEqual([1, 2, 3, 4, 5, 6])
     })
 
@@ -997,8 +1006,8 @@ describe("arrays", () => {
             [1, 2, [3, 4]],
             [5, 6],
           ],
-          1
-        )
+          1,
+        ),
       ).toEqual([1, 2, [3, 4], 5, 6])
     })
   })
@@ -1029,7 +1038,7 @@ describe("arrays", () => {
       expect(
         _.unionBy([[stephen2], [andrea1, andrea2]], (obj) => {
           return obj.age
-        })
+        }),
       ).toEqual([stephen2, andrea1])
     })
   })
@@ -1041,13 +1050,13 @@ describe("arrays", () => {
 
     it("arrays are equal, order doesn't matter", () => {
       expect(_.isEqual([1, 2, 3, 4], [1, 2, 3, 4], { ignoreOrder: true })).toBe(
-        true
+        true,
       )
     })
 
     it("arrays are equal out of order, order doesn't matter", () => {
       expect(_.isEqual([1, 2, 3, 4], [2, 1, 3, 4], { ignoreOrder: true })).toBe(
-        true
+        true,
       )
     })
 
@@ -1061,7 +1070,7 @@ describe("arrays", () => {
 
     it("arrays are not equal, order doesn't matter", () => {
       expect(_.isEqual([1, 2, 5, 4], [2, 1, 3, 4], { ignoreOrder: true })).toBe(
-        false
+        false,
       )
     })
 
@@ -1074,8 +1083,8 @@ describe("arrays", () => {
         _.isEqual(
           { a: 1, b: 2, c: 3 },
           { c: 3, b: 2, a: 1 },
-          { ignoreOrder: true }
-        )
+          { ignoreOrder: true },
+        ),
       ).toBe(true)
     })
 
@@ -1084,14 +1093,14 @@ describe("arrays", () => {
         _.isEqual(
           { a: "A", b: "B", c: "C" },
           { a: "a", b: "b", c: "c" },
-          { ignoreCase: true }
-        )
+          { ignoreCase: true },
+        ),
       ).toBe(true)
     })
 
     it("objects are equal but diff case, case does matter", () => {
       expect(
-        _.isEqual({ a: "A", b: "B", c: "C" }, { a: "a", b: "b", c: "c" })
+        _.isEqual({ a: "A", b: "B", c: "C" }, { a: "a", b: "b", c: "c" }),
       ).toBe(false)
     })
 
@@ -1100,8 +1109,8 @@ describe("arrays", () => {
         _.isEqual(
           { a: "A", b: "B", c: "C" },
           { c: "c", a: "a", b: "b" },
-          { ignoreOrder: true, ignoreCase: true }
-        )
+          { ignoreOrder: true, ignoreCase: true },
+        ),
       ).toBe(true)
     })
   })
@@ -1170,10 +1179,10 @@ describe("arrays", () => {
     it("joins the items with the appropriate separators", () => {
       expect(_.join(["apples", "oranges"], " and ")).toBe("apples and oranges")
       expect(_.join(["apples", "oranges"], ", ", " and ")).toBe(
-        "apples and oranges"
+        "apples and oranges",
       )
       expect(_.join(["apples", "oranges", "bananas"], ", ", " and ")).toBe(
-        "apples, oranges and bananas"
+        "apples, oranges and bananas",
       )
     })
   })
@@ -1266,7 +1275,7 @@ describe("objects", () => {
     it("returns the desired new shape", () => {
       const obj = { user: { name: "Stephen", age: 39, sex: "M" } }
       expect(
-        _.objectInto(obj, (key, value) => ({ [value.name]: value.age }))
+        _.objectInto(obj, (key, value) => ({ [value.name]: value.age })),
       ).toEqual({ Stephen: 39 })
     })
   })
@@ -1351,7 +1360,7 @@ describe("objects", () => {
         { a: 3, b: 4, c: 1 },
       ]
       expect(
-        _.sortByKeyValues(arr, ["a", "b", "c"], ["desc", "desc", "desc"])
+        _.sortByKeyValues(arr, ["a", "b", "c"], ["desc", "desc", "desc"]),
       ).toEqual([
         { a: 3, b: 4, c: 1 },
         { a: 2, b: 2, c: 1 },
@@ -1374,7 +1383,7 @@ describe("objects", () => {
         { a: 3, b: 4, c: 1 },
       ]
       expect(
-        _.sortByKeyValues(arr, ["a", "b", "c"], ["asc", "desc", "asc"])
+        _.sortByKeyValues(arr, ["a", "b", "c"], ["asc", "desc", "asc"]),
       ).toEqual([
         { a: 1, b: 3, c: 2 },
         { a: 1, b: 2, c: 1 },
@@ -1660,7 +1669,7 @@ describe("misc", () => {
         favorite: { drink: "coke", food: "chicken" },
       }
       expect(_.objectToQueryParams(obj)).toEqual(
-        "name=john&age=30&favorite[drink]=coke&favorite[food]=chicken"
+        "name=john&age=30&favorite[drink]=coke&favorite[food]=chicken",
       )
     })
 
@@ -1671,7 +1680,7 @@ describe("misc", () => {
         age: 30,
       }
       expect(_.objectToQueryParams(obj)).toEqual(
-        "name=john&favorite[drink]=coke&favorite[food]=chicken&age=30"
+        "name=john&favorite[drink]=coke&favorite[food]=chicken&age=30",
       )
     })
   })
@@ -1957,7 +1966,7 @@ describe("misc", () => {
   describe("stripHTML", () => {
     it("removes any html tags from text", () => {
       expect(_.stripHTML("<html><p>Hello <b>world</b>!</p></html>")).toBe(
-        "Hello world!"
+        "Hello world!",
       )
     })
   })
