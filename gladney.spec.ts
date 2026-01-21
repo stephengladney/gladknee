@@ -866,10 +866,10 @@ describe("arrays", () => {
     })
   })
 
-  describe("changeItemIndex", () => {
+  describe("moveItem", () => {
     it("moves the item to the correct new position", () => {
       const arr = [0, 1, 2, 3, 4, 5]
-      expect(_.changeItemIndex(arr, 3, 1)).toEqual([0, 3, 1, 2, 4, 5])
+      expect(_.moveItem(arr, 3, 1)).toEqual([0, 3, 1, 2, 4, 5])
     })
   })
 

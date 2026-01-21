@@ -1412,11 +1412,7 @@ export function insertionSort<T extends string[] | number[]>(arr: T) {
   return _arr as StringOrNumberArray<T>
 }
 
-export function changeItemIndex<T>(
-  arr: T[],
-  currentIndex: number,
-  newIndex: number,
-) {
+export function moveItem<T>(arr: T[], currentIndex: number, newIndex: number) {
   const newArr = Array.from(arr)
   const item = newArr[currentIndex]
 
