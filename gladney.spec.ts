@@ -1282,6 +1282,22 @@ describe("objects", () => {
     })
   })
 
+  describe("objectMap", () => {
+    it("returns the desired new shape", () => {
+      const obj = {
+        Stephen: { age: 41, favoriteColor: "black" },
+        Andrea: { age: 42, favoriteColor: "blue" },
+      }
+      const fn = (key: string, value: any) =>
+        `${key} is ${value.age} years old and likes ${value.favoriteColor}`
+
+      expect(_.objectMap(obj, fn)).toEqual([
+        "Stephen is 41 years old and likes black",
+        "Andrea is 42 years old and likes blue",
+      ])
+    })
+  })
+
   describe("sumOfKeyValue", () => {
     it("returns the sum of the key value", () => {
       const arr = [
