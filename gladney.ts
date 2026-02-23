@@ -1955,8 +1955,10 @@ export function objectMap<
   K extends keyof T,
   V extends T[K],
   Z = any,
->(obj: T, fn: (key: K, val: V) => Z): Z[] {
-  return Object.keys(obj).map((k) => fn(k as K, obj[k as K] as V))
+>(obj: T, fn: (key: K, val: V) => Z, sortByKeys = false): Z[] {
+  const arr = sortByKeys ? Object.keys(obj).sort() : Object.keys(obj)
+
+  return arr.map((k) => fn(k as K, obj[k as K] as V))
 }
 
 /** Returns the sum of the values of a specific shared key in an array of objects.
