@@ -1932,35 +1932,6 @@ export function objectInto<T extends object, K extends keyof T, V extends T[K]>(
   )
 }
 
-/** Maps over an object and returns the result of the callback as an array
- *
- * Example:
- * ```typescript
- * const obj = {
- *   Stephen: { age: 41, favoriteColor: "black" },
- *   Andrea: { age: 42, favoriteColor: "blue" },
-*  }
- * 
- * const fn = (key: string, value: {age: number, favoriteColor: string}) =>
-        `${key} is ${value.age} years old and likes ${value.favoriteColor}`
- *
- * objectMap(obj, fn)) //=>
- *
- * ["Stephen is 41 years old and likes black", "Andrea is 42 years old and likes blue"]
- *
- */
-
-export function objectMap<
-  T extends object,
-  K extends keyof T,
-  V extends T[K],
-  Z = any,
->(obj: T, fn: (key: K, val: V) => Z, sortByKeys = false): Z[] {
-  const arr = sortByKeys ? Object.keys(obj).sort() : Object.keys(obj)
-
-  return arr.map((k) => fn(k as K, obj[k as K] as V))
-}
-
 /** Returns the sum of the values of a specific shared key in an array of objects.
  *
  * Example:
