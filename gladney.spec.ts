@@ -873,6 +873,18 @@ describe("arrays", () => {
     })
   })
 
+  describe("cycle", () => {
+    it("returns a fn that cycles through the array", () => {
+      const arr = [0, 1, 2, 3]
+      const arrCycle = _.cycle(arr)
+      expect(arrCycle()).toBe(0)
+      expect(arrCycle()).toBe(1)
+      expect(arrCycle()).toBe(2)
+      expect(arrCycle()).toBe(3)
+      expect(arrCycle()).toBe(0)
+    })
+  })
+
   describe("uniqueBy", () => {
     it("removes duplicates by callback result", () => {
       const arr = [

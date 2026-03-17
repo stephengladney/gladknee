@@ -1333,6 +1333,15 @@ export function flatten(arr: any[], levels = 0): unknown[] {
   return flattenWithAccumulator(arr, levels)
 }
 
+export function cycle<T>(arr: T[]): () => T {
+  let n: number = -1
+
+  return () => {
+    n = n + 1 == arr.length ? 0 : n + 1
+    return arr[n]
+  }
+}
+
 /** Returns an array of numbers (or strings of numbers) sorted. This is safer than the default sort() method because it converts
  strings of numbers to actual numbers and it compares each value for greater than less than, which helps
  when sorting negative numbers.
